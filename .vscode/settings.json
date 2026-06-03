@@ -1,5 +1,0 @@
-{
-  "terminal.integrated.env.windows": {
-    "VIRTUAL_ENV": "c:/proprg/backend/.venv"
-  }
-}
