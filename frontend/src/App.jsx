@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import DashboardMecanico from "./pages/mecanico/DashboardMecanico";
+import DashboardGerente from "./pages/gerente/DashboardGerente";
+import Operario from "./pages/operario/Operario";
 
 function App() {
-
   return (
-    <Card sx={{ maxWidth: 300, margin: "auto", marginTop: 5 }}>
-      <CardContent>
-        <Typography variant="h5">Mi primera Card</Typography>
-        <Typography variant="body2">Este es un texto dentro de la card.</Typography>
-        <Button variant="contained" color="primary">Acción</Button>
-      </CardContent>
-    </Card>
+    <Routes>
+      <Route path="/" element={<Login />} />
 
+      {/* Rutas del mecánico */}
+      <Route path="/dashboard-mecanico/*" element={<DashboardMecanico />} />
+
+      {/* Rutas del gerente */}
+      <Route path="/dashboard-gerente/*" element={<DashboardGerente />} />
+
+      {/* Rutas del operario */}
+      <Route path="/operario" element={<Operario />} />
+    </Routes>
   );
 }
 
