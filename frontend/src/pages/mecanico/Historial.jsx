@@ -149,7 +149,7 @@ export default function Historial() {
         <Button 
           startIcon={<BuildIcon sx={{ fontSize: 18 }} />}
           sx={greenBtn} 
-          onClick={() => navigate("/dashboard-mecanico/trabajos")}
+          onClick={() => navigate("/mecanico/trabajos")}
         >
           Agregar nuevo trabajo
         </Button>

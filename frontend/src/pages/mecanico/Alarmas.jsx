@@ -318,7 +318,7 @@ export default function AlertasMecanico() {
               <Button 
                 fullWidth 
                 sx={{ ...blackBtn, py: 1.2, mt: "auto" }} 
-                onClick={() => navigate("/dashboard-mecanico/calendario")}
+                onClick={() => navigate("/mecanico/calendario")}
               >
                 Ir a agenda completa
               </Button>

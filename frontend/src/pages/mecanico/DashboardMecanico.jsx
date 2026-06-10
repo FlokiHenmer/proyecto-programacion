@@ -1,5 +1,4 @@
 import React from "react";
-// Importaciones de enrutamiento existentes en tu archivo
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import GestionEmpresas from "./GestionEmpresas";
 import FormularioTecnico from "./FormularioTecnico";
@@ -8,7 +7,6 @@ import Alarmas from "./Alarmas";
 import Calendario from "./Calendario";
 import Historial from "./Historial";
 
-// Importaciones de diseño de Lovable
 import {
   Box,
   Card,
@@ -71,7 +69,6 @@ const blackBtn = {
   "&:hover": { bgcolor: "#222" },
 };
 
-// Componente secundario interno que dibuja el Inicio del Dashboard de Lovable
 function InicioDashboard() {
   const navigate = useNavigate();
 
@@ -91,7 +88,6 @@ function InicioDashboard() {
 
   return (
     <>
-      {/* Fila 1: Resumen de Checklist e Historial en Tabla */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 2fr" }, gap: 2.5, mb: 2.5 }}>
         <Card sx={{ ...cardSx, borderLeft: `4px solid ${GREEN}` }}>
           <CardContent>
@@ -113,7 +109,8 @@ function InicioDashboard() {
               <StatusRow icon={<ErrorIcon sx={{ color: "#dc2626" }} />} label="Reparación" value={2} />
             </Stack>
 
-            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/dashboard-mecanico/formulario-tecnico")}>
+            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
+            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/formulario-tecnico")}>
               Ir al Checklist Técnico
             </Button>
           </CardContent>
@@ -128,7 +125,8 @@ function InicioDashboard() {
                 </Typography>
                 <Typography sx={{ color: MUTED, fontSize: 13 }}>142 servicios registrados</Typography>
               </Box>
-              <Button sx={{ ...greenBtn, px: 2 }} onClick={() => navigate("/dashboard-mecanico/historial")}>Ver historial completo</Button>
+              {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
+              <Button sx={{ ...greenBtn, px: 2 }} onClick={() => navigate("/mecanico/historial")}>Ver historial completo</Button>
             </Box>
 
             <Table size="small">
@@ -156,7 +154,6 @@ function InicioDashboard() {
         </Card>
       </Box>
 
-      {/* Fila 2: Trabajos, Alertas y Agenda */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 2.5 }}>
         <Card sx={cardSx}>
           <CardContent>
@@ -172,7 +169,8 @@ function InicioDashboard() {
                 </Box>
               ))}
             </Stack>
-            <Button fullWidth sx={{ ...blackBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/dashboard-mecanico/trabajos")}>
+            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
+            <Button fullWidth sx={{ ...blackBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/trabajos")}>
               Agregar nuevo trabajo
             </Button>
           </CardContent>
@@ -204,7 +202,8 @@ function InicioDashboard() {
                 statusColor="#16a34a"
               />
             </Stack>
-            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/dashboard-mecanico/alarmas")}>
+            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
+            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/alarmas")}>
               Ver alertas y proponer turno
             </Button>
           </CardContent>
@@ -239,7 +238,8 @@ function InicioDashboard() {
               <AgendaItem time="14:30 PM" text="Urgente: Bomba de Agua" color="#dc2626" />
             </Stack>
 
-            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/dashboard-mecanico/calendario")}>
+            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
+            <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/calendario")}>
               Ir a agenda completa
             </Button>
           </CardContent>
@@ -249,42 +249,20 @@ function InicioDashboard() {
   );
 }
 
-// Contenedor principal: Mantiene el Sidebar global fijo y cambia el contenido dinámicamente mediante las Rutas
 export default function DashboardMecanico() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  {/* CORREGIDO: Todas las rutas de los botones del menú lateral actualizadas a /mecanico */}
   const sidebarItems = [
-    { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard-mecanico" },
-    { label: "Gestion Empresas", icon: <FactCheckIcon />, path: "/dashboard-mecanico/gestion-empresas" },
-    { label: "Checklist Técnico", icon: <FactCheckIcon />, path: "/dashboard-mecanico/formulario-tecnico" },
-    { label: "Trabajos", icon: <BuildIcon />, path: "/dashboard-mecanico/trabajos" },
-    { label: "Alertas", icon: <WarningAmberIcon />, path: "/dashboard-mecanico/alarmas" },
-    { label: "Agenda", icon: <CalendarMonthIcon />, path: "/dashboard-mecanico/calendario" },
-    { label: "Historial", icon: <HistoryIcon />, path: "/dashboard-mecanico/historial" },
+    { label: "Dashboard", icon: <DashboardIcon />, path: "/mecanico" },
+    { label: "Gestion Empresas", icon: <FactCheckIcon />, path: "/mecanico/gestion-empresas" },
+    { label: "Checklist Técnico", icon: <FactCheckIcon />, path: "/mecanico/formulario-tecnico" },
+    { label: "Trabajos", icon: <BuildIcon />, path: "/mecanico/trabajos" },
+    { label: "Alertas", icon: <WarningAmberIcon />, path: "/mecanico/alarmas" },
+    { label: "Agenda", icon: <CalendarMonthIcon />, path: "/mecanico/calendario" },
+    { label: "Historial", icon: <HistoryIcon />, path: "/mecanico/historial" },
   ];
-
-  // Función inteligente para determinar qué título mostrar según la URL actual
-  const getDynamicTitle = () => {
-    switch (location.pathname) {
-      case "/dashboard-mecanico":
-        return "Dashboard";
-      case "/dashboard-mecanico/gestion-empresas":
-        return "Gestión de Empresas";
-      case "/dashboard-mecanico/formulario-tecnico":
-        return "Checklist Técnico";
-      case "/dashboard-mecanico/trabajos":
-        return "Registro de Trabajos";
-      case "/dashboard-mecanico/alarmas":
-        return "Alertas y Turnos";
-      case "/dashboard-mecanico/calendario":
-        return "Agenda";
-      case "/dashboard-mecanico/historial":
-        return "Historial de Vehículos";
-      default:
-        return "Operativa Vehicular";
-    }
-  };
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f3ff", p: { xs: 1.5, md: 3 } }}>
@@ -301,7 +279,6 @@ export default function DashboardMecanico() {
           overflow: "hidden",
         }}
       >
-        {/* Sidebar Estático conectado al Router */}
         <Box
           sx={{
             borderRight: { md: `1px solid ${BORDER}` },
@@ -351,12 +328,10 @@ export default function DashboardMecanico() {
           </Box>
         </Box>
 
-        {/* Bloque de Contenido Dinámico basado en Rutas */}
         <Box sx={{ p: { xs: 2, md: 3 } }}>
-          {/* Header Común con Título TOTALMENTE DINÁMICO */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
             <Typography sx={{ fontSize: 24, fontWeight: 800, color: TEXT }}>
-              {getDynamicTitle()}
+              Operativa Vehicular
             </Typography>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Stack direction="row" spacing={1} alignItems="center"
@@ -370,7 +345,6 @@ export default function DashboardMecanico() {
             </Stack>
           </Box>
 
-          {/* Árbol de sub-rutas dinámicas */}
           <Routes>
             <Route path="/" element={<InicioDashboard />} />
             <Route path="gestion-empresas" element={<GestionEmpresas />} />
@@ -386,7 +360,6 @@ export default function DashboardMecanico() {
   );
 }
 
-// Componentes Helper de interfaz gráfica reutilizables
 function StatusRow({ icon, label, value }) {
   return (
     <Box sx={{
