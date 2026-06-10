@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import DashboardMecanico from "./pages/mecanico/DashboardMecanico";
 import DashboardGerente from "./pages/gerente/DashboardGerente";
@@ -8,15 +8,9 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-
-      {/* Rutas del mecánico */}
-      <Route path="/dashboard-mecanico/*" element={<DashboardMecanico />} />
-
-      {/* Rutas del gerente */}
-      <Route path="/dashboard-gerente/*" element={<DashboardGerente />} />
-
-      {/* Rutas del operario */}
-      <Route path="/operario" element={<Operario />} />
+      <Route path="/mecanico/*" element={<DashboardMecanico />} />
+      <Route path="/gerente/*" element={<DashboardGerente />} />
+      <Route path="/operario/*" element={<Operario />} />
     </Routes>
   );
 }
