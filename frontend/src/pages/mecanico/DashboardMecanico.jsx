@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../../components/layout/Navbar"; // <-- Conectamos tu nueva Navbar modular
 import GestionEmpresas from "./GestionEmpresas";
 import FormularioTecnico from "./FormularioTecnico";
 import Trabajos from "./Trabajos";
@@ -17,7 +18,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Avatar,
   Table,
   TableBody,
   TableCell,
@@ -109,7 +109,6 @@ function InicioDashboard() {
               <StatusRow icon={<ErrorIcon sx={{ color: "#dc2626" }} />} label="Reparación" value={2} />
             </Stack>
 
-            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
             <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/formulario-tecnico")}>
               Ir al Checklist Técnico
             </Button>
@@ -125,7 +124,6 @@ function InicioDashboard() {
                 </Typography>
                 <Typography sx={{ color: MUTED, fontSize: 13 }}>142 servicios registrados</Typography>
               </Box>
-              {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
               <Button sx={{ ...greenBtn, px: 2 }} onClick={() => navigate("/mecanico/historial")}>Ver historial completo</Button>
             </Box>
 
@@ -169,7 +167,6 @@ function InicioDashboard() {
                 </Box>
               ))}
             </Stack>
-            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
             <Button fullWidth sx={{ ...blackBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/trabajos")}>
               Agregar nuevo trabajo
             </Button>
@@ -202,7 +199,6 @@ function InicioDashboard() {
                 statusColor="#16a34a"
               />
             </Stack>
-            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
             <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/alarmas")}>
               Ver alertas y proponer turno
             </Button>
@@ -238,7 +234,6 @@ function InicioDashboard() {
               <AgendaItem time="14:30 PM" text="Urgente: Bomba de Agua" color="#dc2626" />
             </Stack>
 
-            {/* CORREGIDO: Ruta cambiada de /dashboard-mecanico a /mecanico */}
             <Button fullWidth sx={{ ...greenBtn, mt: 2, py: 1.1 }} onClick={() => navigate("/mecanico/calendario")}>
               Ir a agenda completa
             </Button>
@@ -253,7 +248,6 @@ export default function DashboardMecanico() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  {/* CORREGIDO: Todas las rutas de los botones del menú lateral actualizadas a /mecanico */}
   const sidebarItems = [
     { label: "Dashboard", icon: <DashboardIcon />, path: "/mecanico" },
     { label: "Gestion Empresas", icon: <FactCheckIcon />, path: "/mecanico/gestion-empresas" },
@@ -264,31 +258,40 @@ export default function DashboardMecanico() {
     { label: "Historial", icon: <HistoryIcon />, path: "/mecanico/historial" },
   ];
 
+  const titulosSecciones = {
+    "/mecanico": "Dashboard",
+    "/mecanico/gestion-empresas": "Gestión de Empresas",
+    "/mecanico/formulario-tecnico": "Checklist Técnico",
+    "/mecanico/trabajos": "Registro de Trabajos",
+    "/mecanico/alarmas": "Alertas y Notificaciones",
+    "/mecanico/calendario": "Agenda y Calendario",
+    "/mecanico/historial": "Historial de Mantenimiento"
+  };
+
+  const tituloActual = titulosSecciones[location.pathname] || "Operativa Vehicular";
+
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f3ff", p: { xs: 1.5, md: 3 } }}>
-      <Box
-        sx={{
-          maxWidth: 1280,
-          mx: "auto",
-          bgcolor: "#fff",
-          borderRadius: 4,
-          border: `1px solid ${BORDER}`,
-          boxShadow: "0 10px 40px rgba(60,30,120,0.08)",
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "240px 1fr" },
-          overflow: "hidden",
-        }}
-      >
+      <Box sx={{ maxWidth: 1280, mx: "auto" }}>
+        
+        {/* Renderizado de la Navbar Superior Unificada */}
+        <Navbar />
+
+        {/* Bloque Contenedor del Dashboard */}
         <Box
           sx={{
-            borderRight: { md: `1px solid ${BORDER}` },
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
+            bgcolor: "#fff",
+            borderRadius: 4,
+            border: `1px solid ${BORDER}`,
+            boxShadow: "0 10px 40px rgba(60,30,120,0.08)",
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "240px 1fr" },
+            overflow: "hidden",
             minHeight: { md: 760 },
           }}
         >
-          <Box>
+          {/* Barra Lateral Izquierda */}
+          <Box sx={{ borderRight: { md: `1px solid ${BORDER}` }, p: 2 }}>
             <Box sx={{ px: 1, pb: 2 }}>
               <Typography sx={{ fontWeight: 800, color: TEXT, fontSize: 16 }}>
                 Mantenimiento
@@ -296,6 +299,7 @@ export default function DashboardMecanico() {
               <Typography sx={{ color: MUTED, fontSize: 13 }}>Panel Técnico</Typography>
             </Box>
             <Divider sx={{ mb: 1 }} />
+            
             <List disablePadding>
               {sidebarItems.map((it) => {
                 const isActive = location.pathname === it.path;
@@ -326,34 +330,26 @@ export default function DashboardMecanico() {
               })}
             </List>
           </Box>
-        </Box>
 
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
-            <Typography sx={{ fontSize: 24, fontWeight: 800, color: TEXT }}>
-              Operativa Vehicular
-            </Typography>
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              <Stack direction="row" spacing={1} alignItems="center"
-                sx={{ border: `1px solid ${BORDER}`, borderRadius: 999, pl: 0.5, pr: 1.5, py: 0.5 }}>
-                <Avatar sx={{ width: 32, height: 32 }} />
-                <Box>
-                  <Typography sx={{ fontSize: 13, fontWeight: 700, lineHeight: 1.1 }}>Mecánico</Typography>
-                  <Typography sx={{ fontSize: 11, color: "#16a34a" }}>● En línea</Typography>
-                </Box>
-              </Stack>
-            </Stack>
+          {/* Contenido Principal Derecho */}
+          <Box sx={{ p: { xs: 2, md: 3 } }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+              {/* Título dinámico interno según la sub-ruta */}
+              <Typography sx={{ fontSize: 24, fontWeight: 800, color: TEXT }}>
+                {tituloActual}
+              </Typography>
+            </Box>
+
+            <Routes>
+              <Route path="/" element={<InicioDashboard />} />
+              <Route path="gestion-empresas" element={<GestionEmpresas />} />
+              <Route path="formulario-tecnico" element={<FormularioTecnico />} />
+              <Route path="trabajos" element={<Trabajos />} />
+              <Route path="alarmas" element={<Alarmas />} />
+              <Route path="calendario" element={<Calendario />} />
+              <Route path="historial" element={<Historial />} />
+            </Routes>
           </Box>
-
-          <Routes>
-            <Route path="/" element={<InicioDashboard />} />
-            <Route path="gestion-empresas" element={<GestionEmpresas />} />
-            <Route path="formulario-tecnico" element={<FormularioTecnico />} />
-            <Route path="trabajos" element={<Trabajos />} />
-            <Route path="alarmas" element={<Alarmas />} />
-            <Route path="calendario" element={<Calendario />} />
-            <Route path="historial" element={<Historial />} />
-          </Routes>
         </Box>
       </Box>
     </Box>
