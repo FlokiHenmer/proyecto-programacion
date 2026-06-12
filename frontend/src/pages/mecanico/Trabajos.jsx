@@ -12,10 +12,12 @@ import {
   Divider,
   Stack,
   Card,
-  CardContent
+  CardContent,
+  Snackbar,   // <-- Agregado para el mensaje
+  Alert       // <-- Agregado para el mensaje
 } from "@mui/material";
 
-// Importaciones directas a prueba de fallos (evitan la pantalla en blanco por desajustes de nombres)
+// Importaciones directas a prueba de fallos
 import BuildIcon from "@mui/icons-material/Build";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
@@ -50,6 +52,9 @@ const cardSx = {
 };
 
 export default function TrabajosMecanico() {
+  // 1. Estado para controlar la visibilidad del mensaje
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   const [vehiculo, setVehiculo] = useState("");
   const [km, setKm] = useState("");
   const [problema, setProblema] = useState("");
@@ -69,6 +74,11 @@ export default function TrabajosMecanico() {
     const copy = [...repuestos];
     copy[i][key] = value;
     setRepuestos(copy);
+  };
+
+  // 2. Función para activar el cartel al hacer click
+  const handleGuardar = () => {
+    setOpenSnackbar(true);
   };
 
   return (
@@ -241,11 +251,12 @@ export default function TrabajosMecanico() {
               ))}
             </Stack>
 
-            {/* Botón de Guardado */}
+            {/* Botón de Guardado con la acción vinculada */}
             <Button 
               fullWidth 
               startIcon={<SaveIcon />} 
               sx={{ ...greenBtn, py: 1.4, fontSize: 15 }}
+              onClick={handleGuardar} // <-- Vinculado aquí
             >
               Guardar Registro de Trabajo
             </Button>
@@ -309,6 +320,24 @@ export default function TrabajosMecanico() {
           
         </Box>
       </Box>
+
+      {/* 3. Componente de Alerta Visual (Snackbar) */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", bgcolor: "#0f172a", color: "#fff", fontWeight: 600 }}
+        >
+          Registro de trabajo guardado exitosamente
+        </Alert>
+      </Snackbar>
+
     </Box>
   );
 }

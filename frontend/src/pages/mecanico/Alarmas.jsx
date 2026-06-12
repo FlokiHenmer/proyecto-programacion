@@ -327,7 +327,7 @@ export default function AlertasMecanico() {
         </Box>
       </Box>
 
-      {/* Modal / Dialog de Detalle de Alerta Calzado al de image_73d97c.jpg */}
+      {/* Modal / Dialog de Detalle de Alerta */}
       <Dialog 
         open={Boolean(selectedAlert)} 
         onClose={handleCloseModal}
@@ -361,7 +361,7 @@ export default function AlertasMecanico() {
 
           <Divider sx={{ mx: -3, mb: 3 }} />
 
-          {/* Bloque de Lectura: Kilometraje y Último Servicio */}
+          {/* Bloque: Kilometraje y Último Servicio (CON TRUCO READONLY PARA COLOR OSCURO) */}
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2.5, mb: 3 }}>
             <Box>
               <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
@@ -369,14 +369,20 @@ export default function AlertasMecanico() {
               </Typography>
               <TextField
                 fullWidth
-                disabled
                 value={selectedAlert?.kmActual || ""}
                 variant="outlined"
                 InputProps={{
+                  readOnly: true, // <-- El secreto definitivo: Evita escribir, pero permite total color CSS
                   sx: { 
-                    bgcolor: "#f1f5f9", 
+                    bgcolor: "#f1f5f9", // Mantiene el aspecto de bloque de lectura
                     borderRadius: 2, 
-                    "& .MuiOutlinedInput-inputDisabled": { WebkitTextFillColor: TEXT, fontWeight: 700 } 
+                    fontWeight: 700,
+                    "& .MuiOutlinedInput-input": { 
+                      color: TEXT, // Fuerza el color oscuro sin restricciones
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: BORDER
+                    }
                   }
                 }}
               />
@@ -387,14 +393,20 @@ export default function AlertasMecanico() {
               </Typography>
               <TextField
                 fullWidth
-                disabled
                 value={selectedAlert?.ultimoServicio || ""}
                 variant="outlined"
                 InputProps={{
+                  readOnly: true, // <-- El secreto definitivo
                   sx: { 
                     bgcolor: "#f1f5f9", 
                     borderRadius: 2, 
-                    "& .MuiOutlinedInput-inputDisabled": { WebkitTextFillColor: TEXT, fontWeight: 500 } 
+                    fontWeight: 700,
+                    "& .MuiOutlinedInput-input": { 
+                      color: TEXT, 
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: BORDER
+                    }
                   }
                 }}
               />
