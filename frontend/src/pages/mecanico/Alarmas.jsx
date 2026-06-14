@@ -41,6 +41,7 @@ const YELLOW = "#f59e0b";
 const YELLOW_BG = "#fef3c7";
 const GRAY_BG = "#e5e7eb";
 
+// Datos fieles a tu diseño original (Captura 2)
 const criticalAlerts = [
   {
     id: 1,
@@ -49,8 +50,6 @@ const criticalAlerts = [
     badge: { label: "URGENTE", bg: RED_BG, color: RED },
     icon: <BuildIcon sx={{ fontSize: 18, color: RED }} />,
     text: "Fallo en Sistema de Frenos",
-    tituloAlerta: "Frenos Críticos",
-    textColor: RED,
     borderColor: RED,
     kmActual: "124,500 km",
     ultimoServicio: "15/07/2024"
@@ -62,8 +61,6 @@ const criticalAlerts = [
     badge: { label: "OBSERVACIÓN", bg: GRAY_BG, color: "#374151" },
     icon: <OpacityIcon sx={{ fontSize: 18, color: YELLOW }} />,
     text: "Cambio de Aceite (Próximo)",
-    tituloAlerta: "Desgaste de Lubricante",
-    textColor: TEXT,
     borderColor: YELLOW,
     kmActual: "98,200 km",
     ultimoServicio: "10/01/2025"
@@ -75,8 +72,6 @@ const criticalAlerts = [
     badge: { label: "CONTROL", bg: GRAY_BG, color: "#374151" },
     icon: <VerifiedIcon sx={{ fontSize: 18, color: GREEN_DARK }} />,
     text: "Mantenimiento Preventivo",
-    tituloAlerta: "Revisión General",
-    textColor: TEXT,
     borderColor: GREEN_DARK,
     kmActual: "64,000 km",
     ultimoServicio: "05/11/2025"
@@ -121,14 +116,14 @@ const greenBtn = {
 };
 
 const modalGreenBtn = {
-  bgcolor: "#86efac",
-  color: "#14532d",
+  bgcolor: GREEN,
+  color: "#06210a",
   fontWeight: 700,
   textTransform: "none",
   boxShadow: "none",
   borderRadius: 2,
   px: 3,
-  "&:hover": { bgcolor: GREEN, boxShadow: "none" },
+  "&:hover": { bgcolor: GREEN_DARK },
 };
 
 const blackBtn = {
@@ -172,7 +167,7 @@ export default function AlertasMecanico() {
         </Typography>
       </Box>
 
-      {/* Grid de Tarjetas de Alertas */}
+      {/* GRID RESTAURADO: 3 columnas idénticas a la Captura 2 */}
       <Box sx={{ 
         display: "grid", 
         gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, 
@@ -186,10 +181,12 @@ export default function AlertasMecanico() {
               borderRadius: 3, 
               border: `1px solid ${BORDER}`, 
               borderLeft: `5px solid ${a.borderColor}`, 
-              boxShadow: "none" 
+              boxShadow: "none",
+              bgcolor: "#fff"
             }}
           >
-            <CardContent sx={{ p: 2.5 }}>
+            {/* Agregamos padding dinámico para pantallas ultra-chicas y evitar desbordes */}
+            <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
               <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                 <Box>
                   <Typography variant="caption" sx={{ color: MUTED, fontWeight: 600 }}>
@@ -206,13 +203,22 @@ export default function AlertasMecanico() {
                 />
               </Stack>
               
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2 }}>
+              {/* Contenedor del ícono y texto del problema */}
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2, width: "100%" }}>
                 {a.icon}
-                <Typography sx={{ color: a.textColor, fontWeight: 600, fontSize: 14 }}>
+                <Typography 
+                  sx={{ 
+                    color: a.borderColor, 
+                    fontWeight: 600, 
+                    fontSize: 14,
+                    wordBreak: "break-word" // Solución responsive real sin alterar el diseño de PC
+                  }}
+                >
                   {a.text}
                 </Typography>
               </Stack>
               
+              {/* Botón original abajo tal como te gustaba en la captura 2 */}
               <Button 
                 fullWidth 
                 sx={{ ...greenBtn, mt: 2.5, py: 1 }}
@@ -225,7 +231,7 @@ export default function AlertasMecanico() {
         ))}
       </Box>
 
-      {/* Bloque dividido: Turnos Programados + Agenda Semanal */}
+      {/* Bloque dividido inferior: Turnos Programados + Agenda Semanal */}
       <Box sx={{ 
         display: "grid", 
         gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" }, 
@@ -237,7 +243,7 @@ export default function AlertasMecanico() {
           <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>
             Turnos Programados
           </Typography>
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff" }}>
             <CardContent sx={{ p: 2.5 }}>
               <Box sx={{ overflowX: "auto" }}>
                 <Table>
@@ -291,7 +297,7 @@ export default function AlertasMecanico() {
             </Typography>
           </Stack>
 
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", flex: 1, display: "flex", flexDirection: "column" }}>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff", flex: 1, display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between", flexGrow: 1 }}>
               <Stack spacing={1.5} sx={{ mb: 3 }}>
                 {agenda.map((ev, idx) => (
@@ -338,14 +344,13 @@ export default function AlertasMecanico() {
         }}
       >
         <DialogContent sx={{ p: 3 }}>
-          {/* Cabecera del Modal */}
           <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mb: 3, position: "relative" }}>
             <Box sx={{ color: RED, mt: 0.5 }}>
               <ReportProblemIcon sx={{ fontSize: 26 }} />
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography sx={{ fontWeight: 800, fontSize: 20, color: TEXT, lineHeight: 1.2 }}>
-                Detalle de Alerta: {selectedAlert?.tituloAlerta}
+                Proponer Turno Técnico
               </Typography>
               <Typography variant="caption" sx={{ color: MUTED, fontWeight: 600, fontSize: 12 }}>
                 Vehículo: {selectedAlert?.vehiculo} ({selectedAlert?.patente})
@@ -361,7 +366,6 @@ export default function AlertasMecanico() {
 
           <Divider sx={{ mx: -3, mb: 3 }} />
 
-          {/* Bloque: Kilometraje y Último Servicio (CON TRUCO READONLY PARA COLOR OSCURO) */}
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2.5, mb: 3 }}>
             <Box>
               <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
@@ -372,17 +376,13 @@ export default function AlertasMecanico() {
                 value={selectedAlert?.kmActual || ""}
                 variant="outlined"
                 InputProps={{
-                  readOnly: true, // <-- El secreto definitivo: Evita escribir, pero permite total color CSS
+                  readOnly: true,
                   sx: { 
-                    bgcolor: "#f1f5f9", // Mantiene el aspecto de bloque de lectura
+                    bgcolor: "#f1f5f9", 
                     borderRadius: 2, 
                     fontWeight: 700,
-                    "& .MuiOutlinedInput-input": { 
-                      color: TEXT, // Fuerza el color oscuro sin restricciones
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: BORDER
-                    }
+                    "& .MuiOutlinedInput-input": { color: TEXT },
+                    "& .MuiOutlinedInput-notchedOutline": { borderColor: BORDER }
                   }
                 }}
               />
@@ -396,24 +396,19 @@ export default function AlertasMecanico() {
                 value={selectedAlert?.ultimoServicio || ""}
                 variant="outlined"
                 InputProps={{
-                  readOnly: true, // <-- El secreto definitivo
+                  readOnly: true,
                   sx: { 
                     bgcolor: "#f1f5f9", 
                     borderRadius: 2, 
                     fontWeight: 700,
-                    "& .MuiOutlinedInput-input": { 
-                      color: TEXT, 
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: BORDER
-                    }
+                    "& .MuiOutlinedInput-input": { color: TEXT },
+                    "& .MuiOutlinedInput-notchedOutline": { borderColor: BORDER }
                   }
                 }}
               />
             </Box>
           </Box>
 
-          {/* Bloque de Entrada: Proponer Turno */}
           <Box sx={{ mb: 4 }}>
             <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
               Proponer Turno
@@ -445,7 +440,6 @@ export default function AlertasMecanico() {
             </Box>
           </Box>
 
-          {/* Acciones Inferiores */}
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
             <Button 
               onClick={handleCloseModal}
@@ -457,12 +451,11 @@ export default function AlertasMecanico() {
               sx={{ ...modalGreenBtn, py: 1 }}
               onClick={handleProponerTurno}
             >
-              Proponer turno
+              Confirmar Propuesta
             </Button>
           </Stack>
         </DialogContent>
       </Dialog>
-
     </Box>
   );
 }

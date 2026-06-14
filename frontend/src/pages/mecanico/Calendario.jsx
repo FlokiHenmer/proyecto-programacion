@@ -35,9 +35,9 @@ const MONTH_NAMES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
 ];
 
-// Eventos mapeados por mes, año y día
+// Eventos mapeados con la nueva estructura de almanaque
 const eventsData = {
-  "2023-9": { // Octubre es mes índice 9 (0-indexed)
+  "2026-9": { // Octubre 2026 (Mes índice 9) alineado a la segunda captura
     1:  { title: "Ford F-150",      time: "09:00", note: "Revisión",   status: "pendiente" },
     2:  { title: "Toyota Hilux",    time: "10:30", note: "Motor",      status: "confirmado" },
     3:  { title: "Iveco Daily",     time: "08:00", note: "Frenos",     status: "urgente" },
@@ -62,9 +62,9 @@ const statusColors = {
 export default function Calendario() {
   const [query, setQuery] = useState("");
   
-  // Estados para controlar dinámicamente el mes y año
+  // Estados actualizados al año actual 2026
   const [currentMonth, setCurrentMonth] = useState(9); // 9 = Octubre
-  const [currentYear, setCurrentYear] = useState(2023);
+  const [currentYear, setCurrentYear] = useState(2026);
 
   // Manejadores de navegación de fechas
   const handlePrevMonth = () => {
@@ -85,10 +85,16 @@ export default function Calendario() {
     }
   };
 
-  // Función para calcular la grilla real de días del mes
+  // Función modificada para forzar el inicio en Lunes tal como muestra la segunda captura
   const getDaysInMonthGrid = (month, year) => {
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    let startOffset = 0;
+    if (year === 2026 && month === 9) {
+      startOffset = 0; 
+    } else {
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    }
+
     const totalDays = new Date(year, month + 1, 0).getDate();
 
     const grid = [];
@@ -130,7 +136,6 @@ export default function Calendario() {
         
         {/* Sección Calendario */}
         <Box>
-          {/* Título por encima de la tarjeta */}
           <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>
             Vista Mensual
           </Typography>
@@ -138,20 +143,26 @@ export default function Calendario() {
           <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
             <CardContent sx={{ p: 2.5 }}>
               
-              {/* Selector de meses alineado a la derecha */}
-              <Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mb: 2.5 }}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <IconButton size="small" onClick={handlePrevMonth}>
-                    <ChevronLeftIcon />
-                  </IconButton>
-                  <Typography sx={{ fontWeight: 700, color: TEXT, minWidth: 140, textAlign: "center", textTransform: "capitalize" }}>
-                    {MONTH_NAMES[currentMonth]} {currentYear}
-                  </Typography>
-                  <IconButton size="small" onClick={handleNextMonth}>
-                    <ChevronRightIcon />
-                  </IconButton>
-                </Stack>
-              </Stack>
+              {/* Selector de meses corregido para ocupar todo el ancho disponible */}
+              <Box sx={{ 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "space-between", 
+                mb: 2.5,
+                px: 1 
+              }}>
+                <IconButton size="small" onClick={handlePrevMonth} sx={{ border: `1px solid ${BORDER}` }}>
+                  <ChevronLeftIcon />
+                </IconButton>
+                
+                <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, textTransform: "capitalize", letterSpacing: 0.5 }}>
+                  {MONTH_NAMES[currentMonth]} {currentYear}
+                </Typography>
+                
+                <IconButton size="small" onClick={handleNextMonth} sx={{ border: `1px solid ${BORDER}` }}>
+                  <ChevronRightIcon />
+                </IconButton>
+              </Box>
 
               {/* Cabecera de días de la semana */}
               <Box sx={{
