@@ -1,20 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext"; // <-- CORREGIDO: Subimos dos niveles para salir de layout/ y components/
+import { useUser } from "../../contexts/UserContext"; // Subimos dos niveles para salir de layout/ y components/
 import { Box, Typography, Stack, Avatar, Button } from "@mui/material";
 import BuildIcon from "@mui/icons-material/Build";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { red } from "@mui/material/colors";
 
 const BORDER = "#e5e7eb";
 const TEXT = "#0f172a";
 const GREEN_DARK = "#22cc15";
-
-// Mapeo para mostrar los nombres de los roles prolijos y con acentos
-const ROLES_MAP = {
-  mecanico: "Mecánico",
-  gerente: "Gerente",
-  operario: "Operario",
-};
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -22,61 +16,62 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/", { replace: true }); // Te manda directo al login limpiando el historial de rutas
+    navigate("/", { replace: true }); // Manda directo al login limpiando el historial de rutas
   };
 
-  // Determinar dinámicamente qué mostrar en el badge
-  const obtenerNombreAMostrar = () => {
-    if (user?.username && user.username.trim() !== "") {
-      return user.username;
-    }
-    // Si no ingresó username, usa el rol formateado
-    return ROLES_MAP[user?.role] || "Usuario";
-  };
+  // Determinar dinámicamente el nombre a mostrar (Nombre de usuario o "Usuario" por defecto)
+  const nombreAMostrar = user?.username && user.username.trim() !== "" 
+    ? user.username 
+    : "Usuario";
 
-  const nombreAMostrar = obtenerNombreAMostrar();
+  // Tomar la inicial para el Avatar basado en el nombre determinado arriba
   const inicialAvatar = nombreAMostrar.charAt(0).toUpperCase();
 
   return (
     <Box
+      component="header"
       sx={{
+        height: 70,
+        bgcolor: "#f8fafc",
+        borderBottom: `1px solid ${BORDER}`,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        mb: 3,
-        px: { xs: 0.5, md: 1 },
-        py: 1,
+        px: 4,
+        position: "sticky",
+        top: 0,
+        zIndex: 1100,
       }}
     >
-      {/* Izquierda: Loguito e Identidad de la App */}
+      {/* Isotipo / Logotipo de Pinza Motors */}
       <Stack direction="row" spacing={1.5} alignItems="center">
         <Box
           sx={{
-            bgcolor: "#fff",
-            p: 1.2,
-            borderRadius: 2.5,
-            border: `1px solid ${BORDER}`,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            width: 38,
+            height: 38,
+            bgcolor: TEXT,
+            borderRadius: 2,
+            display: "grid",
+            placeItems: "center",
+            color: GREEN_DARK,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
           }}
         >
-          <BuildIcon sx={{ color: TEXT, fontSize: 22 }} />
+          <BuildIcon sx={{ fontSize: 18 }} />
         </Box>
         <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: TEXT, lineHeight: 1.5 }}>
-            Operativa Vehicular
+          <Typography sx={{ fontWeight: 900, fontSize: 16, color: TEXT, letterSpacing: 0.5, lineHeight: 1.2 }}>
+            PINZA MOTORS
           </Typography>
-          <Typography sx={{ fontSize: 14, fontWeight: 700, color: GREEN_DARK, letterSpacing: 0.3 }}>
-            Pinza Motors
+          <Typography sx={{ fontSize: 10, color: GREEN_DARK, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase" }}>
+            Gestión de Flotas
           </Typography>
         </Box>
       </Stack>
 
-      {/* Derecha: Info de Usuario + Botón Cerrar Sesión */}
+      {/* Acciones del Perfil + Botón de Salida */}
       <Stack direction="row" spacing={2} alignItems="center">
-        {/* Badge de Usuario */}
+        {/* Badge del Usuario Activo */}
         <Stack
           direction="row"
           spacing={1}
@@ -115,15 +110,16 @@ export default function Navbar() {
             fontWeight: 700,
             fontSize: 13,
             border: `1px solid ${BORDER}`,
-            color: "#dc2626",
+            color: red,
+            px: 2,
             "&:hover": {
-              bgcolor: "#fef2f2",
-              borderColor: "#fca5a5",
-              color: "#dc2626",
+              bgcolor: "#fcfcfc",
+              borderColor: "#d63030",
+              color: "#e22424",
             },
           }}
         >
-          Cerrar sesión
+          Salir
         </Button>
       </Stack>
     </Box>
