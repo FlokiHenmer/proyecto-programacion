@@ -20,6 +20,7 @@ import {
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchIcon from "@mui/icons-material/Search";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const GREEN = "#44FF34";
 const BORDER = "#e5e7eb";
@@ -132,192 +133,103 @@ export default function Calendario() {
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" },
         gap: 2.5,
+        width: "100%", // Asegura que no se desborde del padre
+        minWidth: 0,   // Crucial: Permite que el grid se encoja si es necesario
       }}>
         
         {/* Sección Calendario */}
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>
-            Vista Mensual
-          </Typography>
-
+        {/* Calendario con Scroll */}
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h6" sx={{ mb: 1.5 }}>Vista Mensual</Typography>
           <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
-            <CardContent sx={{ p: 2.5 }}>
+            <CardContent>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                <IconButton onClick={() => setCurrentMonth(prev => prev - 1)}><ChevronLeftIcon /></IconButton>
+                <Typography variant="h6">{MONTH_NAMES[currentMonth]}</Typography>
+                <IconButton onClick={() => setCurrentMonth(prev => prev + 1)}><ChevronRightIcon /></IconButton>
+              </Box>
               
-              {/* Selector de meses corregido para ocupar todo el ancho disponible */}
-              <Box sx={{ 
-                display: "flex", 
-                alignItems: "center", 
-                justifyContent: "space-between", 
-                mb: 2.5,
-                px: 1 
-              }}>
-                <IconButton size="small" onClick={handlePrevMonth} sx={{ border: `1px solid ${BORDER}` }}>
-                  <ChevronLeftIcon />
-                </IconButton>
-                
-                <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, textTransform: "capitalize", letterSpacing: 0.5 }}>
-                  {MONTH_NAMES[currentMonth]} {currentYear}
-                </Typography>
-                
-                <IconButton size="small" onClick={handleNextMonth} sx={{ border: `1px solid ${BORDER}` }}>
-                  <ChevronRightIcon />
-                </IconButton>
-              </Box>
-
-              {/* Cabecera de días de la semana */}
-              <Box sx={{
-                display: "grid", gridTemplateColumns: "repeat(7, 1fr)",
-                border: `1px solid ${BORDER}`, borderBottom: 0,
-                bgcolor: "#f8fafc",
-              }}>
-                {["LUN","MAR","MIÉ","JUE","VIE","SÁB","DOM"].map(d => (
-                  <Box key={d} sx={{
-                    p: 1.2, textAlign: "center", fontSize: 12, fontWeight: 700,
-                    color: MUTED, borderRight: `1px solid ${BORDER}`,
-                    "&:last-child": { borderRight: "none" }
-                  }}>
-                    {d}
-                  </Box>
-                ))}
-              </Box>
-
-              {/* Celdas del Calendario (Grid de días) */}
-              <Box sx={{
-                display: "grid", 
-                gridTemplateColumns: "repeat(7, 1fr)",
-                borderTop: `1px solid ${BORDER}`,
-                borderLeft: `1px solid ${BORDER}`,
-              }}>
-                {daysGrid.map((d, i) => {
-                  const ev = d ? currentEvents[d] : null;
-                  return (
-                    <Box key={i} sx={{
-                      minHeight: 110,
-                      p: 1,
-                      borderRight: `1px solid ${BORDER}`,
-                      borderBottom: `1px solid ${BORDER}`,
-                      bgcolor: d ? "#fff" : "#f8fafc",
-                      display: "flex", 
-                      flexDirection: "column", 
-                      justifyContent: "flex-start",
-                      gap: 0.8,
-                    }}>
-                      <Typography sx={{ fontSize: 12, fontWeight: 600, color: d ? TEXT : "transparent" }}>
-                        {d || ""}
-                      </Typography>
-                      {ev && (
-                        <Box sx={{
-                          bgcolor: statusColors[ev.status].bg,
-                          color: statusColors[ev.status].fg,
-                          borderRadius: 1.5, 
-                          p: 1,
-                          fontSize: 11, 
-                          lineHeight: 1.3,
-                          border: `1px solid rgba(0,0,0,0.05)`,
-                          boxShadow: "0px 1px 2px rgba(0,0,0,0.05)"
-                        }}>
-                          <Box sx={{ fontWeight: 700 }}>{ev.title}</Box>
-                          <Box sx={{ opacity: 0.9, fontSize: 10 }}>{ev.time} - {ev.note}</Box>
+              <Box sx={{ overflowX: "auto", width: "100%" }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", minWidth: 500 }}>
+                  {["L", "M", "M", "J", "V", "S", "D"].map(d => <Typography key={d} sx={{ textAlign: "center", fontWeight: 700 }}>{d}</Typography>)}
+                  {daysGrid.map((d, i) => (
+                    <Box key={i} sx={{ minHeight: 80, border: `1px solid ${BORDER}`, p: 0.5 }}>
+                      <Typography sx={{ fontSize: 10 }}>{d}</Typography>
+                      {currentEvents[d] && (
+                        <Box sx={{ bgcolor: statusColors[currentEvents[d].status].bg, fontSize: 9, p: 0.5, borderRadius: 1 }}>
+                          {currentEvents[d].title}
                         </Box>
                       )}
                     </Box>
-                  );
-                })}
+                  ))}
+                </Box>
               </Box>
             </CardContent>
           </Card>
         </Box>
 
-        {/* Columna derecha: Alertas */}
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>
-            Próximos Urgentes
-          </Typography>
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", height: "calc(100% - 38px)" }}>
+        {/* Sección Urgentes - APLICADO minWidth: 0 para que no estire la columna */}
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>Próximos Urgentes</Typography>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
             <CardContent sx={{ p: 2.5 }}>
-              <Box sx={{
-                bgcolor: RED_BG, border: `1px solid #fecaca`,
-                borderRadius: 2, p: 2, position: "relative",
-              }}>
-                <Chip
-                  label="URGENTE" size="small"
-                  sx={{
-                    position: "absolute", top: 12, right: 12,
-                    bgcolor: RED, color: "#fff", fontWeight: 700, fontSize: 10,
-                  }}
-                />
-                <Typography sx={{ color: RED, fontWeight: 800, fontSize: 15 }}>AF-123-ZZ</Typography>
-                <Typography sx={{ fontWeight: 700, color: TEXT, mt: 0.5 }}>Iveco Daily 3.0</Typography>
-                <Typography variant="caption" sx={{ color: MUTED, display: "block", mt: 0.5 }}>
-                  Hoy - 08:30 HS
-                </Typography>
-              </Box>
+              <Stack spacing={1}>
+                {turnos.filter(t => t.estado === "urgente").map((u, i) => (
+                  <Box key={i} sx={{ bgcolor: RED_BG, border: `1px solid #fecaca`, border: `1px solid ${BORDER}`, borderRadius: 2, p: 1.5, minWidth: 0 }}>
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                      <ErrorIcon sx={{ color: RED, fontSize: 20, flexShrink: 0 }} />
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <Typography sx={{ fontWeight: 700, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {u.veh}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                ))}
+              </Stack>
             </CardContent>
           </Card>
         </Box>
       </Box>
 
       {/* Tabla inferior de turnos */}
-      <Card sx={{ mt: 2.5, borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
-        <CardContent sx={{ p: 2.5 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
-              Lista de Turnos
-            </Typography>
-            <Box sx={{
-              display: "flex", alignItems: "center", gap: 1,
-              border: `1px solid ${BORDER}`, borderRadius: 2, px: 1.5, py: 0.5,
-              bgcolor: "#fff", minWidth: 260,
-            }}>
-              <SearchIcon sx={{ color: MUTED, fontSize: 18 }} />
-              <InputBase
-                placeholder="Buscar patente…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                sx={{ fontSize: 14, flex: 1 }}
-              />
-            </Box>
-          </Stack>
-
-          <Divider sx={{ mb: 1 }} />
-
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "#f8fafc" }}>
-                {["VEHÍCULO", "PATENTE", "FECHA Y HORA", "ESTADO", "OBSERVACIONES"].map(h => (
-                  <TableCell key={h} sx={{ fontWeight: 700, color: MUTED, fontSize: 12 }}>
-                    {h}
+      <Box sx={{ overflowX: "auto" }}>
+        <Table sx={{ minWidth: 600 }}> {/* minWidth asegura que la tabla se mantenga legible */}
+          <TableHead>
+            <TableRow sx={{ bgcolor: "#f8fafc" }}>
+              {["VEHÍCULO", "PATENTE", "FECHA Y HORA", "ESTADO", "OBSERVACIONES"].map(h => (
+                <TableCell key={h} sx={{ 
+                  fontWeight: 700, 
+                  color: MUTED, 
+                  fontSize: { xs: 10, sm: 12 }, // Fuente más pequeña en móvil
+                  whiteSpace: "nowrap" // Evita que los encabezados se corten
+                }}>
+                  {h}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredTurnos.map((t, i) => {
+              const s = statusColors[t.estado];
+              return (
+                <TableRow key={i}>
+                  <TableCell sx={{ fontWeight: 600, color: TEXT, fontSize: 13 }}>{t.veh}</TableCell>
+                  <TableCell sx={{ fontFamily: "monospace", fontSize: 12 }}>{t.pat}</TableCell>
+                  <TableCell sx={{ fontSize: 13 }}>{t.fh}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={s.label} size="small"
+                      sx={{ bgcolor: s.bg, color: s.fg, fontWeight: 700, fontSize: 10 }}
+                    />
                   </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTurnos.map((t, i) => {
-                const s = statusColors[t.estado];
-                return (
-                  <TableRow key={i}>
-                    <TableCell sx={{ fontWeight: 600, color: TEXT }}>{t.veh}</TableCell>
-                    <TableCell sx={{ fontFamily: "monospace", letterSpacing: 1, fontSize: 13 }}>
-                      {t.pat}
-                    </TableCell>
-                    <TableCell>{t.fh}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={s.label} size="small"
-                        sx={{
-                          bgcolor: s.bg, color: s.fg, fontWeight: 700, fontSize: 11,
-                          border: t.estado === "pendiente" ? "1px solid #f59e0b" : "none",
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ color: TEXT }}>{t.obs}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                  <TableCell sx={{ color: TEXT, fontSize: 13 }}>{t.obs}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </Box>
     </Box>
   );
 }

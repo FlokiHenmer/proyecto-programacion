@@ -29,6 +29,7 @@ import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import CloseIcon from "@mui/icons-material/Close";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 
+// Constantes de estilo
 const GREEN = "#44FF34";
 const GREEN_DARK = "#22cc15";
 const GREEN_SOFT = "#e8ffe4";
@@ -41,419 +42,134 @@ const YELLOW = "#f59e0b";
 const YELLOW_BG = "#fef3c7";
 const GRAY_BG = "#e5e7eb";
 
-// Datos fieles a tu diseño original (Captura 2)
+// Datos
 const criticalAlerts = [
-  {
-    id: 1,
-    patente: "ABC-123",
-    vehiculo: "Toyota Hilux",
-    badge: { label: "URGENTE", bg: RED_BG, color: RED },
-    icon: <BuildIcon sx={{ fontSize: 18, color: RED }} />,
-    text: "Fallo en Sistema de Frenos",
-    borderColor: RED,
-    kmActual: "124,500 km",
-    ultimoServicio: "15/07/2024"
-  },
-  {
-    id: 2,
-    patente: "XYZ-789",
-    vehiculo: "Ford Ranger",
-    badge: { label: "OBSERVACIÓN", bg: GRAY_BG, color: "#374151" },
-    icon: <OpacityIcon sx={{ fontSize: 18, color: YELLOW }} />,
-    text: "Cambio de Aceite (Próximo)",
-    borderColor: YELLOW,
-    kmActual: "98,200 km",
-    ultimoServicio: "10/01/2025"
-  },
-  {
-    id: 3,
-    patente: "MNO-456",
-    vehiculo: "VW Amarok",
-    badge: { label: "CONTROL", bg: GRAY_BG, color: "#374151" },
-    icon: <VerifiedIcon sx={{ fontSize: 18, color: GREEN_DARK }} />,
-    text: "Mantenimiento Preventivo",
-    borderColor: GREEN_DARK,
-    kmActual: "64,000 km",
-    ultimoServicio: "05/11/2025"
-  },
+  { id: 1, patente: "ABC-123", vehiculo: "Toyota Hilux", badge: { label: "URGENTE", bg: RED_BG, color: RED }, icon: <BuildIcon sx={{ fontSize: 18, color: RED }} />, text: "Fallo en Sistema de Frenos", borderColor: RED, kmActual: "124,500 km", ultimoServicio: "15/07/2024" },
+  { id: 2, patente: "XYZ-789", vehiculo: "Ford Ranger", badge: { label: "OBSERVACIÓN", bg: GRAY_BG, color: "#374151" }, icon: <OpacityIcon sx={{ fontSize: 18, color: YELLOW }} />, text: "Cambio de Aceite (Próximo)", borderColor: YELLOW, kmActual: "98,200 km", ultimoServicio: "10/01/2025" },
+  { id: 3, patente: "MNO-456", vehiculo: "VW Amarok", badge: { label: "CONTROL", bg: GRAY_BG, color: "#374151" }, icon: <VerifiedIcon sx={{ fontSize: 18, color: GREEN_DARK }} />, text: "Mantenimiento Preventivo", borderColor: GREEN_DARK, kmActual: "64,000 km", ultimoServicio: "05/11/2025" },
 ];
 
 const turnos = [
-  {
-    vehiculo: "Toyota Hilux",
-    patente: "ABC-123",
-    fecha: "15 Oct, 2026 - 09:00",
-    estado: { label: "Aceptado", bg: GREEN_SOFT, color: "#166534" },
-  },
-  {
-    vehiculo: "Ford Ranger",
-    patente: "XYZ-789",
-    fecha: "16 Oct, 2026 - 14:30",
-    estado: { label: "Pendiente", bg: YELLOW_BG, color: "#92400e" },
-  },
-  {
-    vehiculo: "Iveco Daily",
-    patente: "JKL-012",
-    fecha: "Inmediato",
-    estado: { label: "Urgente", bg: RED_BG, color: RED },
-  },
+  { vehiculo: "Toyota Hilux", patente: "ABC-123", fecha: "15 Oct, 2026 - 09:00", estado: { label: "Aceptado", bg: GREEN_SOFT, color: "#166534" } },
+  { vehiculo: "Ford Ranger", patente: "XYZ-789", fecha: "16 Oct, 2026 - 14:30", estado: { label: "Pendiente", bg: YELLOW_BG, color: "#92400e" } },
+  { vehiculo: "Iveco Daily", patente: "JKL-012", fecha: "Inmediato", estado: { label: "Urgente", bg: RED_BG, color: RED }, },
 ];
 
 const agenda = [
   { day: "LUN 14", time: "08:30", title: "Toyota Hilux - Frenos", bg: GREEN_SOFT, border: GREEN_DARK },
   { day: "MAR 15", time: "10:00", title: "Emergencia Motor - Scania", bg: RED_BG, border: RED },
-  { day: "MIE 16", time: "12:15", title: "Checklist Trimestral", bg: GREEN_SOFT, border: GREEN_DARK },
 ];
 
-const greenBtn = {
-  bgcolor: GREEN,
-  color: "#06210a",
-  fontWeight: 700,
-  textTransform: "none",
-  boxShadow: "none",
-  borderRadius: 2,
-  "&:hover": { bgcolor: GREEN_DARK, boxShadow: "none" },
-};
-
-const modalGreenBtn = {
-  bgcolor: GREEN,
-  color: "#06210a",
-  fontWeight: 700,
-  textTransform: "none",
-  boxShadow: "none",
-  borderRadius: 2,
-  px: 3,
-  "&:hover": { bgcolor: GREEN_DARK },
-};
-
-const blackBtn = {
-  bgcolor: "#0b0f14",
-  color: "#fff",
-  fontWeight: 700,
-  textTransform: "none",
-  borderRadius: 2,
-  "&:hover": { bgcolor: "#000" },
-};
+// Estilos de botones (mantenidos)
+const commonBtn = { fontWeight: 700, textTransform: "none", borderRadius: 2 };
+const greenBtn = { ...commonBtn, bgcolor: GREEN, color: "#06210a", "&:hover": { bgcolor: GREEN_DARK } };
+const blackBtn = { ...commonBtn, bgcolor: "#0b0f14", color: "#fff", "&:hover": { bgcolor: "#000" } };
 
 export default function AlertasMecanico() {
   const navigate = useNavigate();
-  
-  // Estados para el Modal de Detalles
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [fechaTurno, setFechaTurno] = useState("");
   const [horaTurno, setHoraTurno] = useState("");
 
-  const handleOpenModal = (alerta) => {
-    setSelectedAlert(alerta);
-    setFechaTurno("");
-    setHoraTurno("");
-  };
-
-  const handleCloseModal = () => {
-    setSelectedAlert(null);
-  };
-
-  const handleProponerTurno = () => {
-    console.log("Turno propuesto para:", selectedAlert.vehiculo, fechaTurno, horaTurno);
-    handleCloseModal();
-  };
-
   return (
-    <Box sx={{ flex: 1 }}>
-      {/* Panel de Alertas Críticas */}
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
-          Panel de Alertas Críticas
-        </Typography>
-      </Box>
-
-      {/* GRID RESTAURADO: 3 columnas idénticas a la Captura 2 */}
-      <Box sx={{ 
-        display: "grid", 
-        gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, 
-        gap: 2.5, 
-        mb: 4 
-      }}>
+    <Box sx={{ p: { xs: 2, md: 3 }, minWidth: 0 }}>
+      {/* Alertas Críticas */}
+      <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Panel de Alertas Críticas</Typography>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", lg: "repeat(3, 1fr)" }, gap: 2, mb: 4 }}>
         {criticalAlerts.map((a) => (
-          <Card 
-            key={a.patente} 
-            sx={{ 
-              borderRadius: 3, 
-              border: `1px solid ${BORDER}`, 
-              borderLeft: `5px solid ${a.borderColor}`, 
-              boxShadow: "none",
-              bgcolor: "#fff"
-            }}
-          >
-            {/* Agregamos padding dinámico para pantallas ultra-chicas y evitar desbordes */}
-            <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Card key={a.id} sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, borderLeft: `5px solid ${a.borderColor}`, boxShadow: "none" }}>
+            <CardContent sx={{ p: 2 }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1 }}>
                 <Box>
-                  <Typography variant="caption" sx={{ color: MUTED, fontWeight: 600 }}>
-                    {a.patente}
-                  </Typography>
-                  <Typography sx={{ fontWeight: 800, fontSize: 18, color: TEXT }}>
-                    {a.vehiculo}
-                  </Typography>
+                  <Typography variant="caption" sx={{ color: MUTED }}>{a.patente}</Typography>
+                  <Typography sx={{ fontWeight: 800 }}>{a.vehiculo}</Typography>
                 </Box>
-                <Chip
-                  label={a.badge.label}
-                  size="small"
-                  sx={{ bgcolor: a.badge.bg, color: a.badge.color, fontWeight: 700, fontSize: 10 }}
-                />
+                <Chip label={a.badge.label} size="small" sx={{ bgcolor: a.badge.bg, color: a.badge.color, fontWeight: 700, fontSize: 10 }} />
               </Stack>
-              
-              {/* Contenedor del ícono y texto del problema */}
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2, width: "100%" }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                 {a.icon}
-                <Typography 
-                  sx={{ 
-                    color: a.borderColor, 
-                    fontWeight: 600, 
-                    fontSize: 14,
-                    wordBreak: "break-word" // Solución responsive real sin alterar el diseño de PC
-                  }}
-                >
-                  {a.text}
-                </Typography>
+                <Typography sx={{ color: a.borderColor, fontWeight: 600, fontSize: 14 }}>{a.text}</Typography>
               </Stack>
-              
-              {/* Botón original abajo tal como te gustaba en la captura 2 */}
-              <Button 
-                fullWidth 
-                sx={{ ...greenBtn, mt: 2.5, py: 1 }}
-                onClick={() => handleOpenModal(a)}
-              >
-                Ver detalles
-              </Button>
+              <Button fullWidth sx={greenBtn} onClick={() => setSelectedAlert(a)}>Ver detalles</Button>
             </CardContent>
           </Card>
         ))}
       </Box>
 
-      {/* Bloque dividido inferior: Turnos Programados + Agenda Semanal */}
-      <Box sx={{ 
-        display: "grid", 
-        gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" }, 
-        gap: 2.5 
-      }}>
-        
-        {/* Turnos Programados */}
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>
-            Turnos Programados
-          </Typography>
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Box sx={{ overflowX: "auto" }}>
-                <Table>
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: "#f8fafc" }}>
-                      {["VEHÍCULO", "FECHA PROPUESTA", "ESTADO"].map((h) => (
-                        <TableCell key={h} sx={{ color: MUTED, fontWeight: 700, fontSize: 12, borderBottom: `1px solid ${BORDER}` }}>
-                          {h}
-                        </TableCell>
-                      ))}
+      {/* Sección Inferior: Turnos + Agenda */}
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", xl: "2fr 1fr" }, gap: 3 }}>
+        {/* Card de Turnos */}
+        <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
+          <CardContent sx={{ p: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Turnos Programados</Typography>
+            
+            {/* ESTE BOX ES LA CLAVE PARA QUE NO DESBORDE */}
+            <Box sx={{ width: "100%", overflowX: "auto" }}>
+              <Table sx={{ minWidth: 400 }}> {/* MinWidth más bajo para que quepa en móviles */}
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontSize: { xs: 11, sm: 13 }, fontWeight: 700 }}>VEHÍCULO</TableCell>
+                    <TableCell sx={{ fontSize: { xs: 11, sm: 13 }, fontWeight: 700 }}>FECHA</TableCell>
+                    <TableCell sx={{ fontSize: { xs: 11, sm: 13 }, fontWeight: 700 }}>ESTADO</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(turnos || []).map((t, i) => (
+                    <TableRow key={i}>
+                      <TableCell sx={{ py: 1.5 }}>
+                        <Typography sx={{ fontWeight: 700, fontSize: { xs: 12, sm: 14 } }}>{t?.vehiculo}</Typography>
+                        <Typography variant="caption" sx={{ fontSize: { xs: 10, sm: 12 } }}>{t?.patente}</Typography>
+                      </TableCell>
+                      <TableCell sx={{ fontSize: { xs: 11, sm: 13 }, py: 1.5 }}>{t?.fecha}</TableCell>
+                      <TableCell sx={{ py: 1.5 }}>
+                        <Chip 
+                          label={t?.estado?.label} 
+                          size="small" 
+                          sx={{ 
+                            bgcolor: t?.estado?.bg, 
+                            color: t?.estado?.color, 
+                            fontWeight: 700,
+                            fontSize: { xs: 10, sm: 11 }
+                          }} 
+                        />
+                      </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {turnos.map((t) => (
-                      <TableRow key={t.patente}>
-                        <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                          <Stack direction="row" spacing={1.5} alignItems="center">
-                            <Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: "#f1f5f9", display: "grid", placeItems: "center" }}>
-                              <DirectionsCarFilledIcon sx={{ color: MUTED, fontSize: 20 }} />
-                            </Box>
-                            <Box>
-                              <Typography sx={{ fontWeight: 700, fontSize: 14, color: TEXT }}>{t.vehiculo}</Typography>
-                              <Typography variant="caption" sx={{ color: MUTED, fontFamily: "monospace" }}>{t.patente}</Typography>
-                            </Box>
-                          </Stack>
-                        </TableCell>
-                        <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, fontSize: 14, color: TEXT }}>
-                          {t.fecha}
-                        </TableCell>
-                        <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                          <Chip
-                            label={t.estado.label}
-                            size="small"
-                            sx={{ bgcolor: t.estado.bg, color: t.estado.color, fontWeight: 700, fontSize: 11 }}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </CardContent>
+        </Card>
 
-        {/* Agenda Semanal */}
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
-              Agenda Semanal
-            </Typography>
-          </Stack>
-
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff", flex: 1, display: "flex", flexDirection: "column" }}>
-            <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between", flexGrow: 1 }}>
-              <Stack spacing={1.5} sx={{ mb: 3 }}>
-                {agenda.map((ev, idx) => (
-                  <Box
-                    key={idx}
-                    sx={{
-                      bgcolor: ev.bg,
-                      borderLeft: `4px solid ${ev.border}`,
-                      borderRadius: 2,
-                      px: 2,
-                      py: 1.2,
-                    }}
-                  >
-                    <Typography variant="caption" sx={{ color: ev.border, fontWeight: 700, display: "block", mb: 0.5 }}>
-                      {ev.day} | {ev.time} HS
-                    </Typography>
-                    <Typography sx={{ fontWeight: 700, fontSize: 14, color: TEXT }}>
-                      {ev.title}
-                    </Typography>
-                  </Box>
-                ))}
-              </Stack>
-
-              <Button 
-                fullWidth 
-                sx={{ ...blackBtn, py: 1.2, mt: "auto" }} 
-                onClick={() => navigate("/mecanico/calendario")}
-              >
-                Ir a agenda completa
+        {/* Card de Agenda */}
+        <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
+          <CardContent>
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Agenda Semanal</Typography>
+            <Stack spacing={1}>
+              {/* AGREGADO: (agenda || []).map */}
+              {(agenda || []).map((ev, i) => (
+                <Box key={i} sx={{ bgcolor: ev?.bg || "#fff", borderLeft: `4px solid ${ev?.border || BORDER}`, p: 1.5, borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ color: ev?.border || MUTED, fontWeight: 700 }}>
+                    {ev?.day || ""} | {ev?.time || ""} HS
+                  </Typography>
+                  <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{ev?.title || "Sin título"}</Typography>
+                </Box>
+              ))}
+              <Button fullWidth sx={{ ...blackBtn, mt: 2 }} onClick={() => navigate("/mecanico/calendario")}>
+                Agenda completa
               </Button>
-            </CardContent>
-          </Card>
-        </Box>
+            </Stack>
+          </CardContent>
+        </Card>
       </Box>
 
-      {/* Modal / Dialog de Detalle de Alerta */}
-      <Dialog 
-        open={Boolean(selectedAlert)} 
-        onClose={handleCloseModal}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: { borderRadius: 4, p: 1, overflow: "hidden" }
-        }}
-      >
-        <DialogContent sx={{ p: 3 }}>
-          <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mb: 3, position: "relative" }}>
-            <Box sx={{ color: RED, mt: 0.5 }}>
-              <ReportProblemIcon sx={{ fontSize: 26 }} />
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontWeight: 800, fontSize: 20, color: TEXT, lineHeight: 1.2 }}>
-                Proponer Turno Técnico
-              </Typography>
-              <Typography variant="caption" sx={{ color: MUTED, fontWeight: 600, fontSize: 12 }}>
-                Vehículo: {selectedAlert?.vehiculo} ({selectedAlert?.patente})
-              </Typography>
-            </Box>
-            <IconButton 
-              onClick={handleCloseModal} 
-              sx={{ position: "absolute", right: -8, top: -8, color: MUTED }}
-            >
-              <CloseIcon sx={{ fontSize: 20 }} />
-            </IconButton>
-          </Stack>
-
-          <Divider sx={{ mx: -3, mb: 3 }} />
-
-          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2.5, mb: 3 }}>
-            <Box>
-              <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
-                Kilometraje actual
-              </Typography>
-              <TextField
-                fullWidth
-                value={selectedAlert?.kmActual || ""}
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                  sx: { 
-                    bgcolor: "#f1f5f9", 
-                    borderRadius: 2, 
-                    fontWeight: 700,
-                    "& .MuiOutlinedInput-input": { color: TEXT },
-                    "& .MuiOutlinedInput-notchedOutline": { borderColor: BORDER }
-                  }
-                }}
-              />
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
-                Último Servicio
-              </Typography>
-              <TextField
-                fullWidth
-                value={selectedAlert?.ultimoServicio || ""}
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                  sx: { 
-                    bgcolor: "#f1f5f9", 
-                    borderRadius: 2, 
-                    fontWeight: 700,
-                    "& .MuiOutlinedInput-input": { color: TEXT },
-                    "& .MuiOutlinedInput-notchedOutline": { borderColor: BORDER }
-                  }
-                }}
-              />
-            </Box>
-          </Box>
-
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ fontSize: 13, fontWeight: 700, color: TEXT, mb: 1 }}>
-              Proponer Turno
-            </Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2.5 }}>
-              <TextField
-                type="date"
-                fullWidth
-                value={fechaTurno}
-                onChange={(e) => setFechaTurno(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{ sx: { borderRadius: 2 } }}
-              />
-              <TextField
-                select
-                fullWidth
-                value={horaTurno}
-                onChange={(e) => setHoraTurno(e.target.value)}
-                displayEmpty
-                InputProps={{ sx: { borderRadius: 2 } }}
-              >
-                <MenuItem value="" disabled><span style={{ color: MUTED }}>Hora</span></MenuItem>
-                <MenuItem value="08:00">08:00 AM</MenuItem>
-                <MenuItem value="10:00">10:00 AM</MenuItem>
-                <MenuItem value="12:00">12:00 PM</MenuItem>
-                <MenuItem value="14:30">14:30 PM</MenuItem>
-                <MenuItem value="16:00">16:00 PM</MenuItem>
-              </TextField>
-            </Box>
-          </Box>
-
-          <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            <Button 
-              onClick={handleCloseModal}
-              sx={{ color: TEXT, fontWeight: 700, textTransform: "none" }}
-            >
-              Cancelar
-            </Button>
-            <Button 
-              sx={{ ...modalGreenBtn, py: 1 }}
-              onClick={handleProponerTurno}
-            >
-              Confirmar Propuesta
-            </Button>
-          </Stack>
+      {/* Modal */}
+      <Dialog open={Boolean(selectedAlert)} onClose={() => setSelectedAlert(null)} fullWidth maxWidth="xs">
+        <DialogContent>
+          <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Proponer Turno</Typography>
+          <TextField fullWidth margin="normal" label="Vehículo" value={selectedAlert?.vehiculo || ""} InputProps={{ readOnly: true }} />
+          <TextField fullWidth margin="normal" type="date" InputLabelProps={{ shrink: true }} label="Fecha" value={fechaTurno} onChange={(e) => setFechaTurno(e.target.value)} />
+          <Button fullWidth sx={{ ...greenBtn, mt: 3 }} onClick={() => setSelectedAlert(null)}>Confirmar</Button>
         </DialogContent>
       </Dialog>
     </Box>
