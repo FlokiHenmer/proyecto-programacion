@@ -66,82 +66,43 @@ export default function Historial() {
         </Typography>
       </Box>
 
-      {/* Card Principal de la Tabla (Sin la barra de navegación superior eliminada) */}
-      <Card sx={cardSx}>
-        <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
-          <Box sx={{ overflowX: "auto" }}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ bgcolor: "#f8fafc" }}>
-                  {["VEHÍCULO", "FECHA", "SERVICIO REALIZADO", "ENCARGADO"].map((h) => (
-                    <TableCell 
-                      key={h} 
-                      sx={{ 
-                        color: MUTED, 
-                        fontWeight: 700, 
-                        fontSize: 12, 
-                        borderBottom: `1px solid ${BORDER}`,
-                        px: 3,
-                        py: 2
-                      }}
-                    >
-                      {h}
-                    </TableCell>
-                  ))}
+      {/* Card Principal de la Tabla */}
+      <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
+        <Box sx={{ overflowX: "auto" }}>
+          <Table sx={{ minWidth: 600 }}>
+            <TableHead sx={{ bgcolor: "#f8fafc" }}>
+              <TableRow>
+                <TableCell>Fecha</TableCell>
+                <TableCell>Vehículo</TableCell>
+                <TableCell>Servicio</TableCell>
+                <TableCell>Mecánico</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {historialCompleto && historialCompleto.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.fecha}</TableCell>
+                  
+                  {/* CORRECCIÓN AQUÍ: Busca "vehiculo", si no, busca "modelo" */}
+                  <TableCell sx={{ fontWeight: 600 }}>
+                    {row.vehiculo || row.modelo || "N/A"}
+                  </TableCell>
+                  
+                  <TableCell>{row.servicio || "N/A"}</TableCell>
+                  
+                  <TableCell>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Avatar sx={{ width: 24, height: 24, fontSize: 10, bgcolor: "#cbd5e1" }}>
+                        {row.mecanico?.charAt(0)}
+                      </Avatar>
+                      <Typography sx={{ fontSize: 13 }}>{row.mecanico}</Typography>
+                    </Stack>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {historialCompleto.map((row) => (
-                  <TableRow key={row.id} sx={{ "&:hover": { bgcolor: "#f8fafc" } }}>
-                    {/* Vehículo e Identificación */}
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, px: 3, py: 2 }}>
-                      <Stack direction="row" spacing={1.5} alignItems="center">
-                        <Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: "#f1f5f9", display: "grid", placeItems: "center" }}>
-                          <DirectionsCarFilledIcon sx={{ color: MUTED, fontSize: 20 }} />
-                        </Box>
-                        <Box>
-                          <Typography sx={{ fontWeight: 700, fontSize: 14, color: TEXT }}>
-                            {row.vehiculo || row.modelo}
-                          </Typography>
-                          <Typography variant="caption" sx={{ color: MUTED, fontFamily: "monospace", display: "block" }}>
-                            {row.patente}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </TableCell>
-
-                    {/* Fecha */}
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, fontSize: 14, color: TEXT, px: 3 }}>
-                      {row.fecha}
-                    </TableCell>
-
-                    {/* Servicio */}
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, px: 3 }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <BuildIcon sx={{ fontSize: 16, color: MUTED }} />
-                        <Typography sx={{ fontWeight: 600, fontSize: 14, color: TEXT }}>
-                          {row.servicio}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-
-                    {/* Encargado */}
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, px: 3 }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Avatar sx={{ width: 24, height: 24, fontSize: 11, bgcolor: "#cbd5e1", color: TEXT }}>
-                          {row.mecanico.charAt(0)}
-                        </Avatar>
-                        <Typography sx={{ fontSize: 13, fontWeight: 500, color: TEXT }}>
-                          {row.mecanico}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Box>
-        </CardContent>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
       </Card>
 
       {/* Botón "Agregar nuevo trabajo" posicionado abajo de todo */}

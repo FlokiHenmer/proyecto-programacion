@@ -285,68 +285,59 @@ export default function GestionEmpresas() {
         </Button>
       </Box>
 
-      {/* Tabla Contenedora */}
-      <Card sx={{ borderRadius: 3, boxShadow: "none", border: `1px solid ${BORDER}`, overflow: "hidden" }}>
-        <Box sx={{ overflowX: "auto" }}>
-          <Table>
-            <TableHead sx={{ bgcolor: "#f8fafc" }}>
-              <TableRow>
-                {["Empresa", "Gerente Administrador", "Vehículos en Flota", "Estado", "Acciones"].map((h) => (
-                  <TableCell
-                    key={h}
-                    sx={{ color: MUTED, fontWeight: 700, fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", borderBottom: `1px solid ${BORDER}` }}
-                    align={h === "Vehículos en Flota" ? "center" : "left"}
-                  >
-                    {h}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filtradas.map((e) => (
-                <TableRow key={e.id} hover sx={{ "&:last-child td": { borderBottom: 0 } }}>
-                  <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                    <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: 14 }}>{e.razonSocial}</Typography>
-                    <Typography variant="caption" sx={{ color: MUTED }}>CUIT: {e.cuit}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                    <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: 14 }}>{e.gerente}</Typography>
-                    <Typography variant="caption" sx={{ color: MUTED }}>{e.email}</Typography>
-                  </TableCell>
-                  <TableCell align="center" sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                    <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: 15 }}>{e.vehiculos}</Typography>
-                    <Typography variant="caption" sx={{ color: MUTED }}>unidades</Typography>
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                    <EstadoChip estado={e.estado} />
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
-                    <Box sx={{ display: "flex", gap: 0.5 }}>
-                      <Tooltip title="Editar empresa">
-                        <IconButton size="small" onClick={() => handleOpenEdit(e)} sx={{ color: MUTED, "&:hover": { color: TEXT, bgcolor: "#f1f5f9" } }}>
-                          <EditOutlinedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Administrar Cuenta">
-                        <IconButton size="small" onClick={(event) => handleOpenMenu(event, e.id)} sx={{ color: MUTED, "&:hover": { color: TEXT, bgcolor: "#f1f5f9" } }}>
-                          <SettingsOutlinedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filtradas.length === 0 && (
+      {/* Tabla Contenedora Ajustada */}
+        <Card sx={{ borderRadius: 3, boxShadow: "none", border: `1px solid ${BORDER}`, overflow: "hidden" }}>
+          <Box sx={{ overflowX: "auto" }}>
+            <Table sx={{ minWidth: 500 }}> {/* minWidth ajustado para asegurar mejor comportamiento */}
+              <TableHead sx={{ bgcolor: "#f8fafc" }}>
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5, color: MUTED }}>
-                    No se encontraron empresas que coincidan con la búsqueda.
-                  </TableCell>
+                  {["Empresa", "Gerente", "Flota", "Estado", "Acciones"].map((h) => (
+                    <TableCell
+                      key={h}
+                      sx={{ 
+                        color: MUTED, 
+                        fontWeight: 700, 
+                        fontSize: { xs: 10, sm: 11 }, // Fuente reducida en móvil
+                        padding: { xs: "8px 6px", sm: "16px" }, // Padding compacto
+                        textTransform: "uppercase", 
+                        borderBottom: `1px solid ${BORDER}` 
+                      }}
+                      align={h === "Flota" ? "center" : "left"}
+                    >
+                      {h}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Box>
-      </Card>
+              </TableHead>
+              <TableBody>
+                {filtradas.map((e) => (
+                  <TableRow key={e.id} hover sx={{ "&:last-child td": { borderBottom: 0 } }}>
+                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
+                      <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: { xs: 12, sm: 14 } }}>{e.razonSocial}</Typography>
+                      <Typography variant="caption" sx={{ color: MUTED, fontSize: { xs: 10, sm: 12 } }}>{e.cuit}</Typography>
+                    </TableCell>
+                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
+                      <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: { xs: 12, sm: 14 } }}>{e.gerente}</Typography>
+                      <Typography variant="caption" sx={{ color: MUTED, fontSize: { xs: 10, sm: 12 } }}>{e.email.split('@')[0]}...</Typography>
+                    </TableCell>
+                    <TableCell align="center" sx={{ borderBottom: `1px solid ${BORDER}`, padding: "12px 6px" }}>
+                      <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: { xs: 13, sm: 15 } }}>{e.vehiculos}</Typography>
+                    </TableCell>
+                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
+                      <EstadoChip estado={e.estado} />
+                    </TableCell>
+                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: "12px 6px" }}>
+                      <Box sx={{ display: "flex", gap: 0 }}>
+                        <IconButton size="small" onClick={() => handleOpenEdit(e)}><EditOutlinedIcon fontSize="small" /></IconButton>
+                        <IconButton size="small" onClick={(event) => handleOpenMenu(event, e.id)}><SettingsOutlinedIcon fontSize="small" /></IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Card>
 
       {/* MENU CONTEXTUAL PARA LA TUERCA */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} PaperProps={{ sx: { borderRadius: 2, border: `1px solid ${BORDER}`, boxShadow: "0px 4px 12px rgba(0,0,0,0.05)" } }}>

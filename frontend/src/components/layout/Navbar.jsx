@@ -59,7 +59,9 @@ export default function Navbar() {
         >
           <BuildIcon sx={{ fontSize: 18 }} />
         </Box>
-        <Box>
+        
+        {/* Este Box es el que se oculta en móviles para no romper el diseño */}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <Typography sx={{ fontWeight: 900, fontSize: 16, color: TEXT, letterSpacing: 0.5, lineHeight: 1.2 }}>
             PINZA MOTORS
           </Typography>
@@ -68,10 +70,10 @@ export default function Navbar() {
           </Typography>
         </Box>
       </Stack>
-
       {/* Acciones del Perfil + Botón de Salida */}
       <Stack direction="row" spacing={2} alignItems="center">
-        {/* Badge del Usuario Activo */}
+        
+        {/* Badge del Usuario Activo - RESPONSIVE */}
         <Stack
           direction="row"
           spacing={1}
@@ -81,7 +83,7 @@ export default function Navbar() {
             bgcolor: "#fff",
             borderRadius: 999,
             pl: 0.5,
-            pr: 3,
+            pr: { xs: 1.5, sm: 3 }, // Se achica en móvil
             py: 0.5,
             boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
           }}
@@ -89,7 +91,8 @@ export default function Navbar() {
           <Avatar sx={{ width: 32, height: 32, bgcolor: "#f1f5f9", color: TEXT, fontSize: 14, fontWeight: 700 }}>
             {inicialAvatar}
           </Avatar>
-          <Box>
+          {/* Oculto en móvil (xs), visible en pantallas medianas (sm) */}
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Typography sx={{ fontSize: 13, fontWeight: 700, lineHeight: 1.5 }}>
               {nombreAMostrar}
             </Typography>
@@ -97,7 +100,7 @@ export default function Navbar() {
           </Box>
         </Stack>
 
-        {/* Botón rápido de Logout */}
+        {/* Botón rápido de Logout - RESPONSIVE */}
         <Button
           variant="outlined"
           color="error"
@@ -110,16 +113,11 @@ export default function Navbar() {
             fontWeight: 700,
             fontSize: 13,
             border: `1px solid ${BORDER}`,
-            color: red,
-            px: 2,
-            "&:hover": {
-              bgcolor: "#fcfcfc",
-              borderColor: "#d63030",
-              color: "#e22424",
-            },
+            px: { xs: 1, sm: 2 }, // Menos padding en móvil
           }}
         >
-          Salir
+          {/* Ocultamos el texto "Salir" en móvil muy pequeño */}
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>Salir</Box>
         </Button>
       </Stack>
     </Box>
