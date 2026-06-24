@@ -138,9 +138,10 @@ export default function Calendario() {
       }}>
         
         {/* Sección Calendario */}
-        {/* Calendario con Scroll */}
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="h6" sx={{ mb: 1.5 }}>Vista Mensual</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
+            Vista Mensual
+          </Typography>
           <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -194,6 +195,9 @@ export default function Calendario() {
 
       {/* Tabla inferior de turnos */}
       <Box sx={{ overflowX: "auto" }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
+          Lista de Turnos
+        </Typography>
         <Table sx={{ minWidth: 600 }}> {/* minWidth asegura que la tabla se mantenga legible */}
           <TableHead>
             <TableRow sx={{ bgcolor: "#f8fafc" }}>
