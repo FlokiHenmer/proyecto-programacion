@@ -84,8 +84,16 @@ export default function Historial() {
                   <TableCell>{row.fecha}</TableCell>
                   
                   {/* CORRECCIÓN AQUÍ: Busca "vehiculo", si no, busca "modelo" */}
-                  <TableCell sx={{ fontWeight: 600 }}>
-                    {row.vehiculo || row.modelo || "N/A"}
+                  <TableCell>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      {/* Icono del auto */}
+                      <DirectionsCarFilledIcon sx={{ color: MUTED, fontSize: 18 }} />
+                      
+                      {/* Nombre del vehículo */}
+                      <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
+                        {row.vehiculo || row.modelo || "N/A"}
+                      </Typography>
+                    </Stack>
                   </TableCell>
                   
                   <TableCell>{row.servicio || "N/A"}</TableCell>

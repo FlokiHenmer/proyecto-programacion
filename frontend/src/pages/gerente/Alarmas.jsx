@@ -44,12 +44,25 @@ function KpiCard({ title, value, unit, icon, accent }) {
     <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box>
-            <Typography sx={{ color: MUTED, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>{title}</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 800, color: TEXT }}>{value}</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 11 }}>{unit}</Typography>
+          
+          {/* Contenedor de Texto: le damos flexGrow 1 para que tome todo el espacio posible */}
+          <Box sx={{ flexGrow: 1, mr: 2 }}> 
+            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>
+              {title}
+            </Typography>
+            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5 }}>
+              {value}
+            </Typography>
+            <Typography sx={{ color: MUTED, fontSize: 12 }}>
+              {unit}
+            </Typography>
           </Box>
-          <Box sx={{ color: accent, bgcolor: BG, p: 1, borderRadius: 2 }}>{icon}</Box>
+
+          {/* Contenedor del Icono: flexShrink 0 asegura que el icono no se encoja */}
+          <Box sx={{ color: accent, p: 1, borderRadius: 2, bgcolor: BG, border: `0px solid ${BORDER}`, flexShrink: 0 }}>
+            {icon}
+          </Box>
+
         </Stack>
       </CardContent>
     </Card>

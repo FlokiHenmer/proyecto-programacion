@@ -95,6 +95,7 @@ export default function HistorialGerente() {
       return true;
     });
   }, [search, tipo, desde, hasta]);
+  
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: BG, minHeight: "100vh" }}>
       <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
@@ -186,25 +187,9 @@ export default function HistorialGerente() {
                   <TableRow key={r.id} hover>
                     <TableCell sx={{ color: TEXT, fontWeight: 500 }}>{r.fecha}</TableCell>
                     <TableCell>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Box
-                          sx={{
-                            width: 38,
-                            height: 38,
-                            borderRadius: 1.5,
-                            bgcolor: "#f1f5f9",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: TEXT,
-                          }}
-                        >
-                          <LocalShippingIcon sx={{ fontSize: 18 }} />
-                        </Box>
-                        <Typography sx={{ fontWeight: 500, color: TEXT, fontSize: 14 }}>
-                          {r.vehiculo}
-                        </Typography>
-                      </Stack>
+                      <Typography sx={{ fontWeight: 500, color: TEXT, fontSize: 14 }}>
+                        {r.vehiculo}
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <TipoChip tipo={r.tipo} />
@@ -275,12 +260,12 @@ export default function HistorialGerente() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSelected(null)} sx={{ color: TEXT }}>
+          <Button onClick={() => setSelected(null)} sx={{ color: TEXT, fontWeight: 600, textTransform: "none" }}>
             Cerrar
           </Button>
           <Button 
           variant="contained"
-          sx={{ bgcolor: GREEN, color: "#000", fontWeight: 500, "&:hover": { bgcolor: "#36d629" } }}
+          sx={{ bgcolor: GREEN, color: "#000", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#36d629" } }}
           >
             Descargar PDF
           </Button>
