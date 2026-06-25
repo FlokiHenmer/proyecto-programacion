@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Box, IconButton, Drawer, useMediaQuery, useTheme, Typography, Divider, List, ListItemButton, ListItemIcon, ListItemText, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, Chip, Stack } from "@mui/material";
+import { 
+  Box, IconButton, Drawer, useMediaQuery, useTheme, Typography, Divider, 
+  ListItemButton, ListItemIcon, ListItemText, Card, CardContent, Table, 
+  TableBody, TableCell, TableHead, TableRow, Chip, Stack 
+} from "@mui/material";
+
+// Iconos
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -8,86 +14,158 @@ import BusinessIcon from "@mui/icons-material/Business";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import HistoryIcon from "@mui/icons-material/History";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import SpeedIcon from "@mui/icons-material/Speed";
+
+// Componentes de Layout y Vistas
 import Navbar from "../../components/layout/Navbar";
 import Alarmas from "./Alarmas";
 import Calendario from "./Calendario";
 import Historial from "./Historial";
 import GestionEmpresa from "./GestionEmpresa";
 
-// --- CONSTANTES DE ESTILO COMPARTIDAS ---
+// --- CONSTANTES ---
 const GREEN = "#44FF34";
 const BORDER = "#e5e7eb";
 const TEXT = "#0f172a";
 const MUTED = "#64748b";
-const SIDEBAR_WIDTH = 240;
+const BG = "#f8fafc";
+const cardSx = { borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff" };
 
-const cardSx = {
-  borderRadius: 3,
-  border: `1px solid ${BORDER}`,
-  boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
+// --- DATOS DEL GERENTE ---
+const kpis = [
+  { title: "Total Vehículos Activos", value: "128", unit: "unidades", icon: <DirectionsCarIcon />, accent: GREEN },
+  { title: "Costos Mantenimiento", value: "$ 1.2M", unit: "ARS / mes", icon: <AttachMoneyIcon />, accent: "#f59e0b" },
+  { title: "Productividad Taller", value: "87%", unit: "eficiencia", icon: <SpeedIcon />, accent: "#22c55e" },
+  { title: "Alertas Críticas", value: "5", unit: "requieren acción", icon: <WarningAmberIcon sx={{ color: "#dc2626" }} />, accent: "#dc2626" },
+];
+
+const serviciosPorMes = [
+  { mes: "Ene", value: 32 }, { mes: "Feb", value: 41 }, { mes: "Mar", value: 28 }, { mes: "Abr", value: 55 },
+  { mes: "May", value: 47 }, { mes: "Jun", value: 63 }, { mes: "Jul", value: 58 }, { mes: "Ago", value: 72 },
+  { mes: "Sep", value: 49 }, { mes: "Oct", value: 66 }, { mes: "Nov", value: 54 }, { mes: "Dic", value: 38 },
+];
+
+const mantenimientosPendientes = [
+  { vehiculo: "Scania R450 (AB123CD)", tipo: "Service 100k", prioridad: "Alta" },
+  { vehiculo: "Mercedes Actros (XY789ZT)", tipo: "Frenos", prioridad: "Media" },
+  { vehiculo: "Iveco Stralis (LM456OP)", tipo: "Cambio Aceite", prioridad: "Alta" },
+];
+
+const getPrioridadColor = (prioridad) => {
+  switch (prioridad) {
+    case "Alta": return { bg: "#fee2e2", color: "#b91c1c" };
+    case "Media": return { bg: "#fef3c7", color: "#92400e" };
+    default: return { bg: "#dcfce7", color: "#166534" };
+  }
 };
 
-// --- COMPONENTES INTERNOS ---
+// --- COMPONENTES VISUALES ---
 function KpiCard({ title, value, unit, icon, accent }) {
   return (
     <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
       <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Box>
-            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700 }}>{title}</Typography>
-            <Typography sx={{ fontSize: 26, fontWeight: 800, color: TEXT, mt: 0.5 }}>{value}</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 12 }}>{unit}</Typography>
+        {/* Usamos alignItems="center" para centrar el icono y texto verticalmente */}
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          
+          {/* Contenedor de Texto: flexGrow: 1 hace que tome el espacio disponible, empujando al icono a la derecha */}
+          <Box sx={{ flexGrow: 1, mr: 2 }}>
+            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>
+              {title}
+            </Typography>
+            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5 }}>
+              {value}
+            </Typography>
+            <Typography sx={{ color: MUTED, fontSize: 12 }}>
+              {unit}
+            </Typography>
           </Box>
-          <Box sx={{ p: 1, borderRadius: 2, bgcolor: "#f8fafc", border: `1px solid ${BORDER}` }}>
+
+          {/* Contenedor del Icono: flexShrink: 0 asegura que nunca se comprima */}
+          <Box sx={{ 
+            color: accent, 
+            p: 1, 
+            borderRadius: 2, 
+            bgcolor: BG, 
+            border: `0px solid ${BORDER}`, 
+            flexShrink: 0,
+            display: "flex", // Para asegurar que el icono dentro esté centrado
+          }}>
             {icon}
           </Box>
+          
         </Stack>
       </CardContent>
     </Card>
   );
 }
 
-function PrioridadChip({ value }) {
-  const map = { Alta: { bg: "#fee2e2", color: "#b91c1c" }, Media: { bg: "#fef3c7", color: "#92400e" }, Baja: { bg: "#dcfce7", color: "#166534" } };
-  const s = map[value] || map.Baja;
-  return <Chip label={value} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 700, fontSize: 11 }} />;
-}
 
-function VistaInicio() {
+
+function BarChart({ data }) {
+  const max = Math.max(...data.map(d => d.value));
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(4, 1fr)" }, gap: 2 }}>
-        <KpiCard title="Vehículos" value="128" unit="activos" accent={GREEN} icon={<BusinessIcon />} />
-        <KpiCard title="Costos" value="$1.2M" unit="ARS/mes" accent="#0ea5e9" icon={<BusinessIcon />} />
-        <KpiCard title="Productividad" value="87%" unit="eficiencia" accent="#22c55e" icon={<DashboardIcon />} />
-        <KpiCard title="Alertas" value="5" unit="críticas" accent="#dc2626" icon={<WarningAmberIcon />} />
-      </Box>
-      <Card sx={cardSx}>
-        <CardContent>
-          <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Próximos Vencimientos</Typography>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700, color: MUTED }}>VEHÍCULO</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: MUTED }}>TIPO</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: MUTED }}>PRIORIDAD</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 600 }}>Scania R450</TableCell>
-                <TableCell>VTV</TableCell>
-                <TableCell><PrioridadChip value="Alta" /></TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+    <Box sx={{ display: "flex", alignItems: "flex-end", gap: { xs: 1, md: 2 }, height: 160, mt: 3, pb: 1, px: 1 }}>
+      {data.map(d => (
+        <Box key={d.mes} sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
+          <Box sx={{ 
+            width: "100%", maxWidth: 24, 
+            // Aseguramos una altura mínima para que sean visibles
+            height: `${Math.max((d.value / max) * 100, 10)}%`, 
+            bgcolor: "#569cf1f1", 
+            borderRadius: "4px 4px 0 0" 
+          }} />
+          <Typography sx={{ fontSize: 10, mt: 1, color: MUTED, fontWeight: 600 }}>{d.mes}</Typography>
+        </Box>
+      ))}
     </Box>
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
+function VistaInicio() {
+  return (
+    <Stack spacing={3}>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2 }}>
+        {kpis.map((k) => <KpiCard key={k.title} {...k} />)}
+      </Box>
+      
+      {/* Gráfico */}
+      <Card sx={cardSx}>
+        <CardContent>
+          <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Servicios por Mes</Typography>
+          <BarChart data={serviciosPorMes} />
+        </CardContent>
+      </Card>
+
+      <Card sx={cardSx}>
+        <CardContent>
+          <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Mantenimientos Pendientes</Typography>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>VEHÍCULO</TableCell>
+                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>TIPO</TableCell>
+                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>PRIORIDAD</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {mantenimientosPendientes.map((r, i) => (
+                <TableRow key={i}>
+                  <TableCell>{r.vehiculo}</TableCell>
+                  <TableCell>{r.tipo}</TableCell>
+                  <TableCell><Chip label={r.prioridad} sx={{ bgcolor: getPrioridadColor(r.prioridad).bg, color: getPrioridadColor(r.prioridad).color }} /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </Stack>
+  );
+}
+
+// --- ESTRUCTURA PRINCIPAL (SIDEBAR + ROUTER) ---
 export default function DashboardGerente() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
@@ -103,38 +181,33 @@ export default function DashboardGerente() {
     { label: "Historial", icon: <HistoryIcon />, path: "/gerente/historial" },
   ];
 
-  const titulosSecciones = {
-    "/gerente": "Dashboard",
-    "/gerente/gestion-empresa": "Gestión de Empresa",
-    "/gerente/alarmas": "Alertas y Notificaciones",
-    "/gerente/calendario": "Agenda y Calendario",
-    "/gerente/historial": "Historial de Trabajos",
-  };
-  const tituloActual = titulosSecciones[location.pathname] || "Operativa Vehicular";
   const handleNavigate = (path) => {
     navigate(path);
     setMobileOpen(false);
   };
 
+  const currentItem = sidebarItems.find(item => location.pathname === item.path) || sidebarItems[0];
+
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f5f3ff", p: { xs: 1.5, md: 3 } }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG, p: { xs: 1, md: 3 } }}>
       <Box sx={{ maxWidth: 1280, mx: "auto" }}>
         <Navbar />
-        <Box sx={{ bgcolor: "#fff", borderRadius: 4, border: `1px solid ${BORDER}`, display: "grid", gridTemplateColumns: { xs: "1fr", md: `${SIDEBAR_WIDTH}px 1fr` }, overflow: "hidden", minHeight: 760 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { md: "240px 1fr" }, bgcolor: "#fff", borderRadius: 4, overflow: "hidden", border: `1px solid ${BORDER}`, minHeight: 700 }}>
+          
           {isDesktop ? (
-            <SidebarContent items={sidebarItems} currentPath={location.pathname} onNavigate={navigate} />
+            <SidebarContent items={sidebarItems} currentPath={location.pathname} onNavigate={handleNavigate} />
           ) : (
-            <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} sx={{ "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH } }}>
-              <SidebarContent items={sidebarItems} currentPath={location.pathname} onNavigate={navigate} />
+            <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} sx={{ "& .MuiDrawer-paper": { width: 240 } }}>
+              <SidebarContent items={sidebarItems} currentPath={location.pathname} onNavigate={handleNavigate} />
             </Drawer>
           )}
-          <Box sx={{ p: 3, minWidth: 0 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+
+          <Box sx={{ p: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
               {!isDesktop && <IconButton onClick={() => setMobileOpen(true)}><MenuIcon /></IconButton>}
-              <Typography sx={{ fontSize: { xs: 20, md: 24 }, fontWeight: 800, color: TEXT, flex: 1, minWidth: 0 }}>
-                  {tituloActual}
-                </Typography>
+              <Typography sx={{ fontSize: 24, fontWeight: 800 }}>{currentItem.label}</Typography>
             </Box>
+            
             <Routes>
               <Route path="/" element={<VistaInicio />} />
               <Route path="gestion-empresa" element={<GestionEmpresa />} />
@@ -151,26 +224,14 @@ export default function DashboardGerente() {
 
 function SidebarContent({ items, currentPath, onNavigate }) {
   return (
-    <Box sx={{ p: 2, borderRight: `1px solid ${BORDER}` }}>
-      <Box sx={{ px: 1, pb: 2 }}>
-              <Typography sx={{ fontWeight: 800, color: TEXT, fontSize: 16 }}>
-                Gerencia
-              </Typography>
-              <Typography sx={{ color: MUTED, fontSize: 13 }}>Panel de gestion</Typography>
-      </Box>
-      <Divider sx={{ mb: 1 }} />
-      {items.map((it) => {
-        const isActive = currentPath === it.path;
-        return (
-          <ListItemButton key={it.label} onClick={() => onNavigate(it.path)} sx={{ 
-            borderRadius: 2, mb: 0.5, 
-            ...(isActive && { bgcolor: GREEN, color: "#06210a", "&:hover": { bgcolor: "#22cc15" } })
-          }}>
-            <ListItemIcon sx={{ color: isActive ? "#06210a" : MUTED }}>{it.icon}</ListItemIcon>
-            <ListItemText primary={it.label} primaryTypographyProps={{ fontWeight: isActive ? 700 : 500 }} />
-          </ListItemButton>
-        );
-      })}
+    <Box sx={{ p: 2, borderRight: `1px solid ${BORDER}`, height: "100%" }}>
+      <Typography sx={{ fontWeight: 800, mb: 2, px: 1 }}>Gerencia</Typography>
+      {items.map((it) => (
+        <ListItemButton key={it.path} onClick={() => onNavigate(it.path)} sx={{ borderRadius: 2, bgcolor: currentPath === it.path ? GREEN : "transparent" }}>
+          <ListItemIcon>{it.icon}</ListItemIcon>
+          <ListItemText primary={it.label} />
+        </ListItemButton>
+      ))}
     </Box>
   );
 }
