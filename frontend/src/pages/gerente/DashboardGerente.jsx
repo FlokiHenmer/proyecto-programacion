@@ -225,7 +225,12 @@ export default function DashboardGerente() {
 function SidebarContent({ items, currentPath, onNavigate }) {
   return (
     <Box sx={{ p: 2, borderRight: `1px solid ${BORDER}`, height: "100%" }}>
-      <Typography sx={{ fontWeight: 800, mb: 2, px: 1 }}>Gerencia</Typography>
+      <Box sx={{ px: 1, pb: 2 }}>
+        <Typography sx={{ fontWeight: 800, color: TEXT, fontSize: 16 }}>
+          Gerencia
+        </Typography>
+        <Typography sx={{ color: MUTED, fontSize: 13 }}>Panel de Gestión</Typography>
+      </Box>
       {items.map((it) => (
         <ListItemButton key={it.path} onClick={() => onNavigate(it.path)} sx={{ borderRadius: 2, bgcolor: currentPath === it.path ? GREEN : "transparent" }}>
           <ListItemIcon>{it.icon}</ListItemIcon>
