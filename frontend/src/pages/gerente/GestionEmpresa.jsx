@@ -77,17 +77,33 @@ const blueBtn = {
 function KpiCard({ title, value, unit, icon, accent }) {
   return (
     <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
-      <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box sx={{ flexGrow: 1, mr: 2 }}>
-            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>{title}</Typography>
-            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5, color: TEXT }}>{value}</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 12 }}>{unit}</Typography>
-          </Box>
-          <Box sx={{ color: accent, p: 1, borderRadius: 2, bgcolor: BG, flexShrink: 0 }}>
-            {icon}
-          </Box>
-        </Stack>
+      <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 2 }}>
+        {/* Contenedor del icono (estilo Dashboard) */}
+        <Box sx={{ 
+          width: 44, 
+          height: 44, 
+          borderRadius: 2, 
+          display: "grid", 
+          placeItems: "center", 
+          bgcolor: BG, 
+          color: accent,
+          flexShrink: 0 // Asegura que el icono no se deforme
+        }}>
+          {icon}
+        </Box>
+        
+        {/* Contenido de texto */}
+        <Box>
+          <Typography sx={{ color: MUTED, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
+            {title}
+          </Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.2, color: TEXT }}>
+            {value}
+          </Typography>
+          <Typography sx={{ color: MUTED, fontSize: 12 }}>
+            {unit}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );
@@ -179,7 +195,12 @@ export default function GestionGerente() {
           </Box>
         </Stack>
 
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, gap: 2, mb: 4 }}>
+        <Box sx={{ 
+          display: "grid", 
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, 
+          gap: 2, 
+          mb: 4 
+        }}>
           <KpiCard title="Operarios Activos" value={operarios.filter(o => o.estado === "activo").length} unit="trabajando hoy" icon={<GroupIcon />} accent={BLUE} />
           <KpiCard title="Operarios Inactivos" value={operarios.filter(o => o.estado === "inactivo").length} unit="en descanso" icon={<ErrorIcon />} accent={RED} />
           <KpiCard title="Vehículos Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={YELLOW} />
@@ -208,24 +229,43 @@ export default function GestionGerente() {
            
             <List disablePadding>
               {operarios.map((o, index) => (
-                <ListItem key={index} divider={index !== operarios.length - 1} sx={{ px: 0 }}>
+                <ListItem 
+                  key={index} 
+                  divider={index !== operarios.length - 1} 
+                  sx={{ py: 1.5, pr: 6, alignItems: 'flex-start' }} // alignItems flex-start ayuda a que si el contenido crece, no se corte
+                >
                   <ListItemAvatar>
                     <Avatar sx={{ bgcolor: o.estado === "activo" ? GREEN : GRAY }}>
                       {o.nombre.charAt(0)}
                     </Avatar>
                   </ListItemAvatar>
+                  
                   <ListItemText
-                    primary={<Typography sx={{ fontWeight: 700 }}>{o.nombre}</Typography>}
+                    primary={
+                      <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
+                        {o.nombre}
+                      </Typography>
+                    }
                     secondary={
-                      <Stack direction="row" spacing={2} sx={{ mt: 0.5 }}>
-                        <Typography sx={{ fontSize: 12 }}>{o.rol}</Typography>
+                      /* Usamos Box con flexWrap para asegurar que todo el contenido fluya */
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                        <Typography sx={{ fontSize: 12, color: MUTED }}>{o.rol}</Typography>
                         <Typography sx={{ fontSize: 12, color: MUTED }}>• {o.email}</Typography>
-                        <Chip label={o.estado} size="small" sx={{ height: 20, fontSize: 10, bgcolor: o.estado === "activo" ? "#dcfce7" : "#f1f5f9", color: o.estado === "activo" ? "#166534" : "#475569" }} />
-                      </Stack>
+                        <Chip 
+                          label={o.estado} 
+                          size="small" 
+                          sx={{ 
+                            height: 18, fontSize: 10, 
+                            bgcolor: o.estado === "activo" ? "#dcfce7" : "#f1f5f9", 
+                            color: o.estado === "activo" ? "#166534" : "#475569" 
+                          }} 
+                        />
+                      </Box>
                     }
                   />
+                  
                   <ListItemSecondaryAction>
-                    <IconButton onClick={(e) => handleMenuOpen(e, index)}>
+                    <IconButton onClick={(e) => handleMenuOpen(e, index)} edge="end">
                       <EditIcon fontSize="small" />
                     </IconButton>
                   </ListItemSecondaryAction>
@@ -264,36 +304,72 @@ export default function GestionGerente() {
                   sx={{ minWidth: { xs: "100%", sm: 240 } }}
                 />
               </Stack>
+
               <Box sx={{ overflowX: "auto" }}>
-                <Table size="small" sx={{ minWidth: 560 }}>
+                {/* Mantenemos el minWidth para asegurar el scroll horizontal en pantallas muy estrechas */}
+                <Table size="small" sx={{ minWidth: 500 }}>
                   <TableHead>
                     <TableRow>
                       {["VEHÍCULO", "ÚLTIMA REVISIÓN", "ESTADO"].map((h) => (
-                        <TableCell key={h} sx={{ fontWeight: 700, color: MUTED, fontSize: 12, letterSpacing: 0.5 }}>{h}</TableCell>
+                        <TableCell 
+                          key={h} 
+                          sx={{ 
+                            fontWeight: 700, 
+                            color: MUTED, 
+                            fontSize: { xs: 10, md: 12 }, // Fuente más pequeña en móvil
+                            px: { xs: 1, md: 2 },        // Padding más compacto
+                            letterSpacing: 0.5 
+                          }}
+                        >
+                          {h}
+                        </TableCell>
                       ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {vehiculosFiltrados.map((v) => (
                       <TableRow key={v.patente}>
-                        <TableCell>
-                          <Stack direction="row" spacing={1.5} alignItems="center">
-                            <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: BG, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <DirectionsCarIcon sx={{ color: TEXT, fontSize: 20 }} />
+                        {/* Columna de Vehículo con padding ajustado */}
+                        <TableCell sx={{ px: { xs: 1, md: 2 }, py: 1 }}>
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            {/* Icono (tamaño ligeramente reducido en móvil) */}
+                            <Box sx={{ 
+                              width: { xs: 30, md: 36 }, 
+                              height: { xs: 30, md: 36 }, 
+                              borderRadius: 2, 
+                              bgcolor: BG, 
+                              border: `1px solid ${BORDER}`, 
+                              display: "flex", 
+                              alignItems: "center", 
+                              justifyContent: "center",
+                              flexShrink: 0
+                            }}>
+                              <DirectionsCarIcon sx={{ color: TEXT, fontSize: { xs: 16, md: 20 } }} />
                             </Box>
                             <Box>
-                              <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: 14 }}>{v.modelo}</Typography>
-                              <Typography sx={{ color: MUTED, fontSize: 12 }}>{v.patente}</Typography>
+                              <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: { xs: 12, md: 14 } }}>
+                                {v.modelo}
+                              </Typography>
+                              <Typography sx={{ color: MUTED, fontSize: { xs: 10, md: 12 } }}>
+                                {v.patente}
+                              </Typography>
                             </Box>
                           </Stack>
                         </TableCell>
-                        <TableCell sx={{ color: TEXT, fontSize: 13 }}>{v.revision}</TableCell>
-                        <TableCell><EstadoChip value={v.estado} /></TableCell>
+                        
+                        <TableCell sx={{ color: TEXT, fontSize: { xs: 11, md: 13 }, px: { xs: 1, md: 2 } }}>
+                          {v.revision}
+                        </TableCell>
+                        
+                        <TableCell sx={{ px: { xs: 1, md: 2 } }}>
+                          <EstadoChip value={v.estado} />
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </Box>
+
             </CardContent>
           </Card>
 
