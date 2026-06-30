@@ -222,12 +222,26 @@ export default function CalendarioGerente() {
         <Card sx={cardSx}>
           <CardContent>
 
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2, width: '100%' }}>
+            {/* 1. NAVEGACIÓN CENTRADA */}
+            <Box sx={{ 
+              display: "grid", 
+              gridTemplateColumns: "auto 1fr auto", // <-- ESTO es lo que centra el título
+              alignItems: "center", 
+              mb: 2, 
+              width: '100%' 
+            }}>
+              
               <IconButton onClick={() => navigate(-1)} sx={{ border: `1px solid ${BORDER}`, borderRadius: 1.5 }}>
                 <ChevronLeftIcon />
               </IconButton>
-              
-              <Typography sx={{ fontWeight: 800, color: TITLE, fontSize: 18 }}>
+
+              <Typography sx={{ 
+                fontWeight: 800, 
+                color: TITLE, 
+                fontSize: 18, 
+                textAlign: 'center', // Asegura que el texto esté centrado en su columna
+                px: 1                // Un poco de margen para que no choque con los botones
+              }}>
                 {view === "month" 
                   ? `${MESES[cursor.getMonth()]} ${cursor.getFullYear()}` 
                   : `Semana del ${weekDays[0].getDate()} ${MESES[weekDays[0].getMonth()].slice(0, 3)}.`}
@@ -236,80 +250,91 @@ export default function CalendarioGerente() {
               <IconButton onClick={() => navigate(1)} sx={{ border: `1px solid ${BORDER}`, borderRadius: 1.5 }}>
                 <ChevronRightIcon />
               </IconButton>
-            </Stack>
-            
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1, mb: 1 }}>
-              {DIAS.map((d) => (<Typography key={d} sx={{ color: MUTED, fontWeight: 700, fontSize: 12, textAlign: "center", textTransform: "uppercase" }}>{d}</Typography>))}
             </Box>
 
-            {view === "month" ? (
-              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1 }}>
-                {grid.map((cell, i) => {
-                  const evs = eventsByDay.get(toISO(cell.date)) || [];
-                  const isToday = sameDay(cell.date, today);
-                  const isSelected = sameDay(cell.date, selectedDay);
-                  return (
-                    <Box
-                      key={i}
-                      onClick={() => setSelectedDay(cell.date)}
-                      sx={{
-                        cursor: "pointer",
-                        height: 120,           // <--- ESTO ES LO QUE IGUALA LAS CELDAS (fija la altura)
-                        p: 0.75,
-                        borderRadius: 2,
-                        border: `1px solid ${isSelected ? GREEN : BORDER}`,
-                        bgcolor: cell.out ? "#fafafa" : "#fff",
-                        opacity: cell.out ? 0.5 : 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 0.5,
-                        overflow: "hidden",     // <--- ESTO EVITA QUE EL CONTENIDO ROMPA LA CÉLULA
-                        transition: "all .15s",
-                        "&:hover": { borderColor: GREEN, bgcolor: "#f8fafc" },
-                      }}
-                    >
-                      <Box sx={{ alignSelf: "flex-end", fontSize: 12, fontWeight: 700, color: isToday ? "#000" : TEXT, bgcolor: isToday ? GREEN : "transparent", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        {cell.date.getDate()}
+            {/* 2. GRID UNIFICADO: Aquí ocurre la magia del responsive */}
+            <Box sx={{ overflowX: "auto", width: "100%", pb: 2 }}>
+              <Box sx={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(7, 1fr)", // Garantiza 7 columnas perfectas
+                minWidth: { xs: 600, md: "100%" },    // Fuerza el scroll en móvil y ocupa 100% en PC
+                gap: 0.5 
+              }}>
+                
+                {/* A. ENCABEZADO (Lun, Mar, Mie...) */}
+                {DIAS.map((d) => (
+                  <Typography key={d} sx={{ color: MUTED, fontWeight: 700, fontSize: 12, textAlign: "center", textTransform: "uppercase" }}>
+                    {d}
+                  </Typography>
+                ))}
+
+                {/* B. CUERPO (Mes o Semana) */}
+                {view === "month" ? (
+                  grid.map((cell, i) => {
+                    const evs = eventsByDay.get(toISO(cell.date)) || [];
+                    const isToday = sameDay(cell.date, today);
+                    const isSelected = sameDay(cell.date, selectedDay);
+                    return (
+                      <Box
+                        key={i}
+                        onClick={() => setSelectedDay(cell.date)}
+                        sx={{
+                          cursor: "pointer",
+                          height: 120,
+                          p: 0.75,
+                          borderRadius: 2,
+                          border: `1px solid ${isSelected ? GREEN : BORDER}`,
+                          bgcolor: cell.out ? "#fafafa" : "#fff",
+                          opacity: cell.out ? 0.5 : 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.5,
+                          overflow: "hidden",
+                          transition: "all .15s",
+                          "&:hover": { borderColor: GREEN, bgcolor: "#f8fafc" },
+                        }}
+                      >
+                        <Box sx={{ alignSelf: "flex-end", fontSize: 12, fontWeight: 700, color: isToday ? "#000" : TEXT, bgcolor: isToday ? GREEN : "transparent", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          {cell.date.getDate()}
+                        </Box>
+                        <Stack spacing={0.3} sx={{ overflow: "hidden" }}>
+                          {evs.slice(0, isMobile ? 1 : 2).map((e) => (
+                            <Tooltip key={e.id} title={`${e.hora} · ${e.titulo}`}>
+                              <Box onClick={(ev) => { ev.stopPropagation(); openEdit(e); }} sx={{ fontSize: 10.5, px: 0.6, py: 0.2, borderRadius: 0.8, bgcolor: tipoMeta(e.tipo).bg, color: tipoMeta(e.tipo).color, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {e.titulo}
+                              </Box>
+                            </Tooltip>
+                          ))}
+                        </Stack>
                       </Box>
-                      <Stack spacing={0.3} sx={{ overflow: "hidden" }}>
-                        {evs.slice(0, isMobile ? 1 : 2).map((e) => (
-                          <Tooltip key={e.id} title={`${e.hora} · ${e.titulo}`}>
-                            <Box onClick={(ev) => { ev.stopPropagation(); openEdit(e); }} sx={{ fontSize: 10.5, px: 0.6, py: 0.2, borderRadius: 0.8, bgcolor: tipoMeta(e.tipo).bg, color: tipoMeta(e.tipo).color, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {e.titulo}
+                    );
+                  })
+                ) : (
+                  weekDays.map((d, i) => {
+                    const evs = eventsByDay.get(toISO(d)) || [];
+                    const isToday = sameDay(d, today);
+                    const isSelected = sameDay(d, selectedDay);
+                    return (
+                      <Box key={i} onClick={() => setSelectedDay(d)} sx={{ cursor: "pointer", minHeight: 220, p: 1, borderRadius: 2, border: `1px solid ${isSelected ? GREEN : BORDER}`, bgcolor: "#fff", display: "flex", flexDirection: "column", gap: 0.5 }}>
+                        {/* Aquí eliminamos el Typography del nombre del día */}
+                        <Box sx={{ alignSelf: "flex-end", fontSize: 12, fontWeight: 800, color: isToday ? "#000" : TEXT, bgcolor: isToday ? GREEN : "transparent", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          {d.getDate()}
+                        </Box>
+                        <Divider />
+                        <Stack spacing={0.5} sx={{ overflow: "auto" }}>
+                          {evs.map((e) => (
+                            <Box key={e.id} onClick={(ev) => { ev.stopPropagation(); openEdit(e); }} sx={{ p: 0.6, borderRadius: 1, bgcolor: tipoMeta(e.tipo).bg, color: tipoMeta(e.tipo).color, borderLeft: `3px solid ${tipoMeta(e.tipo).color}`, cursor: "pointer" }}>
+                              <Typography sx={{ fontSize: 11, fontWeight: 800 }}>{e.hora}</Typography>
+                              <Typography sx={{ fontSize: 11, fontWeight: 700 }}>{e.titulo}</Typography>
                             </Box>
-                          </Tooltip>
-                        ))}
-                      </Stack>
-                    </Box>
-                  );
-                })}
+                          ))}
+                        </Stack>
+                      </Box>
+                    );
+                  })
+                )}
               </Box>
-            ) : (
-              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1 }}>
-                {weekDays.map((d, i) => {
-                  const evs = eventsByDay.get(toISO(d)) || [];
-                  const isToday = sameDay(d, today);
-                  const isSelected = sameDay(d, selectedDay);
-                  return (
-                    <Box key={i} onClick={() => setSelectedDay(d)} sx={{ cursor: "pointer", minHeight: 220, p: 1, borderRadius: 2, border: `1px solid ${isSelected ? GREEN : BORDER}`, bgcolor: "#fff", display: "flex", flexDirection: "column", gap: 0.5 }}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography sx={{ fontSize: 11, color: MUTED, fontWeight: 700 }}>{DIAS[i]}</Typography>
-                        <Box sx={{ fontSize: 12, fontWeight: 800, color: isToday ? "#000" : TEXT, bgcolor: isToday ? GREEN : "transparent", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{d.getDate()}</Box>
-                      </Stack>
-                      <Divider />
-                      <Stack spacing={0.5} sx={{ overflow: "auto" }}>
-                        {evs.map((e) => (
-                          <Box key={e.id} onClick={(ev) => { ev.stopPropagation(); openEdit(e); }} sx={{ p: 0.6, borderRadius: 1, bgcolor: tipoMeta(e.tipo).bg, color: tipoMeta(e.tipo).color, borderLeft: `3px solid ${tipoMeta(e.tipo).color}`, cursor: "pointer" }}>
-                            <Typography sx={{ fontSize: 11, fontWeight: 800 }}>{e.hora}</Typography>
-                            <Typography sx={{ fontSize: 11, fontWeight: 700 }}>{e.titulo}</Typography>
-                          </Box>
-                        ))}
-                      </Stack>
-                    </Box>
-                  );
-                })}
-              </Box>
-            )}
+            </Box>
           </CardContent>
         </Card>
         

@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { 
   Box, IconButton, Drawer, useMediaQuery, useTheme, Typography, Divider, 
   ListItemButton, ListItemIcon, ListItemText, Card, CardContent, Table, 
-  TableBody, TableCell, TableHead, TableRow, Chip, Stack 
+  TableBody, TableCell, TableHead, TableContainer, TableRow, Chip, Stack 
 } from "@mui/material";
 
 // Iconos
@@ -65,105 +65,113 @@ const getPrioridadColor = (prioridad) => {
 function KpiCard({ title, value, unit, icon, accent }) {
   return (
     <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
-      <CardContent>
-        {/* Usamos alignItems="center" para centrar el icono y texto verticalmente */}
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          
-          {/* Contenedor de Texto: flexGrow: 1 hace que tome el espacio disponible, empujando al icono a la derecha */}
-          <Box sx={{ flexGrow: 1, mr: 2 }}>
-            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>
-              {title}
-            </Typography>
-            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5 }}>
-              {value}
-            </Typography>
-            <Typography sx={{ color: MUTED, fontSize: 12 }}>
-              {unit}
-            </Typography>
-          </Box>
-
-          {/* Contenedor del Icono: flexShrink: 0 asegura que nunca se comprima */}
-          <Box sx={{ 
-            color: accent, 
-            p: 1, 
-            borderRadius: 2, 
-            bgcolor: BG, 
-            border: `0px solid ${BORDER}`, 
-            flexShrink: 0,
-            display: "flex", // Para asegurar que el icono dentro esté centrado
-          }}>
-            {icon}
-          </Box>
-          
-        </Stack>
+      
+      <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ width: 44, height: 44, borderRadius: 2, display: "grid", placeItems: "center", bgcolor: "#f1f5f9", color: accent }}>
+          {icon}
+        </Box>
+        <Box>
+          <Typography sx={{ color: MUTED, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
+            {title}
+          </Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.2 }}>{value}</Typography>
+          <Typography sx={{ color: MUTED, fontSize: 12 }}>{unit}</Typography>
+        </Box>
       </CardContent>
     </Card>
   );
 }
 
-
-
 function BarChart({ data }) {
   const max = Math.max(...data.map(d => d.value));
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-end", gap: { xs: 1, md: 2 }, height: 160, mt: 3, pb: 1, px: 1 }}>
-      {data.map(d => (
-        <Box key={d.mes} sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
-          <Box sx={{ 
-            width: "100%", maxWidth: 24, 
-            // Aseguramos una altura mínima para que sean visibles
-            height: `${Math.max((d.value / max) * 100, 10)}%`, 
-            bgcolor: "#569cf1f1", 
-            borderRadius: "4px 4px 0 0" 
-          }} />
-          <Typography sx={{ fontSize: 10, mt: 1, color: MUTED, fontWeight: 600 }}>{d.mes}</Typography>
-        </Box>
-      ))}
+    <Box sx={{ width: "100%", overflowX: "auto", maxWidth: "100%" }}>
+      <Box sx={{ display: "flex", alignItems: "flex-end", gap: { xs: 1, md: 2 }, height: 160, mt: 3, px: 1, minWidth: 400 }}>
+        {data.map(d => (
+          <Box key={d.mes} sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
+            <Box sx={{ 
+              width: "100%", maxWidth: 28, 
+              height: `${Math.max((d.value / max) * 100, 10)}%`, 
+              bgcolor: "#569cf1f1", 
+              borderRadius: "4px 4px 0 0" 
+            }} />
+            <Typography sx={{ fontSize: 10, mt: 1, color: MUTED, fontWeight: 600 }}>{d.mes}</Typography>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 }
 
 function VistaInicio() {
   return (
-    <Stack spacing={3}>
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2 }}>
+    <Stack spacing={{ xs: 2, md: 3 }} sx={{ width: "100%", minWidth: 0 }}>
+      
+      {/* 1. KPIs: Ajuste de espaciado en móvil */}
+      <Box sx={{ 
+        display: "grid", 
+        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, 
+        gap: { xs: 1.5, md: 2 } 
+      }}>
         {kpis.map((k) => <KpiCard key={k.title} {...k} />)}
       </Box>
       
-      {/* Gráfico */}
-      <Card sx={cardSx}>
-        <CardContent>
-          <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Servicios por Mes</Typography>
-          <BarChart data={serviciosPorMes} />
+      {/* 2. Gráfico: Un poco más de aire */}
+      <Card sx={{ ...cardSx, minWidth: 0 }}>
+        <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+          <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Servicios por Mes</Typography>
+          <Box sx={{ width: "100%", overflowX: "auto", pb: 1, minWidth: 0 }}>
+             <Box sx={{ minWidth: 400 }}> 
+                <BarChart data={serviciosPorMes} />
+             </Box>
+          </Box>
         </CardContent>
       </Card>
 
-      <Card sx={cardSx}>
-        <CardContent>
-          <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Mantenimientos Pendientes</Typography>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>VEHÍCULO</TableCell>
-                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>TIPO</TableCell>
-                <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>PRIORIDAD</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {mantenimientosPendientes.map((r, i) => (
-                <TableRow key={i}>
-                  <TableCell>{r.vehiculo}</TableCell>
-                  <TableCell>{r.tipo}</TableCell>
-                  <TableCell><Chip label={r.prioridad} sx={{ bgcolor: getPrioridadColor(r.prioridad).bg, color: getPrioridadColor(r.prioridad).color }} /></TableCell>
+      {/* 3. Tabla: Estilo limpio */}
+      <Card sx={{ ...cardSx, minWidth: 0 }}>
+        <CardContent sx={{ p: 0, minWidth: 0 }}>
+          <Box sx={{ p: { xs: 2, md: 3 }, pb: 1 }}>
+            <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Mantenimientos Pendientes</Typography>
+          </Box>
+          
+          <TableContainer sx={{ width: "100%", overflowX: "auto", minWidth: 0 }}>
+            <Table size="small" sx={{ minWidth: 500 }}> 
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11, pl: { xs: 2, md: 3 } }}>VEHÍCULO</TableCell>
+                  <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11 }}>TIPO</TableCell>
+                  <TableCell sx={{ color: MUTED, fontWeight: 700, fontSize: 11, pr: { xs: 2, md: 3 } }}>PRIORIDAD</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {mantenimientosPendientes.map((r, i) => (
+                  <TableRow key={i} sx={{ "&:last-child td": { border: 0 } }}>
+                    <TableCell sx={{ fontSize: 13, whiteSpace: "nowrap", pl: { xs: 2, md: 3 } }}>{r.vehiculo}</TableCell>
+                    <TableCell sx={{ fontSize: 13, whiteSpace: "nowrap" }}>{r.tipo}</TableCell>
+                    <TableCell sx={{ pr: { xs: 2, md: 3 } }}>
+                      <Chip 
+                        label={r.prioridad} 
+                        size="small"
+                        sx={{ 
+                          bgcolor: getPrioridadColor(r.prioridad).bg, 
+                          color: getPrioridadColor(r.prioridad).color, 
+                          fontWeight: 700,
+                          fontSize: 11
+                        }} 
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
     </Stack>
   );
 }
+
 
 // --- ESTRUCTURA PRINCIPAL (SIDEBAR + ROUTER) ---
 export default function DashboardGerente() {
@@ -202,12 +210,22 @@ export default function DashboardGerente() {
             </Drawer>
           )}
 
-          <Box sx={{ p: 3 }}>
+          
+          <Box sx={{ 
+            flexGrow: 1, 
+            // Padding responsivo: 16px en móvil, 24px en escritorio
+            p: { xs: 2, md: 3 }, 
+            overflowY: 'auto',
+            width: '100%',
+            boxSizing: 'border-box' // Importante para que el padding no afecte el ancho total
+          }}>
+            {/* Título y Botón Menú */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
               {!isDesktop && <IconButton onClick={() => setMobileOpen(true)}><MenuIcon /></IconButton>}
               <Typography sx={{ fontSize: 24, fontWeight: 800 }}>{currentItem.label}</Typography>
             </Box>
             
+            {/* Rutas */}
             <Routes>
               <Route path="/" element={<VistaInicio />} />
               <Route path="gestion-empresa" element={<GestionEmpresa />} />
@@ -216,6 +234,7 @@ export default function DashboardGerente() {
               <Route path="historial" element={<Historial />} />
             </Routes>
           </Box>
+
         </Box>
       </Box>
     </Box>
