@@ -57,15 +57,33 @@ function CriticidadChip({ value }) {
 function KpiCard({ title, value, unit, icon, accent }) {
   return (
     <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
-      <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box sx={{ flexGrow: 1, mr: 2 }}> 
-            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>{title}</Typography>
-            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5 }}>{value}</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 12 }}>{unit}</Typography>
-          </Box>
-          <Box sx={{ color: accent, p: 1, borderRadius: 2, bgcolor: BG, flexShrink: 0 }}>{icon}</Box>
-        </Stack>
+      <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 2 }}>
+        {/* Contenedor del icono (estilo Dashboard) */}
+        <Box sx={{ 
+          width: 44, 
+          height: 44, 
+          borderRadius: 2, 
+          display: "grid", 
+          placeItems: "center", 
+          bgcolor: BG, 
+          color: accent,
+          flexShrink: 0 // Asegura que el icono no se deforme
+        }}>
+          {icon}
+        </Box>
+        
+        {/* Contenido de texto */}
+        <Box>
+          <Typography sx={{ color: MUTED, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
+            {title}
+          </Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.2, color: TEXT }}>
+            {value}
+          </Typography>
+          <Typography sx={{ color: MUTED, fontSize: 12 }}>
+            {unit}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );
@@ -86,11 +104,16 @@ export default function AlarmasGerente() {
       <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Centro de Alarmas</Typography>
 
       {/* KPIs */}
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2, mb: 3 }}>
-              <KpiCard title="Total" value="27" unit="mensual" icon={<NotificationsActiveIcon />} accent={BLUE} />
-              <KpiCard title="Críticas" value="6" unit="activas" icon={<ReportProblemIcon />} accent={RED} />
-              <KpiCard title="Taller" value="9" unit="revisión" icon={<BuildIcon />} accent={YELLOW} />
-              <KpiCard title="Resueltas" value="12" unit="éxito" icon={<VerifiedIcon />} accent={GREEN} />
+      <Box sx={{ 
+        display: "grid", 
+        gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, 
+        gap: 2, 
+        mb: 4 
+      }}>
+        <KpiCard title="Total" value="27" unit="mensual" icon={<NotificationsActiveIcon />} accent={BLUE} />
+        <KpiCard title="Críticas" value="6" unit="activas" icon={<ReportProblemIcon />} accent={RED} />
+        <KpiCard title="Taller" value="9" unit="revisión" icon={<BuildIcon />} accent={YELLOW} />
+        <KpiCard title="Resueltas" value="12" unit="éxito" icon={<VerifiedIcon />} accent={GREEN} />
       </Box>
       
       {/* Grid Principal */}
@@ -115,34 +138,42 @@ export default function AlarmasGerente() {
               sx={{ mb: 2 }}
             />
             
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>VEHÍCULO</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>TIPO</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>ESTADO</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {alarmasFiltradas.map((a) => {
-                  const estilo = getEstadoColor(a.estado);
-                  return (
-                    <TableRow key={a.id}>
-                      <TableCell>{a.id}</TableCell>
-                      <TableCell>
-                        <DirectionsCarFilledIcon sx={{ fontSize: 16, mr: 1, verticalAlign: 'middle', color: MUTED }}/> 
-                        {a.vehiculo}
-                      </TableCell>
-                      <TableCell>{a.tipo}</TableCell>
-                      <TableCell>
-                        <Chip label={a.estado} size="small" sx={{ fontWeight: 700, bgcolor: estilo.bg, color: estilo.color, borderRadius: 1.5 }} />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <Box sx={{ 
+              overflowX: { xs: "auto", md: "visible" } 
+            }}>
+              <Table sx={{ 
+                minWidth: { xs: 600, md: "auto" },
+                width: "100%" 
+              }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>VEHÍCULO</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>TIPO</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>ESTADO</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {alarmasFiltradas.map((a) => {
+                    const estilo = getEstadoColor(a.estado);
+                    return (
+                      <TableRow key={a.id}>
+                        <TableCell>{a.id}</TableCell>
+                        <TableCell>
+                          <DirectionsCarFilledIcon sx={{ fontSize: 16, mr: 1, verticalAlign: 'middle', color: MUTED }}/> 
+                          {a.vehiculo}
+                        </TableCell>
+                        <TableCell>{a.tipo}</TableCell>
+                        <TableCell>
+                          <Chip label={a.estado} size="small" sx={{ fontWeight: 700, bgcolor: estilo.bg, color: estilo.color, borderRadius: 1.5 }} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </Box>  
+
           </CardContent>
         </Card>
        

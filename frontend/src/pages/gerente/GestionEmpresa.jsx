@@ -1,112 +1,23 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Button,
-  Chip,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Avatar,
-  Divider,
-  TextField,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  ListItemSecondaryAction,
-  Menu,     
-  MenuItem,
-  Dialog, DialogTitle, DialogContent, DialogActions,
-} from "@mui/material";
-
-// Iconos
+import { Box, Typography, Stack, Button, IconButton, List, ListItem, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, Menu, MenuItem, Card, CardContent, TextField, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow , Chip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import GroupIcon from "@mui/icons-material/Group";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import BuildIcon from "@mui/icons-material/Build";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import GroupIcon from "@mui/icons-material/Group";
 import ErrorIcon from "@mui/icons-material/Error";
+import BuildIcon from "@mui/icons-material/Build";
 
-const GREEN = "#44FF34";
-const GRAY = "#94a3b8";
-const BORDER = "#e5e7eb";
-const TEXT = "#0f172a";
-const MUTED = "#64748b";
-const BG = "#f8fafc";
-const BLUE = "#0ea5e9";
-const RED = "#dc2626";
-const YELLOW = "#f59e0b";
-
-const cardSx = {
-  borderRadius: 3,
-  border: `1px solid ${BORDER}`,
-  boxShadow: "none",
-  bgcolor: "#fff",
-};
-
-const greenBtn = {
-  bgcolor: GREEN,
-  color: TEXT,
-  fontWeight: 800,
-  textTransform: "none",
-  borderRadius: 2,
-  px: 2,
-  "&:hover": { bgcolor: "#36e028" },
-};
-
-// nueva constante de estilo
-const blueBtn = {
-  bgcolor: "#4e9cef", 
-  color: "#fff",
-  fontWeight: 800,
-  textTransform: "none",
-  borderRadius: 2,
-  px: 2,
-  "&:hover": { bgcolor: "#3088e7" }, 
-};
-
-function KpiCard({ title, value, unit, icon, accent }) {
-  return (
-    <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
-      <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box sx={{ flexGrow: 1, mr: 2 }}>
-            <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, textTransform: "uppercase" }}>{title}</Typography>
-            <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.5, color: TEXT }}>{value}</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 12 }}>{unit}</Typography>
-          </Box>
-          <Box sx={{ color: accent, p: 1, borderRadius: 2, bgcolor: BG, flexShrink: 0 }}>
-            {icon}
-          </Box>
-        </Stack>
-      </CardContent>
-    </Card>
-  );
-}
-
-function EstadoChip({ value }) {
-  const map = {
-    Operativo: { bg: "#dcfce7", color: "#166534" },
-    "En taller": { bg: "#fef3c7", color: "#92400e" },
-    Alerta: { bg: "#fee2e2", color: "#b91c1c" },
-  };
-  const s = map[value] || map.Operativo;
-  return <Chip label={value} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 700, fontSize: 11 }} />;
-}
+// Componentes propios
+import KpiCard from "../../components/gerente/KpiCard"; // Reutilizamos el que creamos antes
+import EstadoChip from "../../components/gerente/EstadoChip";
+import AddOperarioDialog from "../../components/gerente/AddOperarioDialog";
+import { COLORS, cardSx, buttonStyles } from "../../constants/Gerente";
+import { EXTRA_COLORS } from "../../constants/Gerente";
 
 export default function GestionGerente() {
-  // --- LOS HOOKS DEBEN IR AQUÍ, DENTRO DEL COMPONENTE ---
   const [busqueda, setBusqueda] = useState("");
-  
+
   const [operarios, setOperarios] = useState([
     { nombre: "Carlos Pérez", rol: "Mecánico Senior", email: "carlos@empresa.com", estado: "activo" },
     { nombre: "Lucía Gómez", rol: "Mecánica", email: "lucia@empresa.com", estado: "activo" },
@@ -121,11 +32,11 @@ export default function GestionGerente() {
     setOperarios(nuevosOperarios);
   };
 
-  // Agrega estos estados para manejar el menú
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [nuevoOperario, setNuevoOperario] = useState({ nombre: "", rol: "", email: "" });
 
-  // Agrega estas funciones (puedes ponerlas junto a tus otras funciones)
   const handleMenuOpen = (event, index) => {
     setAnchorEl(event.currentTarget);
     setSelectedIndex(index);
@@ -142,10 +53,6 @@ export default function GestionGerente() {
     setOperarios(nuevosOperarios);
     handleMenuClose();
   };
-
-  // Estado para controlar el Dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const [nuevoOperario, setNuevoOperario] = useState({ nombre: "", rol: "", email: "" });
 
   // Función para guardar el nuevo operario
   const handleSaveOperario = () => {
@@ -170,20 +77,21 @@ export default function GestionGerente() {
   );
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: COLORS.BG }}>
       <Box sx={{ maxWidth: 1280, mx: "auto", p: { xs: 1.5, md: 3 } }}>
         <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={2} sx={{ mb: 3 }}>
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>Panel de Gestión</Typography>
-            <Typography sx={{ color: MUTED, fontSize: 14 }}>Administra vehículos, operarios y alertas</Typography>
+            <Typography sx={{ color: COLORS.MUTED, fontSize: 14 }}>Administra vehículos, operarios y alertas</Typography>
           </Box>
         </Stack>
 
+        {/* KPIs */}
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, gap: 2, mb: 4 }}>
-          <KpiCard title="Operarios Activos" value={operarios.filter(o => o.estado === "activo").length} unit="trabajando hoy" icon={<GroupIcon />} accent={BLUE} />
-          <KpiCard title="Operarios Inactivos" value={operarios.filter(o => o.estado === "inactivo").length} unit="en descanso" icon={<ErrorIcon />} accent={RED} />
-          <KpiCard title="Vehículos Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={YELLOW} />
-          <KpiCard title="Próx. Mantenimiento" value="8" unit="esta semana" icon={<DirectionsCarIcon />} accent={GREEN} />
+          <KpiCard title="Operarios Activos" value={operarios.filter(o => o.estado === "activo").length} unit="trabajando hoy" icon={<GroupIcon />} accent={EXTRA_COLORS.BLUE} />
+          <KpiCard title="Operarios Inactivos" value={operarios.filter(o => o.estado === "inactivo").length} unit="en descanso" icon={<ErrorIcon />} accent={EXTRA_COLORS.RED} />
+          <KpiCard title="Vehículos Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={EXTRA_COLORS.YELLOW} />
+          <KpiCard title="Próx. Mantenimiento" value="8" unit="esta semana" icon={<DirectionsCarIcon />} accent={COLORS.GREEN} />
         </Box>
 
         {/* Lista de Operarios */}
@@ -192,7 +100,7 @@ export default function GestionGerente() {
             <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ mb: 2 }}>
               <Box>
                 <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Lista de Operarios</Typography>
-                <Typography sx={{ color: MUTED, fontSize: 13 }}>Equipo registrado</Typography>
+                <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Equipo registrado</Typography>
               </Box>
             
               <Button 
@@ -200,7 +108,7 @@ export default function GestionGerente() {
                 variant="contained" 
                 size="small" 
                 onClick={() => setOpenDialog(true)} 
-                sx={blueBtn}
+                sx={buttonStyles.blueBtn}
               >
                 Agregar Operario
               </Button>
@@ -208,132 +116,158 @@ export default function GestionGerente() {
            
             <List disablePadding>
               {operarios.map((o, index) => (
-                <ListItem key={index} divider={index !== operarios.length - 1} sx={{ px: 0 }}>
+                <ListItem 
+                  key={index} 
+                  divider={index !== operarios.length - 1} 
+                  sx={{ py: 1.5, pr: 6, alignItems: 'flex-start' }} // alignItems flex-start ayuda a que si el contenido crece, no se corte
+                >
                   <ListItemAvatar>
-                    <Avatar sx={{ bgcolor: o.estado === "activo" ? GREEN : GRAY }}>
+                    <Avatar sx={{ bgcolor: o.estado === "activo" ? COLORS.GREEN : EXTRA_COLORS.GRAY }}>
                       {o.nombre.charAt(0)}
                     </Avatar>
                   </ListItemAvatar>
+                  
                   <ListItemText
-                    primary={<Typography sx={{ fontWeight: 700 }}>{o.nombre}</Typography>}
+                    primary={
+                      <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
+                        {o.nombre}
+                      </Typography>
+                    }
                     secondary={
-                      <Stack direction="row" spacing={2} sx={{ mt: 0.5 }}>
-                        <Typography sx={{ fontSize: 12 }}>{o.rol}</Typography>
-                        <Typography sx={{ fontSize: 12, color: MUTED }}>• {o.email}</Typography>
-                        <Chip label={o.estado} size="small" sx={{ height: 20, fontSize: 10, bgcolor: o.estado === "activo" ? "#dcfce7" : "#f1f5f9", color: o.estado === "activo" ? "#166534" : "#475569" }} />
-                      </Stack>
+                      /* Usamos Box con flexWrap para asegurar que todo el contenido fluya */
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                        <Typography sx={{ fontSize: 12, color: COLORS.MUTED }}>{o.rol}</Typography>
+                        <Typography sx={{ fontSize: 12, color: COLORS.MUTED }}>• {o.email}</Typography>
+                        <Chip 
+                          label={o.estado} 
+                          size="small" 
+                          sx={{ 
+                            height: 18, fontSize: 10, 
+                            bgcolor: o.estado === "activo" ? "#dcfce7" : "#f1f5f9", 
+                            color: o.estado === "activo" ? "#166534" : "#475569" 
+                          }} 
+                        />
+                      </Box>
                     }
                   />
+                  
                   <ListItemSecondaryAction>
-                    <IconButton onClick={(e) => handleMenuOpen(e, index)}>
+                    <IconButton onClick={(e) => handleMenuOpen(e, index)} edge="end">
                       <EditIcon fontSize="small" />
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>
               ))}
             </List>
-            
+
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
-              >
+            >
               <MenuItem onClick={() => handleStatusChange("activo")}>Activo</MenuItem>
               <MenuItem onClick={() => handleStatusChange("inactivo")}>Inactivo</MenuItem>
-              </Menu>
+            </Menu>
           </CardContent>
         </Card>
-  
 
-        {/* Lista de vehículos */}
+        {/* Tabla de Vehículos */}
         <Card sx={cardSx}>
-            <CardContent>
-              <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={2} sx={{ mb: 2 }}>
-                <Box>
-                  <Typography sx={{ fontWeight: 800, fontSize: 18, color: TEXT }}>Gestión de Vehículos</Typography>
-                  <Typography sx={{ color: MUTED, fontSize: 13 }}>Listado y estado actual de la flota</Typography>
-                </Box>
-                <TextField
-                  size="small"
-                  placeholder="Buscar patente o modelo"
-                  value={busqueda}
-                  onChange={(e) => setBusqueda(e.target.value)}
-                  InputProps={{
-                    startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: MUTED, fontSize: 18 }} /></InputAdornment>),
-                  }}
-                  sx={{ minWidth: { xs: "100%", sm: 240 } }}
-                />
-              </Stack>
-              <Box sx={{ overflowX: "auto" }}>
-                <Table size="small" sx={{ minWidth: 560 }}>
-                  <TableHead>
-                    <TableRow>
-                      {["VEHÍCULO", "ÚLTIMA REVISIÓN", "ESTADO"].map((h) => (
-                        <TableCell key={h} sx={{ fontWeight: 700, color: MUTED, fontSize: 12, letterSpacing: 0.5 }}>{h}</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {vehiculosFiltrados.map((v) => (
-                      <TableRow key={v.patente}>
-                        <TableCell>
-                          <Stack direction="row" spacing={1.5} alignItems="center">
-                            <Box sx={{ width: 36, height: 36, borderRadius: 2, bgcolor: BG, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <DirectionsCarIcon sx={{ color: TEXT, fontSize: 20 }} />
-                            </Box>
-                            <Box>
-                              <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: 14 }}>{v.modelo}</Typography>
-                              <Typography sx={{ color: MUTED, fontSize: 12 }}>{v.patente}</Typography>
-                            </Box>
-                          </Stack>
-                        </TableCell>
-                        <TableCell sx={{ color: TEXT, fontSize: 13 }}>{v.revision}</TableCell>
-                        <TableCell><EstadoChip value={v.estado} /></TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+          <CardContent>
+            <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={2} sx={{ mb: 2 }}>
+              <Box>
+                <Typography sx={{ fontWeight: 800, fontSize: 18, color: COLORS.TEXT }}>Gestión de Vehículos</Typography>
+                <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Listado y estado actual de la flota</Typography>
               </Box>
-            </CardContent>
-          </Card>
+              <TextField
+                size="small"
+                placeholder="Buscar patente o modelo"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                InputProps={{
+                  startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: COLORS.MUTED, fontSize: 18 }} /></InputAdornment>),
+                }}
+                sx={{ minWidth: { xs: "100%", sm: 240 } }}
+              />
+            </Stack>
 
-      </Box>
-      
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="xs">
-        <DialogTitle sx={{ fontWeight: 800 }}>Nuevo Operario</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            <TextField label="Nombre" fullWidth size="small" 
-              onChange={(e) => setNuevoOperario({...nuevoOperario, nombre: e.target.value})} 
-            />
-            <TextField label="Ocupación" fullWidth size="small" 
-              onChange={(e) => setNuevoOperario({...nuevoOperario, rol: e.target.value})} 
-            />
-            <TextField label="Correo" fullWidth size="small" 
-              onChange={(e) => setNuevoOperario({...nuevoOperario, email: e.target.value})} 
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
-          {/* Cancelar: en minúscula y color MUTED */}
-          <Button 
-            onClick={() => setOpenDialog(false)} 
-            sx={{ textTransform: "none", color: MUTED }}
-          >
-            Cancelar
-          </Button>
+            <Box sx={{ overflowX: "auto" }}>
+              {/* Mantenemos el minWidth para asegurar el scroll horizontal en pantallas muy estrechas */}
+              <Table size="small" sx={{ minWidth: 500 }}>
+                <TableHead>
+                  <TableRow>
+                    {["VEHÍCULO", "ÚLTIMA REVISIÓN", "ESTADO"].map((h) => (
+                      <TableCell 
+                        key={h} 
+                        sx={{ 
+                          fontWeight: 700, 
+                          color: COLORS.MUTED, 
+                          fontSize: { xs: 10, md: 12 }, // Fuente más pequeña en móvil
+                          px: { xs: 1, md: 2 },        // Padding más compacto
+                          letterSpacing: 0.5 
+                        }}
+                      >
+                        {h}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {vehiculosFiltrados.map((v) => (
+                    <TableRow key={v.patente}>
+                      {/* Columna de Vehículo con padding ajustado */}
+                      <TableCell sx={{ px: { xs: 1, md: 2 }, py: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          {/* Icono (tamaño ligeramente reducido en móvil) */}
+                          <Box sx={{ 
+                            width: { xs: 30, md: 36 }, 
+                            height: { xs: 30, md: 36 }, 
+                            borderRadius: 2, 
+                            bgcolor: COLORS.BG, 
+                            border: `1px solid ${COLORS.BORDER}`, 
+                            display: "flex", 
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            flexShrink: 0
+                          }}>
+                            <DirectionsCarIcon sx={{ color: COLORS.TEXT, fontSize: { xs: 16, md: 20 } }} />
+                          </Box>
+                          <Box>
+                            <Typography sx={{ fontWeight: 700, color: COLORS.TEXT, fontSize: { xs: 12, md: 14 } }}>
+                              {v.modelo}
+                            </Typography>
+                            <Typography sx={{ color: COLORS.MUTED, fontSize: { xs: 10, md: 12 } }}>
+                              {v.patente}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </TableCell>
+                      
+                      <TableCell sx={{ color: COLORS.TEXT, fontSize: { xs: 11, md: 13 }, px: { xs: 1, md: 2 } }}>
+                        {v.revision}
+                      </TableCell>
+                      
+                      <TableCell sx={{ px: { xs: 1, md: 2 } }}>
+                        <EstadoChip value={v.estado} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+
+          </CardContent>
           
-          {/* Guardar: peso de fuente reducido (fontWeight: 500) */}
-          <Button 
-            variant="contained" 
-            onClick={handleSaveOperario} 
-            sx={{ ...greenBtn, fontWeight: 600 }} 
-          >
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Card>
 
+        <AddOperarioDialog 
+           open={openDialog} 
+           onClose={() => setOpenDialog(false)} 
+           onSave={handleSaveOperario}
+           nuevoOperario={nuevoOperario}
+           setNuevoOperario={setNuevoOperario}
+        />
+      </Box>
     </Box>
   );
 }

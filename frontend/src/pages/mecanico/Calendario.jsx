@@ -19,7 +19,6 @@ import {
 // Iconos necesarios para el Calendario
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SearchIcon from "@mui/icons-material/Search";
 import ErrorIcon from "@mui/icons-material/Error";
 
 const GREEN = "#44FF34";
@@ -38,7 +37,7 @@ const MONTH_NAMES = [
 
 // Eventos mapeados con la nueva estructura de almanaque
 const eventsData = {
-  "2026-9": { // Octubre 2026 (Mes índice 9) alineado a la segunda captura
+  "2026-6": { // Octubre 2026 (Mes índice 9) alineado a la segunda captura
     1:  { title: "Ford F-150",      time: "09:00", note: "Revisión",   status: "pendiente" },
     2:  { title: "Toyota Hilux",    time: "10:30", note: "Motor",      status: "confirmado" },
     3:  { title: "Iveco Daily",     time: "08:00", note: "Frenos",     status: "urgente" },
@@ -60,11 +59,18 @@ const statusColors = {
   urgente:    { bg: RED_BG,  fg: RED,       label: "URGENTE" },
 };
 
+const cardSx = {
+  borderRadius: 3,
+  border: `1px solid ${BORDER}`,
+  boxShadow: "none",
+  bgcolor: "#fff",
+};
+
 export default function Calendario() {
   const [query, setQuery] = useState("");
   
   // Estados actualizados al año actual 2026
-  const [currentMonth, setCurrentMonth] = useState(9); // 9 = Octubre
+  const [currentMonth, setCurrentMonth] = useState(6); // 
   const [currentYear, setCurrentYear] = useState(2026);
 
   // Manejadores de navegación de fechas
@@ -88,17 +94,11 @@ export default function Calendario() {
 
   // Función modificada para forzar el inicio en Lunes tal como muestra la segunda captura
   const getDaysInMonthGrid = (month, year) => {
-    let startOffset = 0;
-    if (year === 2026 && month === 9) {
-      startOffset = 0; 
-    } else {
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    }
-
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
     const totalDays = new Date(year, month + 1, 0).getDate();
-
     const grid = [];
+    
     for (let i = 0; i < startOffset; i++) {
       grid.push(null);
     }
@@ -141,30 +141,32 @@ export default function Calendario() {
         <Box sx={{ minWidth: 0 }}>
           <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
             Vista Mensual
-          </Typography>
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
+          </Typography>          
+          <Card sx={cardSx}>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <IconButton onClick={() => setCurrentMonth(prev => prev - 1)}><ChevronLeftIcon /></IconButton>
-                <Typography variant="h6">{MONTH_NAMES[currentMonth]}</Typography>
-                <IconButton onClick={() => setCurrentMonth(prev => prev + 1)}><ChevronRightIcon /></IconButton>
+                <IconButton onClick={handlePrevMonth}><ChevronLeftIcon /></IconButton>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>{MONTH_NAMES[currentMonth]}</Typography>
+                <IconButton onClick={handleNextMonth}><ChevronRightIcon /></IconButton>
               </Box>
               
               <Box sx={{ overflowX: "auto", width: "100%" }}>
                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", minWidth: 500 }}>
-                  {["L", "M", "M", "J", "V", "S", "D"].map(d => <Typography key={d} sx={{ textAlign: "center", fontWeight: 700 }}>{d}</Typography>)}
+                  {["L", "M", "M", "J", "V", "S", "D"].map(d => (
+                    <Typography key={d} sx={{ textAlign: "center", fontWeight: 700, fontSize: 12, color: MUTED }}>{d}</Typography>
+                  ))}
                   {daysGrid.map((d, i) => (
                     <Box key={i} sx={{ minHeight: 80, border: `1px solid ${BORDER}`, p: 0.5 }}>
-                      <Typography sx={{ fontSize: 10 }}>{d}</Typography>
+                      <Typography sx={{ fontSize: 11, fontWeight: 600 }}>{d}</Typography>
                       {currentEvents[d] && (
-                        <Box sx={{ bgcolor: statusColors[currentEvents[d].status].bg, fontSize: 9, p: 0.5, borderRadius: 1 }}>
+                        <Box sx={{ bgcolor: statusColors[currentEvents[d].status].bg, color: statusColors[currentEvents[d].status].fg, fontSize: 9, p: 0.5, borderRadius: 1, mt: 0.5, fontWeight: 700 }}>
                           {currentEvents[d].title}
                         </Box>
                       )}
                     </Box>
                   ))}
                 </Box>
-              </Box>
+              </Box>  
             </CardContent>
           </Card>
         </Box>

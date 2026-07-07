@@ -22,13 +22,20 @@ import {
   Button,
   Divider,
   Tooltip,
+  useMediaQuery,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Avatar,
+  ListItemIcon,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import HistoryIcon from "@mui/icons-material/History";
+import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 
 const GREEN = "#44FF34";
 const BORDER = "#e5e7eb";
@@ -95,6 +102,8 @@ export default function HistorialGerente() {
       return true;
     });
   }, [search, tipo, desde, hasta]);
+
+  const isMobile = useMediaQuery("(max-width:600px)");
   
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: BG, minHeight: "100vh" }}>
@@ -165,75 +174,129 @@ export default function HistorialGerente() {
           </Stack>
         </CardContent>
       </Card>
-      {/* Tabla */}
-      <Card sx={cardSx}>
-        <CardContent sx={{ p: 0 }}>
-          <Box sx={{ overflowX: "auto" }}>
-            <Table size="small" sx={{ minWidth: 760 }}>
-              <TableHead sx={{ bgcolor: "#f8fafc" }}>
-                <TableRow>
-                  {["Fecha", "Vehículo", "Tipo", "Operario", "Resultado", "Acción"].map((h) => (
-                    <TableCell
-                      key={h}
-                      sx={{ fontWeight: 700, color: MUTED, fontSize: 12, textTransform: "uppercase", letterSpacing: 0.5 }}
-                    >
-                      {h}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filtered.map((r) => (
-                  <TableRow key={r.id} hover>
-                    <TableCell sx={{ color: TEXT, fontWeight: 500 }}>{r.fecha}</TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: 500, color: TEXT, fontSize: 14 }}>
-                        {r.vehiculo}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <TipoChip tipo={r.tipo} />
-                    </TableCell>
-                    <TableCell sx={{ color: TEXT, fontSize: 14 }}>{r.operario}</TableCell>
-                    <TableCell>
-                      {r.resultado === "ok" ? (
-                        <Tooltip title="Completado sin incidencias">
-                          <CheckCircleIcon sx={{ color: "#16a34a" }} />
-                        </Tooltip>
-                      ) : (
-                        <Tooltip title="Completado con advertencias">
-                          <WarningAmberIcon sx={{ color: "#f59e0b" }} />
-                        </Tooltip>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        size="small"
-                        onClick={() => setSelected(r)}
-                        sx={{
-                          border: `1px solid ${BORDER}`,
-                          borderRadius: 1.5,
-                          "&:hover": { bgcolor: "#f1f5f9" },
-                        }}
-                      >
-                        <VisibilityIcon sx={{ fontSize: 18, color: TEXT }} />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {filtered.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: "center", py: 4, color: MUTED }}>
-                      No se encontraron resultados con los filtros aplicados.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Box>
-        </CardContent>
-      </Card>
       
+      {/* Tabla */}
+      <Box sx={{ mt: 2 }}>
+        {isMobile ? (
+          // VISTA MÓVIL: Lista 
+          <List sx={{ width: '100%', bgcolor: 'white', borderRadius: 3, border: `1px solid ${BORDER}` }}>
+            {filtered.map((row, i) => (
+              <React.Fragment key={i}>
+                <ListItem button onClick={() => setSelected(row)} sx={{ py: 1.5 }}>
+                  <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: BG, color: MUTED }}>
+                      <DirectionsCarFilledIcon fontSize="small" />
+                    </Avatar>
+                  </ListItemAvatar>
+                  
+                  <ListItemText 
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontWeight: 700 }}>{row.vehiculo}</Typography>
+                        <Chip 
+                          label={row.tipo} 
+                          size="small" 
+                          sx={{ 
+                            fontSize: 10,
+                            height: 20,
+                            bgcolor: tipoColor(row.tipo).bg, 
+                            color: tipoColor(row.tipo).color, 
+                            fontWeight: 700 
+                          }} 
+                        />
+                      </Box>
+                    }
+                    secondary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5, justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ fontSize: 12, color: MUTED }}>
+                          {row.fecha}
+                        </Typography>
+                        {row.resultado === "ok" ? (
+                          <CheckCircleIcon sx={{ color: "#16a34a", fontSize: 18 }} />
+                        ) : (
+                          <WarningAmberIcon sx={{ color: "#d97706", fontSize: 18 }} />
+                        )}
+                      </Box>
+                    }
+                  />
+                </ListItem>
+                {i < filtered.length - 1 && <Divider component="li" />}
+              </React.Fragment>
+            ))}
+          </List>
+        ) : (
+          
+          // VISTA ESCRITORIO: Tu tabla original
+          <Card sx={cardSx}>
+            <CardContent sx={{ p: 0 }}>
+              <Box sx={{ overflowX: "auto" }}>
+                <Table size="small" sx={{ minWidth: 760 }}>
+                  <TableHead sx={{ bgcolor: "#f8fafc" }}>
+                    <TableRow>
+                      {["Fecha", "Vehículo", "Tipo", "Operario", "Resultado", "Acción"].map((h) => (
+                        <TableCell
+                          key={h}
+                          sx={{ fontWeight: 700, color: MUTED, fontSize: 12, textTransform: "uppercase", letterSpacing: 0.5 }}
+                        >
+                          {h}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filtered.map((r) => (
+                      <TableRow key={r.id} hover>
+                        <TableCell sx={{ color: TEXT, fontWeight: 500 }}>{r.fecha}</TableCell>
+                        <TableCell>
+                          <Typography sx={{ fontWeight: 500, color: TEXT, fontSize: 14 }}>
+                            {r.vehiculo}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <TipoChip tipo={r.tipo} />
+                        </TableCell>
+                        <TableCell sx={{ color: TEXT, fontSize: 14 }}>{r.operario}</TableCell>
+                        <TableCell>
+                          {r.resultado === "ok" ? (
+                            <Tooltip title="Completado sin incidencias">
+                              <CheckCircleIcon sx={{ color: "#16a34a" }} />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Completado con advertencias">
+                              <WarningAmberIcon sx={{ color: "#f59e0b" }} />
+                            </Tooltip>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            size="small"
+                            onClick={() => setSelected(r)}
+                            sx={{
+                              border: `1px solid ${BORDER}`,
+                              borderRadius: 1.5,
+                              "&:hover": { bgcolor: "#f1f5f9" },
+                            }}
+                          >
+                            <VisibilityIcon sx={{ fontSize: 18, color: TEXT }} />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {filtered.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={6} sx={{ textAlign: "center", py: 4, color: MUTED }}>
+                          No se encontraron resultados con los filtros aplicados.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+      </Box>
+
       {/* Modal detalles */}
       <Dialog open={!!selected} onClose={() => setSelected(null)} fullWidth maxWidth="xs">
         <DialogTitle sx={{ pb: 1, fontWeight: 800, color: TEXT }}>
