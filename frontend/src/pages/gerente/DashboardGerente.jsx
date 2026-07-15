@@ -58,11 +58,11 @@ export default function DashboardGerente() {
             </Box>
             
             <Routes>
-               <Route path="/" element={<VistaInicio />} />
-               <Route path="gestion-empresa" element={<GestionEmpresa />} />
-                <Route path="alarmas" element={<Alarmas />} />
-                <Route path="calendario" element={<Calendario />} />
-                <Route path="historial" element={<Historial />} />
+              <Route path="/" element={<VistaInicio />} />
+              <Route path="gestion-empresa" element={<GestionEmpresa />} />
+              <Route path="alarmas" element={<Alarmas />} />
+              <Route path="calendario" element={<Calendario />} />
+              <Route path="historial" element={<Historial />} />
             </Routes>
           </Box>
         </Box>

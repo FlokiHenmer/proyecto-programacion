@@ -1,32 +1,10 @@
 import React from "react";
 import { Stack, Box, Card , CardContent, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Chip } from "@mui/material";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import SpeedIcon from "@mui/icons-material/Speed";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+
 import KpiCard from "./KpiCard"; // Importamos el componente que ya creamos
 import BarChart from "./BarChart"
-import { COLORS , cardSx } from "../../constants/Gerente";
+import { COLORS , cardSx, kpis, serviciosPorMes,mantenimientosPendientes } from "../../constants/Gerente";
 
-// --- DATOS DEL GERENTE ---
-const kpis = [
-  { title: "Total Vehículos Activos", value: "128", unit: "unidades", icon: <DirectionsCarIcon />, accent: COLORS.GREEN },
-  { title: "Costos Mantenimiento", value: "$ 1.2M", unit: "ARS / mes", icon: <AttachMoneyIcon />, accent: "#f59e0b" },
-  { title: "Productividad Taller", value: "87%", unit: "eficiencia", icon: <SpeedIcon />, accent: "#22c55e" },
-  { title: "Alertas Críticas", value: "5", unit: "requieren acción", icon: <WarningAmberIcon sx={{ color: "#dc2626" }} />, accent: "#dc2626" },
-];
-
-const serviciosPorMes = [
-  { mes: "Ene", value: 32 }, { mes: "Feb", value: 41 }, { mes: "Mar", value: 28 }, { mes: "Abr", value: 55 },
-  { mes: "May", value: 47 }, { mes: "Jun", value: 63 }, { mes: "Jul", value: 58 }, { mes: "Ago", value: 72 },
-  { mes: "Sep", value: 49 }, { mes: "Oct", value: 66 }, { mes: "Nov", value: 54 }, { mes: "Dic", value: 38 },
-];
-
-const mantenimientosPendientes = [
-  { vehiculo: "Scania R450 (AB123CD)", tipo: "Service 100k", prioridad: "Alta" },
-  { vehiculo: "Mercedes Actros (XY789ZT)", tipo: "Frenos", prioridad: "Media" },
-  { vehiculo: "Iveco Stralis (LM456OP)", tipo: "Cambio Aceite", prioridad: "Alta" },
-];
 
 // Función auxiliar
 const getPrioridadColor = (prioridad) => {
@@ -40,12 +18,12 @@ const getPrioridadColor = (prioridad) => {
 export default function VistaInicio() {
   return (
     <Stack spacing={3}>
-      {/* 1. KPIs: Ajuste de espaciado en móvil */}
+      {/* 1. KPIs */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2 }}>
         {kpis.map((k) => <KpiCard key={k.title} {...k} />)}
       </Box>
 
-      {/* 2. Gráfico: Un poco más de aire */}
+      {/* 2. Gráfico */}
       <Card sx={{ ...cardSx, minWidth: 0 }}>
         <CardContent sx={{ p: { xs: 2, md: 3 } }}>
           <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Servicios por Mes</Typography>
@@ -57,7 +35,7 @@ export default function VistaInicio() {
         </CardContent>
       </Card>
       
-      {/* 3. Tabla: Estilo limpio */}
+      {/* 3. Tabla */}
       <Card sx={{ ...cardSx, minWidth: 0 }}>
         <CardContent sx={{ p: 0, minWidth: 0 }}>
           <Box sx={{ p: { xs: 2, md: 3 }, pb: 1 }}>
