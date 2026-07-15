@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { React , useState } from "react";
 import { Box, Typography, Stack, Button, IconButton, List, ListItem, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, Menu, MenuItem, Card, CardContent, TextField, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow , Chip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,7 +10,7 @@ import BuildIcon from "@mui/icons-material/Build";
 
 // Componentes propios
 import KpiCard from "../../components/gerente/KpiCard"; // Reutilizamos el que creamos antes
-import EstadoChip from "../../components/gerente/EstadoChip";
+import EstadoChip from "../../components/gerente/EstadoChipVehiculos";
 import AddOperarioDialog from "../../components/gerente/AddOperarioDialog";
 import { COLORS, cardSx, buttonStyles } from "../../constants/Gerente";
 import { EXTRA_COLORS } from "../../constants/Gerente";

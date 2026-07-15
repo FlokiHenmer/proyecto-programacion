@@ -1,8 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box, Card, CardContent, Typography, Stack, Table, TableBody, TableCell, 
   TableHead, TableRow, Chip, TextField, InputAdornment, Button
 } from "@mui/material";
+import { EstadoColor, CriticidadChip } from "../../components/gerente/CriticidadChip"; // Importamos el nuevo componente
+import { COLORS, EXTRA_COLORS, cardSx, buttonStyles } from "../../constants/Gerente";
+import KpiCard from "../../components/gerente/KpiCard";
 
 // Iconos
 import SearchIcon from "@mui/icons-material/Search"; 
@@ -11,17 +14,6 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-
-const BORDER = "#e5e7eb";
-const TEXT = "#0f172a";
-const MUTED = "#64748b";
-const BG = "#f8fafc";
-const RED = "#dc2626";
-const YELLOW = "#f59e0b";
-const BLUE = "#0ea5e9";
-const GREEN = "#44FF34";
-
-const cardSx = { borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none", bgcolor: "#fff" };
 
 const alarmasIniciales = [
   { id: "ALR-1042", vehiculo: "Scania R450", patente: "AB123CD", tipo: "Falla de Frenos", estado: "Activa" },
@@ -33,61 +25,6 @@ const alarmasActivas = [
   { vehiculo: "VW Constellation (RT321QW)", motivo: "Presión de aceite baja", criticidad: "Crítica" },
   { vehiculo: "Renault Kerax (QP987NM)", motivo: "Temperatura motor alta", criticidad: "Crítica" },
 ];
-
-const getEstadoColor = (estado) => {
-  switch (estado) {
-    case "Activa": return { bg: "#fee2e2", color: "#b91c1c" };
-    case "En revisión": return { bg: "#fef3c7", color: "#b45309" };
-    case "Resuelta": return { bg: "#dcfce7", color: "#15803d" };
-    default: return { bg: "#f1f5f9", color: "#475569" };
-  }
-};
-
-function CriticidadChip({ value }) {
-  const map = {
-    Crítica: { bg: "#fee2e2", color: "#b91c1c" },
-    Media: { bg: "#fef3c7", color: "#92400e" },
-    Baja: { bg: "#dcfce7", color: "#166534" },
-  };
-  const s = map[value] || map.Media;
-  return <Chip label={value} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 700, fontSize: 11 }} />;
-}
-
-// Componente para KPIs
-function KpiCard({ title, value, unit, icon, accent }) {
-  return (
-    <Card sx={{ ...cardSx, borderLeft: `4px solid ${accent}` }}>
-      <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 2 }}>
-        {/* Contenedor del icono (estilo Dashboard) */}
-        <Box sx={{ 
-          width: 44, 
-          height: 44, 
-          borderRadius: 2, 
-          display: "grid", 
-          placeItems: "center", 
-          bgcolor: BG, 
-          color: accent,
-          flexShrink: 0 // Asegura que el icono no se deforme
-        }}>
-          {icon}
-        </Box>
-        
-        {/* Contenido de texto */}
-        <Box>
-          <Typography sx={{ color: MUTED, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
-            {title}
-          </Typography>
-          <Typography sx={{ fontSize: 24, fontWeight: 800, mt: 0.2, color: TEXT }}>
-            {value}
-          </Typography>
-          <Typography sx={{ color: MUTED, fontSize: 12 }}>
-            {unit}
-          </Typography>
-        </Box>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default function AlarmasGerente() {
   const [search, setSearch] = useState("");
@@ -110,10 +47,10 @@ export default function AlarmasGerente() {
         gap: 2, 
         mb: 4 
       }}>
-        <KpiCard title="Total" value="27" unit="mensual" icon={<NotificationsActiveIcon />} accent={BLUE} />
-        <KpiCard title="Críticas" value="6" unit="activas" icon={<ReportProblemIcon />} accent={RED} />
-        <KpiCard title="Taller" value="9" unit="revisión" icon={<BuildIcon />} accent={YELLOW} />
-        <KpiCard title="Resueltas" value="12" unit="éxito" icon={<VerifiedIcon />} accent={GREEN} />
+        <KpiCard title="Total" value="27" unit="mensual" icon={<NotificationsActiveIcon />} accent={EXTRA_COLORS.BLUE} />
+        <KpiCard title="Críticas" value="6" unit="activas" icon={<ReportProblemIcon />} accent={COLORS.RED} />
+        <KpiCard title="Taller" value="9" unit="revisión" icon={<BuildIcon />} accent={EXTRA_COLORS.YELLOW} />
+        <KpiCard title="Resueltas" value="12" unit="éxito" icon={<VerifiedIcon />} accent={COLORS.GREEN} />
       </Box>
       
       {/* Grid Principal */}
@@ -125,7 +62,7 @@ export default function AlarmasGerente() {
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
               <Box>
                 <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Historial de Alarmas</Typography>
-                <Typography sx={{ color: MUTED, fontSize: 13 }}>Registro completo de incidencias</Typography>
+                <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Registro completo de incidencias</Typography>
               </Box>
             </Stack>
             
@@ -133,7 +70,7 @@ export default function AlarmasGerente() {
               fullWidth size="small" placeholder="Buscar por vehículo o ID..." 
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
-                startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: MUTED }} /></InputAdornment>),
+                startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: COLORS.MUTED }} /></InputAdornment>),
               }}
               sx={{ mb: 2 }}
             />
@@ -155,17 +92,17 @@ export default function AlarmasGerente() {
                 </TableHead>
                 <TableBody>
                   {alarmasFiltradas.map((a) => {
-                    const estilo = getEstadoColor(a.estado);
+                    const estilo = EstadoColor(a.estado);
                     return (
                       <TableRow key={a.id}>
                         <TableCell>{a.id}</TableCell>
                         <TableCell>
-                          <DirectionsCarFilledIcon sx={{ fontSize: 16, mr: 1, verticalAlign: 'middle', color: MUTED }}/> 
+                          <DirectionsCarFilledIcon sx={{ fontSize: 16, mr: 1, verticalAlign: 'middle', color: COLORS.MUTED }}/> 
                           {a.vehiculo}
                         </TableCell>
                         <TableCell>{a.tipo}</TableCell>
                         <TableCell>
-                          <Chip label={a.estado} size="small" sx={{ fontWeight: 700, bgcolor: estilo.bg, color: estilo.color, borderRadius: 1.5 }} />
+                          <EstadoColor estado={a.estado} />
                         </TableCell>
                       </TableRow>
                     );
@@ -197,7 +134,7 @@ export default function AlarmasGerente() {
                     <Typography sx={{ fontWeight: 700, fontSize: 13 }}>{a.vehiculo}</Typography>
                     <CriticidadChip value={a.criticidad} />
                   </Stack>
-                  <Typography sx={{ color: MUTED, fontSize: 12, mt: 0.5 }}>{a.motivo}</Typography>
+                  <Typography sx={{ color: COLORS.MUTED, fontSize: 12, mt: 0.5 }}>{a.motivo}</Typography>
                 </CardContent>
               </Card>
             ))}
