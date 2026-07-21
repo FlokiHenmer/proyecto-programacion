@@ -24,8 +24,8 @@ import BuildIcon from "@mui/icons-material/Build";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 
 import { GREEN, GREEN_DARK, BORDER, TEXT, MUTED, cardSx, greenBtn, historialCompleto} from "../../constants/Mecanico"
-import HistorialMobileList from "../../components/mecanico/HistorialMobileList";
-import HistorialDesktopTable from "../../components/mecanico/HistorialDesktopTable";
+import HistorialMobileList from "../../components/mecanico/Historial/HistorialMobileList";
+import HistorialDesktopTable from "../../components/mecanico/Historial/HistorialDesktopTable";
 
 export default function Historial() {
   const navigate = useNavigate();

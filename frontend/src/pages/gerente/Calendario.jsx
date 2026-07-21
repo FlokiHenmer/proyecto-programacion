@@ -13,11 +13,11 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import { BORDER, TITLE, MUTED, BG, cardSx, EMPRESA_ID, EVENTOS_INICIALES, MESES, DIAS, buildMonthGrid, toISO, today } from "../../constants/CalendarioGerente";
-import CalendarioHeader from "../../components/gerente/CalendarioHeader";
-import MonthView from "../../components/gerente/MonthView";
-import WeekView from "../../components/gerente/WeekView";
-import DaySidebar from "../../components/gerente/DaySidebar";
-import EventoDialog from "../../components/gerente/EventoDialog";
+import CalendarioHeader from "../../components/gerente/Calendario/CalendarioHeader"
+import MonthView from "../../components/gerente/Calendario/MonthView";
+import WeekView from "../../components/gerente/Calendario/WeekView";
+import DaySidebar from "../../components/gerente/Calendario/DaySidebar";
+import EventoDialog from "../../components/gerente/Calendario/EventoDialog";
 
 
 export default function CalendarioGerente() {

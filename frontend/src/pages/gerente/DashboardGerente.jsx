@@ -14,7 +14,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
 import { COLORS } from "../../constants/Gerente";
-import VistaInicio from "../../components/gerente/VistaInicio";
+import VistaInicio from "../../components/gerente/Dashboard/VistaInicio";
 import Alarmas from "./Alarmas";
 import Calendario from "./Calendario";
 import Historial from "./Historial";

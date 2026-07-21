@@ -53,3 +53,20 @@ export const mantenimientosPendientes = [
   { vehiculo: "Mercedes Actros (XY789ZT)", tipo: "Frenos", prioridad: "Media" },
   { vehiculo: "Iveco Stralis (LM456OP)", tipo: "Cambio Aceite", prioridad: "Alta" },
 ];
+
+// Datos Gestion Empresa
+export const operariosIniciales = [
+  { nombre: "Carlos Pérez", rol: "Mecánico Senior", email: "carlos@empresa.com", estado: "activo" },
+  { nombre: "Lucía Gómez", rol: "Mecánica", email: "lucia@empresa.com", estado: "activo" },
+  { nombre: "Martín Suárez", rol: "Electricista", email: "martin@empresa.com", estado: "activo" },
+  { nombre: "Sofía Ramírez", rol: "Chapista", email: "sofia@empresa.com", estado: "inactivo" },
+  { nombre: "Diego Fernández", rol: "Mecánico", email: "diego@empresa.com", estado: "activo" },
+];
+export const vehiculosIniciales = [
+  { patente: "AB123CD", modelo: "Scania R450", revision: "10/06/2026", estado: "Operativo" },
+  { patente: "XY789ZT", modelo: "Mercedes Actros", revision: "02/06/2026", estado: "En taller" },
+  { patente: "LM456OP", modelo: "Iveco Stralis", revision: "28/05/2026", estado: "Operativo" },
+  { patente: "RT321QW", modelo: "VW Constellation", revision: "15/05/2026", estado: "Alerta" },
+  { patente: "JK654HG", modelo: "Ford Cargo", revision: "20/06/2026", estado: "Operativo" },
+  { patente: "QP987NM", modelo: "Renault Kerax", revision: "01/06/2026", estado: "Alerta" },
+];

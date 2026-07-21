@@ -3,7 +3,7 @@ import {
   Box, Card, CardContent, Typography, Stack, Table, TableBody, TableCell, 
   TableHead, TableRow, Chip, TextField, InputAdornment, Button
 } from "@mui/material";
-import { EstadoColor, CriticidadChip } from "../../components/gerente/CriticidadChip"; // Importamos el nuevo componente
+import { EstadoColor, CriticidadChip } from "../../components/gerente/Alarma/CriticidadChip"; // Importamos el nuevo componente
 import { COLORS, EXTRA_COLORS, cardSx, buttonStyles } from "../../constants/Gerente";
 import KpiCard from "../../components/gerente/KpiCard";
 
