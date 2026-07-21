@@ -15,8 +15,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 // Componentes importados 
 import Navbar from "../../components/layout/Navbar";
 import { GREEN, BORDER, TEXT, MUTED, cardSx, greenBtn, blackBtn, historialData, trabajosData } from "../../constants/Mecanico";
-import SidebarContent from "../../components/mecanico/SidebarContent";
-import InicioDashboard from "../../components/mecanico/InicioDashboard";
+import SidebarContent from "../../components/mecanico/Dashboard/SidebarContent";
+import InicioDashboard from "../../components/mecanico/Dashboard/InicioDashboard";
 import GestionEmpresas from "./GestionEmpresas";
 import FormularioTecnico from "./FormularioTecnico";
 import Trabajos from "./Trabajos";
@@ -47,7 +47,7 @@ export default function DashboardMecanico() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const titulosSecciones = {
-    "/mecanico": "Dashboard",
+    "/mecanico": "Inicio",
     "/mecanico/gestion-empresas": "Gestión de Empresas",
     "/mecanico/formulario-tecnico": "Checklist Técnico",
     "/mecanico/trabajos": "Registro de Trabajos",

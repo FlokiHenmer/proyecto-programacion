@@ -2,11 +2,11 @@ import React, { useMemo, useState } from "react";
 import { Box, useMediaQuery } from "@mui/material";
 
 import { BG, MOCK } from "../../constants/HistorialGerente";
-import HistorialHeader from "../../components/gerente/HistorialHeader";
-import HistorialFiltros from "../../components/gerente/HistorialFiltros";
-import HistorialListaMobile from "../../components/gerente/HistorialListaMobile";
-import HistorialTablaDesktop from "../../components/gerente/HistorialTablaDesktop";
-import DetalleDialog from "../../components/gerente/DetalleDialog";
+import HistorialHeader from "../../components/gerente/Historial/HistorialHeader";
+import HistorialFiltros from "../../components/gerente/Historial/HistorialFiltros";
+import HistorialListaMobile from "../../components/gerente/Historial/HistorialListaMobile";
+import HistorialTablaDesktop from "../../components/gerente/Historial/HistorialTablaDesktop";
+import DetalleDialog from "../../components/gerente/Historial/DetalleDialog";
 
 
 export default function HistorialGerente() {

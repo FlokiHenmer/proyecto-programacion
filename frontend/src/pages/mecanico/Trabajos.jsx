@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Box, Typography, Card, CardContent, Snackbar, Alert } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-import DetallesTrabajo from "../../components/mecanico/DetallesTrabajo";
-import InfoVehiculo from "../../components/mecanico/InfoVehiculo";
+import DetallesTrabajo from "../../components/mecanico/Trabajos/DetallesTrabajo";
+import InfoVehiculo from "../../components/mecanico/Trabajos/InfoVehiculo";
 import { MUTED, GREEN_DARK, TEXT, cardSx, repuestosIniciales } from "../../constants/Mecanico"
 
 export default function TrabajosMecanico() {

@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
 
+
 import { BG, TEXT, initialChecklist } from "../../constants/FormularioMecanico";
-import HeaderHero from "../../components/mecanico/HeaderFormulario";
-import DatosGenerales from "../../components/mecanico/DatosFormulario";
-import SeccionMotor from "../../components/mecanico/SeccionMotor";
-import SeccionTransmision from "../../components/mecanico/SeccionTransmision";
-import SeccionFrenos from "../../components/mecanico/SeccionFrenos";
-import SeccionSuspension from "../../components/mecanico/SeccionSuspension";
-import SeccionElectrico from "../../components/mecanico/SeccionElectrico";
-import SeccionCorreas from "../../components/mecanico/SeccionCorreas";
-import SeccionNeumaticos from "../../components/mecanico/SeccionNeumaticos";
-import DiagnosticoGeneral from "../../components/mecanico/DiagnosticoGeneral";
+import HeaderHero from "../../components/mecanico/Formulario/HeaderFormulario";
+import DatosGenerales from "../../components/mecanico/Formulario/DatosFormulario";
+import SeccionMotor from "../../components/mecanico/Formulario/SeccionMotor";
+import SeccionTransmision from "../../components/mecanico/Formulario/SeccionTransmision";
+import SeccionFrenos from "../../components/mecanico/Formulario/SeccionFrenos";
+import SeccionSuspension from "../../components/mecanico/Formulario/SeccionSuspension";
+import SeccionElectrico from "../../components/mecanico/Formulario/SeccionElectrico";
+import SeccionCorreas from "../../components/mecanico/Formulario/SeccionCorreas";
+import SeccionNeumaticos from "../../components/mecanico/Formulario/SeccionNeumaticos";
+import DiagnosticoGeneral from "../../components/mecanico/Formulario/DiagnosticoGeneral";
 
 
 export default function ChecklistMecanico() {

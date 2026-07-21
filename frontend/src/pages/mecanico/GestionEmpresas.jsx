@@ -7,11 +7,11 @@ import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccount
 
 import { MUTED, GREEN, BLUE_BRAND, ORANGE_BRAND } from "../../constants/EmpresasMecanico";
 import { empresasIniciales } from "../../constants/EmpresasMecanico";
-import EmpresasActions from "../../components/mecanico/EmpresasActions";
-import EmpresasTable from "../../components/mecanico/EmpresasTable";
-import EmpresaMenu from "../../components/mecanico/EmpresaMenu";
-import EmpresaFormDialog from "../../components/mecanico/EmpresaFormDialog";
-import KpiCard from "../../components/mecanico/KpiCardEmpresas";
+import EmpresasActions from "../../components/mecanico/GestionEmpresas/EmpresasActions";
+import EmpresasTable from "../../components/mecanico/GestionEmpresas/EmpresasTable";
+import EmpresaMenu from "../../components/mecanico/GestionEmpresas/EmpresaMenu";
+import EmpresaFormDialog from "../../components/mecanico/GestionEmpresas/EmpresaFormDialog";
+import KpiCard from "../../components/mecanico/GestionEmpresas/KpiCardEmpresas";
 
 
 export default function GestionEmpresas() {

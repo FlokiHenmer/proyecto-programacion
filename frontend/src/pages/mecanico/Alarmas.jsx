@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
-import AlertasCriticas from "../../components/mecanico/AlertasCriticas";
-import TurnosTable from "../../components/mecanico/TurnosTable";
-import AgendaSemanal from "../../components/mecanico/CardAgendaAlarma";
-import ProponerTurnoDialog from "../../components/mecanico/ProponerTurnoDialog";
+import AlertasCriticas from "../../components/mecanico/Alarmas/AlertasCriticas";
+import TurnosTable from "../../components/mecanico/Alarmas/TurnosTable";
+import AgendaSemanal from "../../components/mecanico/Alarmas/CardAgendaAlarma";
+import ProponerTurnoDialog from "../../components/mecanico/Alarmas/ProponerTurnoDialog";
 
 export default function AlertasMecanico() {
   const navigate = useNavigate();
