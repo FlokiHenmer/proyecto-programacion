@@ -1,70 +1,10 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  InputBase,
-  Chip,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Stack,
-  Divider,
-  IconButton
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
-// Iconos necesarios para el Calendario
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ErrorIcon from "@mui/icons-material/Error";
-
-const GREEN = "#44FF34";
-const BORDER = "#e5e7eb";
-const TEXT = "#0f172a";
-const MUTED = "#64748b";
-const YELLOW = "#fde68a";
-const RED_BG = "#fee2e2";
-const RED = "#dc2626";
-
-// Nombres de los meses para el estado dinámico
-const MONTH_NAMES = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-];
-
-// Eventos mapeados con la nueva estructura de almanaque
-const eventsData = {
-  "2026-6": { // Octubre 2026 (Mes índice 9) alineado a la segunda captura
-    1:  { title: "Ford F-150",      time: "09:00", note: "Revisión",   status: "pendiente" },
-    2:  { title: "Toyota Hilux",    time: "10:30", note: "Motor",      status: "confirmado" },
-    3:  { title: "Iveco Daily",     time: "08:00", note: "Frenos",     status: "urgente" },
-    9:  { title: "Renault Kangoo",  time: "11:00", note: "Aceite",     status: "confirmado" },
-    15: { title: "Scania",          time: "14:30", note: "Motor",      status: "urgente" },
-    21: { title: "VW Amarok",       time: "10:00", note: "Inspección", status: "pendiente" },
-  }
-};
-
-const turnos = [
-  { veh: "Ford F-150 Lariat",   pat: "AE-456-BB", fh: "15/10 - 09:00", estado: "pendiente",  obs: "Revisión periódica 20k km" },
-  { veh: "Toyota Hilux SRX",    pat: "BC-789-CC", fh: "16/10 - 10:30", estado: "confirmado", obs: "Cambio de correa de distribución" },
-  { veh: "Iveco Daily 55C17",   pat: "AF-123-ZZ", fh: "17/10 - 08:00", estado: "urgente",    obs: "Falla neumática eje trasero" },
-];
-
-const statusColors = {
-  pendiente:  { bg: YELLOW,  fg: "#92400e", label: "PENDIENTE" },
-  confirmado: { bg: GREEN,   fg: "#06210a", label: "CONFIRMADO" },
-  urgente:    { bg: RED_BG,  fg: RED,       label: "URGENTE" },
-};
-
-const cardSx = {
-  borderRadius: 3,
-  border: `1px solid ${BORDER}`,
-  boxShadow: "none",
-  bgcolor: "#fff",
-};
+import CalendarioMensual from "../../components/mecanico/Calendario/CalendarioMensual";
+import ProximosUrgentes from "../../components/mecanico/Calendario/ProximosUrgentes";
+import TurnosTable from "../../components/mecanico/Calendario/ListaTurnosCalendario";
+import { GREEN, RED, BORDER,MUTED, TEXT, eventsData, turnos, getDaysInMonthGrid } from "../../constants/CalendarioMecanico";
 
 export default function Calendario() {
   const [query, setQuery] = useState("");
@@ -90,22 +30,6 @@ export default function Calendario() {
     } else {
       setCurrentMonth(prev => prev + 1);
     }
-  };
-
-  // Función modificada para forzar el inicio en Lunes tal como muestra la segunda captura
-  const getDaysInMonthGrid = (month, year) => {
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    const totalDays = new Date(year, month + 1, 0).getDate();
-    const grid = [];
-    
-    for (let i = 0; i < startOffset; i++) {
-      grid.push(null);
-    }
-    for (let day = 1; day <= totalDays; day++) {
-      grid.push(day);
-    }
-    return grid;
   };
 
   const daysGrid = getDaysInMonthGrid(currentMonth, currentYear);
@@ -138,104 +62,22 @@ export default function Calendario() {
       }}>
         
         {/* Sección Calendario */}
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
-            Vista Mensual
-          </Typography>          
-          <Card sx={cardSx}>
-            <CardContent>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <IconButton onClick={handlePrevMonth}><ChevronLeftIcon /></IconButton>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>{MONTH_NAMES[currentMonth]}</Typography>
-                <IconButton onClick={handleNextMonth}><ChevronRightIcon /></IconButton>
-              </Box>
-              
-              <Box sx={{ overflowX: "auto", width: "100%" }}>
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", minWidth: 500 }}>
-                  {["L", "M", "M", "J", "V", "S", "D"].map(d => (
-                    <Typography key={d} sx={{ textAlign: "center", fontWeight: 700, fontSize: 12, color: MUTED }}>{d}</Typography>
-                  ))}
-                  {daysGrid.map((d, i) => (
-                    <Box key={i} sx={{ minHeight: 80, border: `1px solid ${BORDER}`, p: 0.5 }}>
-                      <Typography sx={{ fontSize: 11, fontWeight: 600 }}>{d}</Typography>
-                      {currentEvents[d] && (
-                        <Box sx={{ bgcolor: statusColors[currentEvents[d].status].bg, color: statusColors[currentEvents[d].status].fg, fontSize: 9, p: 0.5, borderRadius: 1, mt: 0.5, fontWeight: 700 }}>
-                          {currentEvents[d].title}
-                        </Box>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              </Box>  
-            </CardContent>
-          </Card>
-        </Box>
+        <CalendarioMensual
+          currentMonth={currentMonth}
+          handlePrevMonth={handlePrevMonth}
+          handleNextMonth={handleNextMonth}
+          daysGrid={daysGrid}
+          currentEvents={currentEvents}
+        />
 
         {/* Sección Urgentes - APLICADO minWidth: 0 para que no estire la columna */}
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT, mb: 1.5 }}>Próximos Urgentes</Typography>
-          <Card sx={{ borderRadius: 3, border: `1px solid ${BORDER}`, boxShadow: "none" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Stack spacing={1}>
-                {turnos.filter(t => t.estado === "urgente").map((u, i) => (
-                  <Box key={i} sx={{ bgcolor: RED_BG, border: `1px solid #fecaca`, border: `1px solid ${BORDER}`, borderRadius: 2, p: 1.5, minWidth: 0 }}>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
-                      <ErrorIcon sx={{ color: RED, fontSize: 20, flexShrink: 0 }} />
-                      <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Typography sx={{ fontWeight: 700, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {u.veh}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Box>
+        <ProximosUrgentes />
+        
       </Box>
 
       {/* Tabla inferior de turnos */}
-      <Box sx={{ overflowX: "auto" }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: TEXT }}>
-          Lista de Turnos
-        </Typography>
-        <Table sx={{ minWidth: 600 }}> {/* minWidth asegura que la tabla se mantenga legible */}
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#f8fafc" }}>
-              {["VEHÍCULO", "PATENTE", "FECHA Y HORA", "ESTADO", "OBSERVACIONES"].map(h => (
-                <TableCell key={h} sx={{ 
-                  fontWeight: 700, 
-                  color: MUTED, 
-                  fontSize: { xs: 10, sm: 12 }, // Fuente más pequeña en móvil
-                  whiteSpace: "nowrap" // Evita que los encabezados se corten
-                }}>
-                  {h}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredTurnos.map((t, i) => {
-              const s = statusColors[t.estado];
-              return (
-                <TableRow key={i}>
-                  <TableCell sx={{ fontWeight: 600, color: TEXT, fontSize: 13 }}>{t.veh}</TableCell>
-                  <TableCell sx={{ fontFamily: "monospace", fontSize: 12 }}>{t.pat}</TableCell>
-                  <TableCell sx={{ fontSize: 13 }}>{t.fh}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={s.label} size="small"
-                      sx={{ bgcolor: s.bg, color: s.fg, fontWeight: 700, fontSize: 10 }}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ color: TEXT, fontSize: 13 }}>{t.obs}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </Box>
+      <TurnosTable filteredTurnos={filteredTurnos} />
+
     </Box>
   );
 }

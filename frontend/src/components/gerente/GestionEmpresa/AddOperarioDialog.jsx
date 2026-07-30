@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, Button } from "@mui/material";
-import { buttonStyles } from "../../constants/Gerente";
+import { buttonStyles } from "../../../constants/Gerente";
 
 export default function AddOperarioDialog({ open, onClose, onSave, nuevoOperario, setNuevoOperario }) {
   return (

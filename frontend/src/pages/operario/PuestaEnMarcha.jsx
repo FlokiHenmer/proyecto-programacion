@@ -1,16 +1,15 @@
 import { useMemo, useState } from "react";
-import {
-  Box, Card, CardContent, Typography, TextField, MenuItem,
-  Radio, RadioGroup, FormControlLabel, Button, Stack, Grid, Alert, Divider, Snackbar,
-} from "@mui/material";
+import { Box, Button, Alert, Snackbar, Stack, Typography } from "@mui/material";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import SendIcon from "@mui/icons-material/Send";
+
 import Navbar from "../../components/layout/Navbar";
 import ChecklistCard from "../../components/operario/ChecklistCard";
 import StatusSummary from "../../components/operario/BotonEstado";
 import { SECCIONES, VERDE, TEXT, MUTED, BG, BORDER, cardSx, colorHex } from "../../constants/Operario";
 import BotonEstado from "../../components/operario/BotonEstado";
-import HelpIcon from "@mui/icons-material/Help";
+import DatosControl from "../../components/operario/DatosControl";
+import Estado from "../../components/operario/EstadoGeneral";
 
 export default function PuestaEnMarcha() {
   const [km, setKm] = useState("");
@@ -34,12 +33,6 @@ export default function PuestaEnMarcha() {
     if (colores.includes("yellow")) return "yellow";
     return "green";
   }, [secciones]);
-
-  const textoEstado = {
-    green: "Apto para trabajar",
-    yellow: "Operar con precaución",
-    red: "No apto para conducir",
-  };
 
   const handleEnviar = () => {
     if (!km || !vehiculo) return setError("Completá kilómetros y vehículo.");
@@ -81,43 +74,15 @@ export default function PuestaEnMarcha() {
         </Stack>
 
         {/* Encabezado / Datos generales */}
-        <Card sx={{ ...cardSx, borderLeft: `4px solid ${VERDE}`, mb: 3 }}>
-          <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
-            <Typography sx={{ fontWeight: 800, fontSize: 16, color: TEXT, mb: 0.5 }}>
-              Datos del control
-            </Typography>
-            <Typography sx={{ color: MUTED, fontSize: 13, mb: 2.5 }}>
-              Información general del vehículo y tipo de inspección
-            </Typography>
-            <Grid container spacing={2.5}>
-              <Grid item xs={12} sm={6} md={3}>
-                <TextField fullWidth size="small" label="Fecha Actual" value={fechaHoy} InputProps={{ readOnly: true }} />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <TextField fullWidth size="small" label="Kilómetros" type="number" placeholder="Ej: 125400"
-                  value={km} onChange={(e) => setKm(e.target.value)} />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <TextField fullWidth size="small" select label="Vehículo" value={vehiculo}
-                  onChange={(e) => setVehiculo(e.target.value)}>
-                  <MenuItem value="">Seleccionar...</MenuItem>
-                  <MenuItem value="AAA111">AAA111 - Ford Ranger</MenuItem>
-                  <MenuItem value="BBB222">BBB222 - Toyota Hilux</MenuItem>
-                  <MenuItem value="CCC333">CCC333 - VW Amarok</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Typography sx={{ color: MUTED, fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", mb: 0.5 }}>
-                  Tipo de control
-                </Typography>
-                <RadioGroup row value={tipoControl} onChange={(e) => setTipoControl(e.target.value)}>
-                  <FormControlLabel value="regular" control={<Radio sx={{ color: MUTED, "&.Mui-checked": { color: VERDE } }} />} label={<Typography sx={{ fontSize: 14, color: TEXT }}>Regular</Typography>} />
-                  <FormControlLabel value="previaje" control={<Radio sx={{ color: MUTED, "&.Mui-checked": { color: VERDE } }} />} label={<Typography sx={{ fontSize: 14, color: TEXT }}>Previaje</Typography>} />
-                </RadioGroup>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+        <DatosControl
+          fechaHoy={fechaHoy}
+          km={km}
+          setKm={setKm}
+          vehiculo={vehiculo}
+          setVehiculo={setVehiculo}
+          tipoControl={tipoControl}
+          setTipoControl={setTipoControl}
+        />
         
          {/* Secciones */}
         <Box sx={{ mb: 4 }}>
@@ -136,51 +101,11 @@ export default function PuestaEnMarcha() {
         
 
         {/* Estado general */}
-        <Card sx={{
-          ...cardSx,
-          mt: 3,
-          borderLeft: estadoGeneral ? `5px solid ${colorHex(estadoGeneral)}` : `4px solid ${BORDER}`,
-          bgcolor: estadoGeneral ? colorHex(estadoGeneral) : "#fff",
-          color: estadoGeneral ? "#fff" : TEXT,
-          boxShadow: estadoGeneral
-            ? `0 8px 30px ${colorHex(estadoGeneral)}40`
-            : "0 2px 10px rgba(15, 23, 42, 0.04)",
-          transition: "all .35s ease",
-        }}>
-          <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box sx={{
-                width: 44, height: 44, borderRadius: 2,
-                bgcolor: estadoGeneral ? "rgba(255,255,255,0.18)" : BG,
-                border: estadoGeneral ? "1px solid rgba(255,255,255,0.3)" : `1px solid ${BORDER}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <HelpIcon sx={{ color: estadoGeneral ? "#fff" : TEXT }} />
-              </Box>
-              <Box>
-                <Typography sx={{ fontSize: 18, fontWeight: 800 }}>
-                  {estadoGeneral ? textoEstado[estadoGeneral] : "Completá el checklist"}
-                </Typography>
-                <Typography sx={{ fontSize: 13, opacity: estadoGeneral ? 0.95 : 1, color: estadoGeneral ? "#fff" : MUTED, mt: 0.25 }}>
-                  {estadoGeneral
-                    ? "Estado general calculado en base a las selecciones."
-                    : "Seleccioná una opción en cada sección para conocer el estado general."}
-                </Typography>
-              </Box>
-            </Stack>
-            {(estadoGeneral === "yellow" || estadoGeneral === "red") && (
-              <>
-                <Divider sx={{ my: 2.5, borderColor: "rgba(255,255,255,0.4)" }} />
-                <TextField
-                  fullWidth required label="¿A quién se informó la falla?"
-                  placeholder="Nombre de la persona informada"
-                  value={informadoA} onChange={(e) => setInformadoA(e.target.value)}
-                  sx={{ bgcolor: "#fff", borderRadius: 1 }}
-                />
-              </>
-            )}
-          </CardContent>
-        </Card>
+        <Estado
+          estadoGeneral={estadoGeneral}
+          informadoA={informadoA}
+          setInformadoA={setInformadoA}
+        />
         
         {error && <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>{error}</Alert>}
         
@@ -193,6 +118,7 @@ export default function PuestaEnMarcha() {
            </Button>
         </Box>
       </Box>
+      
       <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}>
         <Alert severity="success" variant="filled" sx={{ width: "100%", bgcolor: "#0f172a", color: "#fff" }}>Puesta en marcha enviada exitosamente</Alert>
       </Snackbar>

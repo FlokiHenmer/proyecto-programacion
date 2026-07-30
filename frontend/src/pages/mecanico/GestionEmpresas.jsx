@@ -1,158 +1,18 @@
 import { useMemo, useState } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  IconButton,
-  InputBase,
-  Chip,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Tooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { Box, Typography } from "@mui/material";
+
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
 
-const GREEN = "#44FF34";
-const GREEN_DARK = "#22cc15";
-const BORDER = "#e5e7eb";
-const TEXT = "#0f172a";
-const MUTED = "#64748b";
-const YELLOW = "#fde68a";
-const YELLOW_TEXT = "#92400e";
-const GREEN_SOFT = "#dcfce7";
-const GREEN_TEXT = "#166534";
-const RED_BG = "#fee2e2";
-const RED = "#dc2626";
+import { MUTED, GREEN, BLUE_BRAND, ORANGE_BRAND } from "../../constants/EmpresasMecanico";
+import { empresasIniciales } from "../../constants/EmpresasMecanico";
+import EmpresasActions from "../../components/mecanico/GestionEmpresas/EmpresasActions";
+import EmpresasTable from "../../components/mecanico/GestionEmpresas/EmpresasTable";
+import EmpresaMenu from "../../components/mecanico/GestionEmpresas/EmpresaMenu";
+import EmpresaFormDialog from "../../components/mecanico/GestionEmpresas/EmpresaFormDialog";
+import KpiCard from "../../components/mecanico/GestionEmpresas/KpiCardEmpresas";
 
-// Nuevos colores institucionales alineados a tus capturas
-const BLUE_BRAND = "#3b82f6"; 
-const ORANGE_BRAND = "#f97316";
-
-const empresasIniciales = [
-  {
-    id: 1,
-    razonSocial: "Transportes del Sur S.A.",
-    cuit: "30-71234567-8",
-    gerente: "Martín Acosta",
-    email: "m.acosta@transportesdelsur.com",
-    vehiculos: 42,
-    estado: "Activa",
-  },
-  {
-    id: 2,
-    razonSocial: "Logística Andina SRL",
-    cuit: "33-70988123-4",
-    gerente: "Carolina Méndez",
-    email: "c.mendez@logandina.com.ar",
-    vehiculos: 28,
-    estado: "En Revisión",
-  },
-  {
-    id: 3,
-    razonSocial: "Cargas Pampeanas S.A.",
-    cuit: "30-69875432-1",
-    gerente: "Hernán Rivero",
-    email: "h.rivero@cargaspampeanas.com",
-    vehiculos: 56,
-    estado: "Activa",
-  },
-  {
-    id: 4,
-    razonSocial: "Distribuidora Norte SA",
-    cuit: "30-71456789-2",
-    gerente: "Lucía Fernández",
-    email: "l.fernandez@distrinorte.com",
-    vehiculos: 16,
-    estado: "En Revisión",
-  },
-];
-
-function KpiCard({ title, value, unit, accent, icon }) {
-  return (
-    <Card
-      sx={{
-        borderRadius: 3,
-        boxShadow: "none",
-        border: `1px solid ${BORDER}`,
-        borderLeft: `4px solid ${accent}`,
-      }}
-    >
-      <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 2, "&:last-child": { pb: 2.5 } }}>
-        <Box
-          sx={{
-            width: 44,
-            height: 44,
-            borderRadius: 2,
-            display: "grid",
-            placeItems: "center",
-            bgcolor: "#f1f5f9",
-            color: TEXT,
-          }}
-        >
-          {icon}
-        </Box>
-        <Box>
-          <Typography
-            variant="caption"
-            sx={{ color: MUTED, fontWeight: 700, letterSpacing: 0.6 }}
-          >
-            {title}
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.75 }}>
-            <Typography sx={{ fontWeight: 800, fontSize: 26, color: TEXT, lineHeight: 1.1 }}>
-              {value}
-            </Typography>
-            <Typography sx={{ color: MUTED, fontWeight: 600, fontSize: 13 }}>
-              {unit}
-            </Typography>
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
-  );
-}
-
-function EstadoChip({ estado }) {
-  const map = {
-    Activa: { bg: GREEN_SOFT, color: GREEN_TEXT },
-    "En Revisión": { bg: YELLOW, color: YELLOW_TEXT },
-    Inactiva: { bg: RED_BG, color: RED },
-  };
-  const s = map[estado] || { bg: "#f1f5f9", color: TEXT };
-  return (
-    <Chip
-      label={estado}
-      size="small"
-      sx={{
-        bgcolor: s.bg,
-        color: s.color,
-        fontWeight: 700,
-        borderRadius: 2,
-        px: 0.5,
-      }}
-    />
-  );
-}
 
 export default function GestionEmpresas() {
   const [empresas, setEmpresas] = useState(empresasIniciales);
@@ -256,153 +116,29 @@ export default function GestionEmpresas() {
       </Box>
 
       {/* Barra de Acciones */}
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 1.5, justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" } }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, px: 1.5, py: 0.5, bgcolor: "#fff", border: `1px solid ${BORDER}`, borderRadius: 2, width: { xs: "100%", sm: 360 } }}>
-          <SearchIcon sx={{ color: MUTED, fontSize: 20 }} />
-          <InputBase
-            placeholder="Buscar por razón social o CUIT..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            sx={{ flex: 1, fontSize: 13, color: TEXT }}
-          />
-        </Box>
-        <Button
-          startIcon={<AddIcon />}
-          onClick={handleOpenCreate}
-          sx={{
-            bgcolor: GREEN,
-            color: TEXT,
-            fontWeight: 700,
-            textTransform: "none",
-            borderRadius: 2,
-            px: 2.5,
-            py: 0.8,
-            boxShadow: "none",
-            "&:hover": { bgcolor: GREEN_DARK, boxShadow: "none" },
-          }}
-        >
-          Agregar Nueva Empresa
-        </Button>
-      </Box>
+      <EmpresasActions query={query} setQuery={setQuery} onCreate={handleOpenCreate} />
 
       {/* Tabla Contenedora Ajustada */}
-        <Card sx={{ borderRadius: 3, boxShadow: "none", border: `1px solid ${BORDER}`, overflow: "hidden" }}>
-          <Box sx={{ overflowX: "auto" }}>
-            <Table sx={{ minWidth: 500 }}> {/* minWidth ajustado para asegurar mejor comportamiento */}
-              <TableHead sx={{ bgcolor: "#f8fafc" }}>
-                <TableRow>
-                  {["Empresa", "Gerente", "Flota", "Estado", "Acciones"].map((h) => (
-                    <TableCell
-                      key={h}
-                      sx={{ 
-                        color: MUTED, 
-                        fontWeight: 700, 
-                        fontSize: { xs: 10, sm: 11 }, // Fuente reducida en móvil
-                        padding: { xs: "8px 6px", sm: "16px" }, // Padding compacto
-                        textTransform: "uppercase", 
-                        borderBottom: `1px solid ${BORDER}` 
-                      }}
-                      align={h === "Flota" ? "center" : "left"}
-                    >
-                      {h}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filtradas.map((e) => (
-                  <TableRow key={e.id} hover sx={{ "&:last-child td": { borderBottom: 0 } }}>
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
-                      <Typography sx={{ fontWeight: 700, color: TEXT, fontSize: { xs: 12, sm: 14 } }}>{e.razonSocial}</Typography>
-                      <Typography variant="caption" sx={{ color: MUTED, fontSize: { xs: 10, sm: 12 } }}>{e.cuit}</Typography>
-                    </TableCell>
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
-                      <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: { xs: 12, sm: 14 } }}>{e.gerente}</Typography>
-                      <Typography variant="caption" sx={{ color: MUTED, fontSize: { xs: 10, sm: 12 } }}>{e.email.split('@')[0]}...</Typography>
-                    </TableCell>
-                    <TableCell align="center" sx={{ borderBottom: `1px solid ${BORDER}`, padding: "12px 6px" }}>
-                      <Typography sx={{ fontWeight: 600, color: TEXT, fontSize: { xs: 13, sm: 15 } }}>{e.vehiculos}</Typography>
-                    </TableCell>
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
-                      <EstadoChip estado={e.estado} />
-                    </TableCell>
-                    <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: "12px 6px" }}>
-                      <Box sx={{ display: "flex", gap: 0 }}>
-                        <IconButton size="small" onClick={() => handleOpenEdit(e)}><EditOutlinedIcon fontSize="small" /></IconButton>
-                        <IconButton size="small" onClick={(event) => handleOpenMenu(event, e.id)}><SettingsOutlinedIcon fontSize="small" /></IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Box>
-        </Card>
+      <EmpresasTable filtradas={filtradas} onEdit={handleOpenEdit} onOpenMenu={handleOpenMenu} />
 
       {/* MENU CONTEXTUAL PARA LA TUERCA */}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} PaperProps={{ sx: { borderRadius: 2, border: `1px solid ${BORDER}`, boxShadow: "0px 4px 12px rgba(0,0,0,0.05)" } }}>
-        <MenuItem onClick={() => handleChangeEstado("Activa")}>
-          <ListItemIcon><BusinessIcon fontSize="small" sx={{ color: GREEN_TEXT }} /></ListItemIcon>
-          <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Marcar Activa</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={() => handleChangeEstado("En Revisión")}>
-          <ListItemIcon><SupervisorAccountOutlinedIcon fontSize="small" sx={{ color: YELLOW_TEXT }} /></ListItemIcon>
-          <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Poner En Revisión</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={() => handleChangeEstado("Inactiva")}>
-          <ListItemIcon><LocalShippingOutlinedIcon fontSize="small" sx={{ color: RED }} /></ListItemIcon>
-          <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Marcar Inactiva</ListItemText>
-        </MenuItem>
-        <Box sx={{ my: 0.5, borderTop: `1px solid ${BORDER}` }} />
-        <MenuItem onClick={handleBorrarEmpresa} sx={{ color: RED, "&:hover": { bgcolor: RED_BG } }}>
-          <ListItemIcon><BusinessIcon fontSize="small" sx={{ color: RED }} /></ListItemIcon>
-          <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Eliminar Empresa</ListItemText>
-        </MenuItem>
-      </Menu>
+      <EmpresaMenu
+        anchorEl={anchorEl}
+        onClose={handleCloseMenu}
+        onChangeEstado={handleChangeEstado}
+        onBorrar={handleBorrarEmpresa}
+      />
 
-      {/* MODAL FORMULARIO: CREAR / EDITAR */}
-      <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }}>
-        <form onSubmit={handleSaveForm}>
-          <DialogTitle sx={{ fontWeight: 800, color: TEXT, pb: 1 }}>
-            {editingEmpresa ? "Editar Empresa" : "Registrar Nueva Empresa"}
-          </DialogTitle>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-            <Typography variant="caption" sx={{ color: MUTED, mb: 1 }}>
-              Completá los datos fiscales y el contacto principal corporativo (Gerente de Flota).
-            </Typography>
-            <TextField
-              label="Razón Social / Nombre de Empresa" required fullWidth size="small"
-              value={formData.razonSocial} onChange={(e) => setFormData({ ...formData, razonSocial: e.target.value })}
-            />
-            <TextField
-              label="CUIT" required fullWidth size="small" placeholder="30-XXXXXXXX-X"
-              value={formData.cuit} onChange={(e) => setFormData({ ...formData, cuit: e.target.value })}
-            />
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-              <TextField
-                label="Nombre del Gerente" required fullWidth size="small"
-                value={formData.gerente} onChange={(e) => setFormData({ ...formData, gerente: e.target.value })}
-              />
-              <TextField
-                label="Email Corporativo" required fullWidth size="small" type="email"
-                value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </Box>
-            <TextField
-              label="Vehículos Iniciales en Flota" fullWidth size="small" type="number"
-              value={formData.vehiculos} onChange={(e) => setFormData({ ...formData, vehiculos: e.target.value })}
-            />
-          </DialogContent>
-          <DialogActions sx={{ p: 2.5, pt: 1.5 }}>
-            <Button onClick={handleCloseForm} sx={{ color: MUTED, textTransform: "none", fontWeight: 700 }}>
-              Cancelar
-            </Button>
-            <Button type="submit" sx={{ bgcolor: GREEN, color: TEXT, fontWeight: 700, textTransform: "none", px: 3, "&:hover": { bgcolor: GREEN_DARK } }}>
-              {editingEmpresa ? "Guardar Cambios" : "Dar de Alta"}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+      {/* DIALOG FORMULARIO: CREAR / EDITAR */}
+      <EmpresaFormDialog
+        open={openForm}
+        onClose={handleCloseForm}
+        onSubmit={handleSaveForm}
+        formData={formData}
+        setFormData={setFormData}
+        editingEmpresa={editingEmpresa}
+      />
+
     </Box>
   );
 }
