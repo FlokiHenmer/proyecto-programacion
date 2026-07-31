@@ -6,6 +6,7 @@ export const BORDER = "#e5e7eb";
 export const TEXT = "#0f172a";
 export const MUTED = "#64748b";
 export const PANEL_BG = "#f8fafc";
+export const BLUE = "#0ea5e9";
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -47,6 +48,31 @@ export const trabajosData = [
   { v: "Toyota Hilux (ABC-123)", d: "Hoy", desc: "Revisión de niveles y presión de neumáticos." },
   { v: "Ford Ranger (XYZ-789)", d: "Ayer", desc: "Cambio de filtros de aire y combustible." },
   { v: "VW Amarok (DEF-456)", d: "09 Oct", desc: "Ajuste de correas y revisión general." },
+];
+
+export const DATA_SEMANA = [
+  { label: "Lun", value: 4 },
+  { label: "Mar", value: 7 },
+  { label: "Mié", value: 5 },
+  { label: "Jue", value: 9 },
+  { label: "Vie", value: 6 },
+  { label: "Sáb", value: 3 },
+  { label: "Dom", value: 1 },
+];
+
+export const DATA_MES = [
+  { label: "Ene", value: 18 },
+  { label: "Feb", value: 24 },
+  { label: "Mar", value: 15 },
+  { label: "Abr", value: 31 },
+  { label: "May", value: 27 },
+  { label: "Jun", value: 36 },
+  { label: "Jul", value: 29 },
+  { label: "Ago", value: 41 },
+  { label: "Sep", value: 26 },
+  { label: "Oct", value: 34 },
+  { label: "Nov", value: 22 },
+  { label: "Dic", value: 17 },
 ];
 
 // Datos Historial

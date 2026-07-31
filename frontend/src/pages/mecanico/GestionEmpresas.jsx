@@ -6,17 +6,24 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
 
 import { MUTED, GREEN, BLUE_BRAND, ORANGE_BRAND } from "../../constants/EmpresasMecanico";
-import { empresasIniciales } from "../../constants/EmpresasMecanico";
+import { empresasIniciales, gerentesIniciales, operariosMecanico, vehiculosMecanico } from "../../constants/EmpresasMecanico";
 import EmpresasActions from "../../components/mecanico/GestionEmpresas/EmpresasActions";
 import EmpresasTable from "../../components/mecanico/GestionEmpresas/EmpresasTable";
 import EmpresaMenu from "../../components/mecanico/GestionEmpresas/EmpresaMenu";
 import EmpresaFormDialog from "../../components/mecanico/GestionEmpresas/EmpresaFormDialog";
 import KpiCard from "../../components/mecanico/GestionEmpresas/KpiCardEmpresas";
+import GerentesList from "../../components/mecanico/GestionEmpresas/GerentesList";
+import OperariosListMecanico from "../../components/mecanico/GestionEmpresas/OperariosListMecanico";
+import VehiculosListMecanico from "../../components/mecanico/GestionEmpresas/VehiculosListMecanico";
+import VistaToggle from "../../components/mecanico/GestionEmpresas/VistaToggle";
 
 
 export default function GestionEmpresas() {
   const [empresas, setEmpresas] = useState(empresasIniciales);
   const [query, setQuery] = useState("");
+  const [vista, setVista] = useState("empresas");
+
+  const q = query.trim().toLowerCase();
 
   // Estados para Modal de Formulario (Crear/Editar)
   const [openForm, setOpenForm] = useState(false);
@@ -35,16 +42,30 @@ export default function GestionEmpresas() {
   const [selectedEmpresaId, setSelectedEmpresaId] = useState(null);
 
   const filtradas = useMemo(() => {
-    const q = query.trim().toLowerCase();
     if (!q) return empresas;
     return empresas.filter(
       (e) =>
         e.razonSocial.toLowerCase().includes(q) ||
         e.cuit.toLowerCase().includes(q)
     );
-  }, [empresas, query]);
+  }, [empresas, q]);
 
   const totalVehiculos = empresas.reduce((acc, e) => acc + Number(e.vehiculos || 0), 0);
+
+  const gerentesFiltrados = useMemo(
+    () => gerentesIniciales.filter((g) => !q || g.nombre.toLowerCase().includes(q) || g.empresa.toLowerCase().includes(q)),
+    [q]
+  );
+
+  const operariosFiltrados = useMemo(
+    () => operariosMecanico.filter((o) => !q || o.nombre.toLowerCase().includes(q) || o.empresa.toLowerCase().includes(q)),
+    [q]
+  );
+
+  const vehiculosFiltrados = useMemo(
+    () => vehiculosMecanico.filter((v) => !q || v.patente.toLowerCase().includes(q) || v.modelo.toLowerCase().includes(q) || v.empresa.toLowerCase().includes(q)),
+    [q]
+  );
 
   // Manejo de Modal Formulario
   const handleOpenCreate = () => {
@@ -115,11 +136,23 @@ export default function GestionEmpresas() {
         <KpiCard title="GERENTES ACTIVOS" value={empresas.filter(e => e.estado !== "Inactiva").length} unit="Usuarios" accent={ORANGE_BRAND} icon={<SupervisorAccountOutlinedIcon />} />
       </Box>
 
-      {/* Barra de Acciones */}
-      <EmpresasActions query={query} setQuery={setQuery} onCreate={handleOpenCreate} />
+      {/* Selector de Vistas (Tabs) */}
+      <VistaToggle vista={vista} setVista={setVista} />
 
-      {/* Tabla Contenedora Ajustada */}
-      <EmpresasTable filtradas={filtradas} onEdit={handleOpenEdit} onOpenMenu={handleOpenMenu} />
+      {/* Renderizado condicional según la pestaña seleccionada */}
+      {vista === "empresas" && (
+        <>
+          {/* Agregar nueva empresa */}
+          <EmpresasActions query={query} setQuery={setQuery} onCreate={handleOpenCreate} />
+          
+          <EmpresasTable filtradas={filtradas} onEdit={handleOpenEdit} onOpenMenu={handleOpenMenu} />
+        </>
+        
+      )}
+      {vista === "gerentes" && <GerentesList gerentes={gerentesFiltrados} />}
+      {vista === "operarios" && <OperariosListMecanico operarios={operariosFiltrados} />}
+      {vista === "vehiculos" && <VehiculosListMecanico vehiculos={vehiculosFiltrados} />}
+
 
       {/* MENU CONTEXTUAL PARA LA TUERCA */}
       <EmpresaMenu
