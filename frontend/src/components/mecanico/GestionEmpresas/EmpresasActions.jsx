@@ -1,7 +1,7 @@
 import { Box, Button, InputBase } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import { BORDER, MUTED, TEXT, GREEN, GREEN_DARK } from "../../../constants/EmpresasMecanico";
+import { BORDER, MUTED, TEXT, ORANGE_BRAND } from "../../../constants/EmpresasMecanico";
 
 export default function EmpresasActions({ query, setQuery, onCreate }) {
   return (
@@ -19,15 +19,14 @@ export default function EmpresasActions({ query, setQuery, onCreate }) {
         startIcon={<AddIcon />}
         onClick={onCreate}
         sx={{
-          bgcolor: GREEN,
-          color: TEXT,
+          bgcolor: TEXT,
+          color: BORDER,
           fontWeight: 700,
           textTransform: "none",
           borderRadius: 2,
           px: 2.5,
           py: 0.8,
           boxShadow: "none",
-          "&:hover": { bgcolor: GREEN_DARK, boxShadow: "none" },
         }}
       >
         Agregar Nueva Empresa

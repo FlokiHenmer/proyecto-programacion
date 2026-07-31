@@ -13,6 +13,7 @@ import HistoryIcon from "@mui/icons-material/History";
 // Componentes de Layout y Vistas
 import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
+import ScrollToTop from "../../components/layout/ScrollToTop";
 import { COLORS } from "../../constants/Gerente";
 import VistaInicio from "../../components/gerente/Dashboard/VistaInicio";
 import Alarmas from "./Alarmas";
@@ -66,6 +67,10 @@ export default function DashboardGerente() {
             </Routes>
           </Box>
         </Box>
+
+        {/* Botón flotante */}
+        <ScrollToTop />
+
       </Box>
     </Box>
   );

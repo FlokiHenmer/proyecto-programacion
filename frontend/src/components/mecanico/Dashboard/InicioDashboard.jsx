@@ -13,6 +13,7 @@ import KpiCard from "../../../components/mecanico/KpiCard";
 import AlertItem from "./AlertItem";
 import AgendaItem from "./AgendaItem";
 import { StatusRow } from "./StatusRow";
+import ServiciosChart from "./ServiciosChart";
 
 export default function InicioDashboard() {
   const navigate = useNavigate();
@@ -43,58 +44,9 @@ export default function InicioDashboard() {
             </Button>
           </CardContent>
         </Card>
-        <Card sx={cardSx}>
-          <CardContent>
-            <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "stretch", sm: "flex-start" }, gap: 1.5, mb: 1.5 }}>
-              <Box>
-                <Typography sx={{ fontWeight: 800, fontSize: 20, color: TEXT }}>
-                  Historial de Vehículos
-                </Typography>
-                <Typography sx={{ color: MUTED, fontSize: 13 }}>142 servicios registrados</Typography>
-              </Box>
-              <Button sx={{ ...greenBtn, px: 2, alignSelf: { xs: "stretch", sm: "auto" } }} onClick={() => navigate("/mecanico/historial")}>Ver historial completo</Button>
-            </Box>
-            <Box sx={{ overflowX: "auto" }}>
-              <Table size="small" sx={{ minWidth: 350 }}> {/* Ajustado de 480 a 350 */}
-                <TableHead>
-                  <TableRow>
-                    {["PATENTE", "MODELO", "FECHA", "SERVICIO"].map((h) => (
-                      <TableCell 
-                        key={h} 
-                        sx={{ 
-                          fontWeight: 700, 
-                          color: MUTED, 
-                          fontSize: { xs: 10, sm: 12 }, // Fuente más pequeña en móvil
-                          padding: { xs: "8px 4px", sm: "16px" } // Padding reducido en móvil
-                        }}
-                      >
-                        {h}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {historialData.map((r) => (
-                    <TableRow key={r.patente}>
-                      <TableCell sx={{ fontWeight: 700, fontSize: { xs: 12, sm: 14 }, padding: "8px 4px" }}>
-                        {r.patente}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: { xs: 12, sm: 14 }, padding: "8px 4px" }}>
-                        {r.modelo}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: { xs: 12, sm: 14 }, padding: "8px 4px" }}>
-                        {r.fecha}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: { xs: 12, sm: 14 }, padding: "8px 4px" }}>
-                        {r.servicio}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </CardContent>
-        </Card>
+
+        <ServiciosChart />
+        
       </Box>
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 2.5 }}>
         <Card sx={cardSx}>
