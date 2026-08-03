@@ -7,96 +7,115 @@ import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccount
 
 import { MUTED, GREEN, BLUE_BRAND, ORANGE_BRAND } from "../../constants/EmpresasMecanico";
 import { empresasIniciales, gerentesIniciales, operariosMecanico, vehiculosMecanico } from "../../constants/EmpresasMecanico";
+
+// Acciones (Buscadores y Botones)
 import EmpresasActions from "../../components/mecanico/GestionEmpresas/EmpresasActions";
+import GerentesActions from "../../components/mecanico/GestionEmpresas/GerentesActions";
+import OperariosActions from "../../components/mecanico/GestionEmpresas/OperariosActions";
+import VehiculosActions from "../../components/mecanico/GestionEmpresas/VehiculosActions";
+
+// Tablas y Listas
 import EmpresasTable from "../../components/mecanico/GestionEmpresas/EmpresasTable";
-import EmpresaMenu from "../../components/mecanico/GestionEmpresas/EmpresaMenu";
-import EmpresaFormDialog from "../../components/mecanico/GestionEmpresas/EmpresaFormDialog";
-import KpiCard from "../../components/mecanico/GestionEmpresas/KpiCardEmpresas";
 import GerentesList from "../../components/mecanico/GestionEmpresas/GerentesList";
 import OperariosListMecanico from "../../components/mecanico/GestionEmpresas/OperariosListMecanico";
 import VehiculosListMecanico from "../../components/mecanico/GestionEmpresas/VehiculosListMecanico";
-import VistaToggle from "../../components/mecanico/GestionEmpresas/VistaToggle";
 
+// Menús y Dialogs
+import EmpresaMenu from "../../components/mecanico/GestionEmpresas/EmpresaMenu";
+import EmpresaFormDialog from "../../components/mecanico/GestionEmpresas/EmpresaFormDialog";
+import GerenteFormDialog from "../../components/mecanico/GestionEmpresas/GerenteFormDialog";
+import OperarioFormDialog from "../../components/mecanico/GestionEmpresas/OperarioFormDialog";
+import VehiculoFormDialog from "../../components/mecanico/GestionEmpresas/VehiculoFormDialog";
+
+import KpiCard from "../../components/mecanico/GestionEmpresas/KpiCardEmpresas";
+import VistaToggle from "../../components/mecanico/GestionEmpresas/VistaToggle";
 
 export default function GestionEmpresas() {
   const [empresas, setEmpresas] = useState(empresasIniciales);
-  const [query, setQuery] = useState("");
+  const [gerentes, setGerentes] = useState(gerentesIniciales);
+  const [operarios, setOperarios] = useState(operariosMecanico);
+  const [vehiculos, setVehiculos] = useState(vehiculosMecanico);
+
+  const [queryEmpresas, setQueryEmpresas] = useState("");
+  const [queryGerentes, setQueryGerentes] = useState("");
+  const [queryOperarios, setQueryOperarios] = useState("");
+  const [queryVehiculos, setQueryVehiculos] = useState("");
+
   const [vista, setVista] = useState("empresas");
 
-  const q = query.trim().toLowerCase();
+  // Estados para modales de formularios individuales
+  const [openEmpresaForm, setOpenEmpresaForm] = useState(false);
+  const [openGerenteForm, setOpenGerenteForm] = useState(false);
+  const [openOperarioForm, setOpenOperarioForm] = useState(false);
+  const [openVehiculoForm, setOpenVehiculoForm] = useState(false);
 
-  // Estados para Modal de Formulario (Crear/Editar)
-  const [openForm, setOpenForm] = useState(false);
   const [editingEmpresa, setEditingEmpresa] = useState(null);
-  const [formData, setFormData] = useState({
-    razonSocial: "",
-    cuit: "",
-    gerente: "",
-    email: "",
-    vehiculos: 0,
-    estado: "Activa"
-  });
+  const [formDataEmpresa, setFormDataEmpresa] = useState({ razonSocial: "", cuit: "", gerente: "", email: "", vehiculos: 0, estado: "Activa" });
+  const [formDataGerente, setFormDataGerente] = useState({ nombre: "", email: "", telefono: "", empresa: "", estado: "Activo" });
+  const [formDataOperario, setFormDataOperario] = useState({ nombre: "", email: "", rol: "", empresa: "", estado: "Activo" });
+  const [formDataVehiculo, setFormDataVehiculo] = useState({ modelo: "", patente: "", empresa: "", km: "", revision: "", estado: "Activo" });
 
-  // Estados para Menú de Configuración (La Tuerca)
+  // Menú Tuerca Empresas
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedEmpresaId, setSelectedEmpresaId] = useState(null);
 
+  // Filtrados independientes
   const filtradas = useMemo(() => {
+    const q = queryEmpresas.trim().toLowerCase();
     if (!q) return empresas;
-    return empresas.filter(
-      (e) =>
-        e.razonSocial.toLowerCase().includes(q) ||
-        e.cuit.toLowerCase().includes(q)
-    );
-  }, [empresas, q]);
+    return empresas.filter(e => e.razonSocial.toLowerCase().includes(q) || e.cuit.toLowerCase().includes(q));
+  }, [empresas, queryEmpresas]);
+
+  const gerentesFiltrados = useMemo(() => {
+    const q = queryGerentes.trim().toLowerCase();
+    if (!q) return gerentes;
+    return gerentes.filter(g => g.nombre.toLowerCase().includes(q) || g.empresa.toLowerCase().includes(q));
+  }, [gerentes, queryGerentes]);
+
+  const operariosFiltrados = useMemo(() => {
+    const q = queryOperarios.trim().toLowerCase();
+    if (!q) return operarios;
+    return operarios.filter(o => o.nombre.toLowerCase().includes(q) || o.empresa.toLowerCase().includes(q));
+  }, [operarios, queryOperarios]);
+
+  const vehiculosFiltrados = useMemo(() => {
+    const q = queryVehiculos.trim().toLowerCase();
+    if (!q) return vehiculos;
+    return vehiculos.filter(v => v.patente.toLowerCase().includes(q) || v.modelo.toLowerCase().includes(q) || v.empresa.toLowerCase().includes(q));
+  }, [vehiculos, queryVehiculos]);
 
   const totalVehiculos = empresas.reduce((acc, e) => acc + Number(e.vehiculos || 0), 0);
 
-  const gerentesFiltrados = useMemo(
-    () => gerentesIniciales.filter((g) => !q || g.nombre.toLowerCase().includes(q) || g.empresa.toLowerCase().includes(q)),
-    [q]
-  );
-
-  const operariosFiltrados = useMemo(
-    () => operariosMecanico.filter((o) => !q || o.nombre.toLowerCase().includes(q) || o.empresa.toLowerCase().includes(q)),
-    [q]
-  );
-
-  const vehiculosFiltrados = useMemo(
-    () => vehiculosMecanico.filter((v) => !q || v.patente.toLowerCase().includes(q) || v.modelo.toLowerCase().includes(q) || v.empresa.toLowerCase().includes(q)),
-    [q]
-  );
-
-  // Manejo de Modal Formulario
-  const handleOpenCreate = () => {
-    setEditingEmpresa(null);
-    setFormData({ razonSocial: "", cuit: "", gerente: "", email: "", vehiculos: 0, estado: "Activa" });
-    setOpenForm(true);
-  };
-
-  const handleOpenEdit = (empresa) => {
-    setEditingEmpresa(empresa);
-    setFormData({ ...empresa });
-    setOpenForm(true);
-  };
-
-  const handleCloseForm = () => setOpenForm(false);
-
-  const handleSaveForm = (e) => {
+  // Handlers de Guardado
+  const handleSaveEmpresa = (e) => {
     e.preventDefault();
     if (editingEmpresa) {
-      setEmpresas(empresas.map(emp => emp.id === editingEmpresa.id ? { ...emp, ...formData } : emp));
+      setEmpresas(empresas.map(emp => emp.id === editingEmpresa.id ? { ...emp, ...formDataEmpresa } : emp));
     } else {
-      const nueva = {
-        id: Date.now(),
-        ...formData
-      };
-      setEmpresas([...empresas, nueva]);
+      setEmpresas([...empresas, { id: Date.now(), ...formDataEmpresa }]);
     }
-    setOpenForm(false);
+    setOpenEmpresaForm(false);
   };
 
-  // Manejo de Menú de Configuración (Tuerca)
+  const handleSaveGerente = (e) => {
+    e.preventDefault();
+    setGerentes([...gerentes, { id: Date.now(), ...formDataGerente }]);
+    setOpenGerenteForm(false);
+  };
+
+  const handleSaveOperario = (e) => {
+    e.preventDefault();
+    setOperarios([...operarios, { id: Date.now(), ...formDataOperario }]);
+    setOpenOperarioForm(false);
+  };
+
+  const handleSaveVehiculo = (e) => {
+    e.preventDefault();
+    setVehiculos([...vehiculos, { id: Date.now(), ...formDataVehiculo }]);
+    setOpenVehiculoForm(false);
+  };
+
+  // Menú Tuerca
   const handleOpenMenu = (event, id) => {
     setAnchorEl(event.currentTarget);
     setSelectedEmpresaId(id);
@@ -129,7 +148,7 @@ export default function GestionEmpresas() {
         </Box>
       </Box>
 
-      {/* KPIs Corregidos con los colores institucionales correctos */}
+      {/* KPIs */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, gap: 2.5 }}>
         <KpiCard title="EMPRESAS REGISTRADAS" value={empresas.length} unit="Empresas" accent={GREEN} icon={<BusinessIcon />} />
         <KpiCard title="FLOTA TOTAL" value={totalVehiculos} unit="Vehículos" accent={BLUE_BRAND} icon={<LocalShippingOutlinedIcon />} />
@@ -139,22 +158,68 @@ export default function GestionEmpresas() {
       {/* Selector de Vistas (Tabs) */}
       <VistaToggle vista={vista} setVista={setVista} />
 
-      {/* Renderizado condicional según la pestaña seleccionada */}
+      {/* VISTA EMPRESAS */}
       {vista === "empresas" && (
         <>
-          {/* Agregar nueva empresa */}
-          <EmpresasActions query={query} setQuery={setQuery} onCreate={handleOpenCreate} />
-          
-          <EmpresasTable filtradas={filtradas} onEdit={handleOpenEdit} onOpenMenu={handleOpenMenu} />
+          <EmpresasActions 
+            query={queryEmpresas} 
+            setQuery={setQueryEmpresas} 
+            onCreate={() => { 
+              setEditingEmpresa(null); 
+              setFormDataEmpresa({ razonSocial: "", cuit: "", gerente: "", email: "", vehiculos: 0, estado: "Activa" }); 
+              setOpenEmpresaForm(true); 
+            }} 
+          />
+          <EmpresasTable filtradas={filtradas} onEdit={(emp) => { setEditingEmpresa(emp); setFormDataEmpresa({ ...emp }); setOpenEmpresaForm(true); }} onOpenMenu={handleOpenMenu} />
         </>
-        
       )}
-      {vista === "gerentes" && <GerentesList gerentes={gerentesFiltrados} />}
-      {vista === "operarios" && <OperariosListMecanico operarios={operariosFiltrados} />}
-      {vista === "vehiculos" && <VehiculosListMecanico vehiculos={vehiculosFiltrados} />}
 
+      {/* VISTA GERENTES */}
+      {vista === "gerentes" && (
+        <>
+          <GerentesActions 
+            query={queryGerentes} 
+            setQuery={setQueryGerentes} 
+            onCreate={() => { 
+              setFormDataGerente({ nombre: "", email: "", telefono: "", empresa: "", estado: "Activo" }); 
+              setOpenGerenteForm(true); 
+            }} 
+          />
+          <GerentesList gerentes={gerentesFiltrados} />
+        </>
+      )}
 
-      {/* MENU CONTEXTUAL PARA LA TUERCA */}
+      {/* VISTA OPERARIOS */}
+      {vista === "operarios" && (
+        <>
+          <OperariosActions 
+            query={queryOperarios} 
+            setQuery={setQueryOperarios} 
+            onCreate={() => { 
+              setFormDataOperario({ nombre: "", email: "", rol: "", empresa: "", estado: "Activo" }); 
+              setOpenOperarioForm(true); 
+            }} 
+          />
+          <OperariosListMecanico operarios={operariosFiltrados} />
+        </>
+      )}
+
+      {/* VISTA VEHÍCULOS */}
+      {vista === "vehiculos" && (
+        <>
+          <VehiculosActions 
+            query={queryVehiculos} 
+            setQuery={setQueryVehiculos} 
+            onCreate={() => { 
+              setFormDataVehiculo({ modelo: "", patente: "", empresa: "", km: "0 km", revision: "Hoy", estado: "Activo" }); 
+              setOpenVehiculoForm(true); 
+            }} 
+          />
+          <VehiculosListMecanico vehiculos={vehiculosFiltrados} />
+        </>
+      )}
+
+      {/* MENÚ CONTEXTUAL EMPRESAS */}
       <EmpresaMenu
         anchorEl={anchorEl}
         onClose={handleCloseMenu}
@@ -162,14 +227,38 @@ export default function GestionEmpresas() {
         onBorrar={handleBorrarEmpresa}
       />
 
-      {/* DIALOG FORMULARIO: CREAR / EDITAR */}
+      {/* MODALES / DIALOGS */}
       <EmpresaFormDialog
-        open={openForm}
-        onClose={handleCloseForm}
-        onSubmit={handleSaveForm}
-        formData={formData}
-        setFormData={setFormData}
+        open={openEmpresaForm}
+        onClose={() => setOpenEmpresaForm(false)}
+        onSubmit={handleSaveEmpresa}
+        formData={formDataEmpresa}
+        setFormData={setFormDataEmpresa}
         editingEmpresa={editingEmpresa}
+      />
+
+      <GerenteFormDialog
+        open={openGerenteForm}
+        onClose={() => setOpenGerenteForm(false)}
+        onSubmit={handleSaveGerente}
+        formData={formDataGerente}
+        setFormData={setFormDataGerente}
+      />
+
+      <OperarioFormDialog
+        open={openOperarioForm}
+        onClose={() => setOpenOperarioForm(false)}
+        onSubmit={handleSaveOperario}
+        formData={formDataOperario}
+        setFormData={setFormDataOperario}
+      />
+
+      <VehiculoFormDialog
+        open={openVehiculoForm}
+        onClose={() => setOpenVehiculoForm(false)}
+        onSubmit={handleSaveVehiculo}
+        formData={formDataVehiculo}
+        setFormData={setFormDataVehiculo}
       />
 
     </Box>
