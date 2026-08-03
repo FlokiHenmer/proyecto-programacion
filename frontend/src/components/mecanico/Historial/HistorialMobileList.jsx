@@ -1,9 +1,9 @@
 import React from "react";
-import { List, ListItem, Avatar, Box, Typography, Stack, Divider } from "@mui/material";
+import { List, ListItem, Avatar, Box, Button, Typography, Stack, Divider } from "@mui/material";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
-import { MUTED, BORDER } from "../../../constants/Mecanico";
+import { MUTED, BORDER, TEXT } from "../../../constants/Mecanico";
 
-export default function HistorialMobileList({ data }) {
+export default function HistorialMobileList({ data, onVerVehiculo }) {
   return (
     <List sx={{ width: '100%', bgcolor: 'white', borderRadius: 3, border: `1px solid ${BORDER}`, p: 0 }}>
       {data.map((row, i) => (
@@ -28,6 +28,11 @@ export default function HistorialMobileList({ data }) {
                 </Typography>
               </Stack>
 
+              {/* Fecha */}
+              <Typography sx={{ fontSize: 12, color: MUTED, mt: 0.5 }}>
+                Fecha: {row.fecha}
+              </Typography>
+
               {/* Mecánico */}
               <Box sx={{ mt: 1 }}>
                 <Typography sx={{ fontSize: 10, bgcolor: "#e2e8f0", px: 1, borderRadius: 1, display: 'inline-block' }}>
@@ -35,7 +40,29 @@ export default function HistorialMobileList({ data }) {
                 </Typography>
               </Box>
 
-            </Box>
+              
+              {/* Botón para ver el historial completo en dispositivos móviles */}
+              <Box sx={{ width: "100%", mt: 1.5 }}>
+                <Button
+                  size="small"
+                  onClick={() => onVerVehiculo?.(row.patente || row.vehiculo)}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    color: BORDER,
+                    bgcolor: TEXT,
+                    border: "1px solid #e2e8f0",
+                    px: 2,
+                    borderRadius: 1.5,
+                  }}
+                >
+                  Ver historial
+                </Button>
+              </Box>
+              
+
+            </Box>            
           </ListItem>
 
           {i < data.length - 1 && <Divider component="li" sx={{ ml: 2 }} />}

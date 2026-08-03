@@ -1,9 +1,9 @@
 import React from "react";
-import { Card, Box, Table, TableHead, TableRow, TableCell, TableBody, Stack, Avatar, Typography } from "@mui/material";
+import { Card, Box, Button, Table, TableHead, TableRow, TableCell, TableBody, Stack, Avatar, Typography } from "@mui/material";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
-import { cardSx, MUTED } from "../../../constants/Mecanico";
+import { cardSx, MUTED, BORDER, TEXT } from "../../../constants/Mecanico";
 
-export default function HistorialDesktopTable({ data }) {
+export default function HistorialDesktopTable({ data, onVerVehiculo }) {
   return (
     <Card sx={cardSx}>
       <Box sx={{ overflowX: "auto" }}>
@@ -14,8 +14,10 @@ export default function HistorialDesktopTable({ data }) {
               <TableCell>Vehículo</TableCell>
               <TableCell>Servicio</TableCell>
               <TableCell>Mecánico</TableCell>
+              <TableCell>Historial Completo</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {data && data.map((row) => (
               <TableRow key={row.id}>
@@ -41,6 +43,26 @@ export default function HistorialDesktopTable({ data }) {
                     </Avatar>
                     <Typography sx={{ fontSize: 13 }}>{row.mecanico}</Typography>
                   </Stack>
+                </TableCell>
+
+                {/* Columna Extra: Ver historial completo / Servicios viejos */}
+                <TableCell sx={{ borderBottom: `1px solid ${BORDER}` }}>
+                  <Button
+                    size="small"
+                    onClick={() => onVerVehiculo?.(row.patente || row.vehiculo)}
+                    sx={{
+                      textTransform: "none",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: BORDER,
+                      bgcolor: TEXT,
+                      border: "1px solid #e2e8f0",
+                      px: 2,
+                      borderRadius: 1.5,
+                    }}
+                  >
+                    Ver historial
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

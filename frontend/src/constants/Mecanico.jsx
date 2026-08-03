@@ -76,6 +76,14 @@ export const DATA_MES = [
 ];
 
 // Datos Historial
+export const TIPOS_SERVICIO = [
+  "Todos",
+  "Preventivo",
+  "Correctivo",
+  "Checklist Técnico",
+  "Checklist Diario",
+];
+
 export const historialCompleto = [
   { id: 1, patente: "ABC-123", vehiculo: "Toyota Hilux", fecha: "12/10/2023", servicio: "Cambio de Aceite", mecanico: "Ricardo Gómez" },
   { id: 2, patente: "XYZ-789", vehiculo: "Ford Ranger", fecha: "11/10/2023", servicio: "Frenos Delanteros", mecanico: "Ricardo Gómez" },
