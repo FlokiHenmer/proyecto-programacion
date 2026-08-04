@@ -4,19 +4,23 @@ import { GREEN_SOFT, GREEN_TEXT, YELLOW, YELLOW_TEXT, RED_BG, RED, TEXT } from "
 export default function EstadoChip({ estado }) {
   const map = {
     // Estados de Empresas
-    Activa: { bg: GREEN_SOFT, color: GREEN_TEXT },
-    "En Revisión": { bg: YELLOW, color: YELLOW_TEXT },
-    Inactiva: { bg: RED_BG, color: RED },
+    activa: { bg: GREEN_SOFT, color: GREEN_TEXT },
+    "en revisión": { bg: YELLOW, color: YELLOW_TEXT },
+    inactiva: { bg: RED_BG, color: RED },
 
     // Estados de Gerentes y Operarios
-    Activo: { bg: GREEN_SOFT, color: GREEN_TEXT },
-    Inactivo: { bg: RED_BG, color: RED },
+    activo: { bg: GREEN_SOFT, color: GREEN_TEXT },
+    inactivo: { bg: RED_BG, color: RED },
+    suspendido: { bg: YELLOW, color: YELLOW_TEXT },
 
     // Estados de Vehículos
-    "En Taller": { bg: YELLOW, color: YELLOW_TEXT },
+    "en taller": { bg: YELLOW, color: YELLOW_TEXT },
+    "dado de baja": { bg: RED_BG, color: RED },
+    baja: { bg: RED_BG, color: RED },
   };
 
-  const s = map[estado] || { bg: "#f1f5f9", color: TEXT };
+  const estadoKey = typeof estado === "string" ? estado.toLowerCase().trim() : "";
+  const s = map[estadoKey] || { bg: "#f1f5f9", color: TEXT };
   
   return (
     <Chip

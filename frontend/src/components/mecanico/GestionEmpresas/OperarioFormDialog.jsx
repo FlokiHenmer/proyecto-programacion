@@ -1,16 +1,22 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Box } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from "@mui/material";
+import { TEXT, MUTED, GREEN, GREEN_DARK } from "../../../constants/EmpresasMecanico";
 
-export default function OperarioFormDialog({ open, onClose, onSubmit, formData, setFormData }) {
+export default function OperarioFormDialog({ open, onClose, onSubmit, formData, setFormData, editingOperario }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle sx={{ fontWeight: 700 }}>Nuevo Operario / Mecánico</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }}>
       <Box component="form" onSubmit={onSubmit}>
+        <DialogTitle sx={{ fontWeight: 800, color: TEXT, pb: 1 }}>
+          {editingOperario ? "Editar Operario " : "Registrar Nuevo Operario "}
+        </DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+          <Typography variant="caption" sx={{ color: MUTED, mb: 1 }}>
+            Ingresá los datos del operario o especialista asignado a las tareas técnicas.
+          </Typography>
           <TextField
             label="Nombre y apellido"
             name="nombre"
@@ -20,25 +26,27 @@ export default function OperarioFormDialog({ open, onClose, onSubmit, formData, 
             fullWidth
             size="small"
           />
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email || ""}
-            onChange={handleChange}
-            required
-            fullWidth
-            size="small"
-          />
-          <TextField
-            label="Rol / Especialidad"
-            name="rol"
-            value={formData.rol || ""}
-            onChange={handleChange}
-            required
-            fullWidth
-            size="small"
-          />
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email || ""}
+              onChange={handleChange}
+              required
+              fullWidth
+              size="small"
+            />
+            <TextField
+              label="Rol / Especialidad"
+              name="rol"
+              value={formData.rol || ""}
+              onChange={handleChange}
+              required
+              fullWidth
+              size="small"
+            />
+          </Box>
           <TextField
             label="Empresa"
             name="empresa"
@@ -49,9 +57,13 @@ export default function OperarioFormDialog({ open, onClose, onSubmit, formData, 
             size="small"
           />
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={onClose} color="inherit" sx={{ textTransform: "none" }}>Cancelar</Button>
-          <Button type="submit" variant="contained" sx={{ textTransform: "none", bgcolor: "#0f172a" }}>Guardar</Button>
+        <DialogActions sx={{ p: 2.5, pt: 1.5 }}>
+          <Button onClick={onClose} sx={{ color: MUTED, textTransform: "none", fontWeight: 700 }}>
+            Cancelar
+          </Button>
+          <Button type="submit" sx={{ bgcolor: GREEN, color: TEXT, fontWeight: 700, textTransform: "none", px: 3, "&:hover": { bgcolor: GREEN_DARK } }}>
+            {editingOperario ? "Guardar Cambios" : "Dar de Alta"}
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>
