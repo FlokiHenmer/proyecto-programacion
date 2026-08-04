@@ -70,3 +70,23 @@ export const vehiculosIniciales = [
   { patente: "JK654HG", modelo: "Ford Cargo", revision: "20/06/2026", estado: "Operativo" },
   { patente: "QP987NM", modelo: "Renault Kerax", revision: "01/06/2026", estado: "Alerta" },
 ];
+
+// Datos grafico
+export const defaultSemana = [
+  { label: "Lun", value: 14 },
+  { label: "Mar", value: 25 },
+  { label: "Mié", value: 19 },
+  { label: "Jue", value: 32 },
+  { label: "Vie", value: 28 },
+  { label: "Sáb", value: 21 },
+  { label: "Dom", value: 10 },
+];
+
+export const defaultMes = [
+  { label: "Ene", value: 110 },
+  { label: "Feb", value: 135 },
+  { label: "Mar", value: 125 },
+  { label: "Abr", value: 155 },
+  { label: "May", value: 180 },
+  { label: "Jun", value: 165 },
+];

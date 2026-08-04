@@ -1,15 +1,17 @@
-import { Box, Card, Table, TableHead, TableBody, TableRow, TableCell, Typography, Avatar } from "@mui/material";
+import { Box, Card, Table, TableHead, TableBody, TableRow, TableCell, Typography, Avatar, IconButton } from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import EstadoChip from "./EstadoChipEmpresas";
 import { BORDER, MUTED, TEXT, BLUE_BRAND } from "../../../constants/EmpresasMecanico";
 
-export default function OperariosListMecanico({ operarios = [] }) {
+export default function OperariosListMecanico({ operarios = [], onEdit, onOpenMenu }) {
   return (
     <Card sx={{ borderRadius: 3, boxShadow: "none", border: `1px solid ${BORDER}`, overflow: "hidden" }}>
       <Box sx={{ overflowX: "auto" }}>
         <Table sx={{ minWidth: 500 }}>
           <TableHead sx={{ bgcolor: "#f8fafc" }}>
             <TableRow>
-              {["Operario", "Rol", "Empresa", "Estado"].map((h) => (
+              {["Operario", "Rol", "Empresa", "Estado", "Acciones"].map((h) => (
                 <TableCell
                   key={h}
                   sx={{
@@ -48,6 +50,16 @@ export default function OperariosListMecanico({ operarios = [] }) {
                 </TableCell>
                 <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: { xs: "12px 6px", sm: "16px" } }}>
                   <EstadoChip estado={o.estado} />
+                </TableCell>
+                <TableCell sx={{ borderBottom: `1px solid ${BORDER}`, padding: "12px 6px" }}>
+                  <Box sx={{ display: "flex", gap: 0 }}>
+                    <IconButton size="small" onClick={() => onEdit?.(o)}>
+                      <EditOutlinedIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" onClick={(e) => onOpenMenu?.(e, o.id)}>
+                      <SettingsOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
