@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -26,10 +26,52 @@ import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import { GREEN, GREEN_DARK, BORDER, TEXT, MUTED, cardSx, greenBtn, historialCompleto} from "../../constants/Mecanico"
 import HistorialMobileList from "../../components/mecanico/Historial/HistorialMobileList";
 import HistorialDesktopTable from "../../components/mecanico/Historial/HistorialDesktopTable";
+import VehiculoHistorialDetalle from "../../components/mecanico/Historial/VehiculoHistorialDetalle";
+import HistorialFiltros from "../../components/mecanico/Historial/HistorialFiltros";
 
 export default function Historial() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const [search, setSearch] = useState("");
+  const [tipo, setTipo] = useState("Todos");
+  const [desde, setDesde] = useState("");
+  const [hasta, setHasta] = useState("");
+  const [patenteSel, setPatenteSel] = useState(null);
+
+  // Filtrado reactivo para la barra de búsqueda y fechas
+  const filtrados = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return historialCompleto.filter((r) => {
+      const matchQ =
+        !q ||
+        r.vehiculo.toLowerCase().includes(q) ||
+        r.patente.toLowerCase().includes(q) ||
+        (r.servicio && r.servicio.toLowerCase().includes(q));
+      const matchDesde = !desde || r.fecha >= desde;
+      const matchHasta = !hasta || r.fecha <= hasta;
+      return matchQ && matchDesde && matchHasta;
+    });
+  }, [search, desde, hasta]);
+
+  // Busca los registros que coincidan ya sea por patente o por nombre de vehículo
+  const registrosVehiculo = useMemo(
+    () => historialCompleto.filter((r) => r.patente === patenteSel || r.vehiculo === patenteSel),
+    [patenteSel]
+  );
+
+  // Si se seleccionó una patente, muestra el detalle de los servicios viejos de ese vehículo
+  if (patenteSel) {
+    return (
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+        <VehiculoHistorialDetalle
+          patente={patenteSel}
+          registros={registrosVehiculo}
+          onVolver={() => setPatenteSel(null)}
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
@@ -44,13 +86,25 @@ export default function Historial() {
         </Typography>
       </Box>
 
+      {/* Barra de Búsqueda y Filtros */}
+      <HistorialFiltros
+        search={search}
+        setSearch={setSearch}
+        tipo={tipo}
+        setTipo={setTipo}
+        desde={desde}
+        setDesde={setDesde}
+        hasta={hasta}
+        setHasta={setHasta}
+      />
+
 
       <Box sx={{ p: 2 }}>
         {isMobile ? (
-          <HistorialMobileList data={historialCompleto} />
+          <HistorialMobileList data={filtrados} onVerVehiculo={setPatenteSel} />
         ) : (
           // VISTA ESCRITORIO: Tu tabla original
-          <HistorialDesktopTable data={historialCompleto} />
+          <HistorialDesktopTable data={filtrados} onVerVehiculo={setPatenteSel} />
         )}
           
       </Box>  

@@ -10,30 +10,25 @@ import {
   Chip,
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { COLORS, cardSx, defaultMes, defaultSemana } from "../../constants/Gerente";
+import { GREEN, GREEN_DARK, BORDER, TEXT, MUTED, PANEL_BG, cardSx, DATA_SEMANA, DATA_MES, BLUE } from "../../../constants/Mecanico";
 
-export default function BarChart({
-  data,
-  dataSemana,
-  dataMes,
-  title = "Servicios por Mes",
+export default function ServiciosChart({
+  dataSemana = DATA_SEMANA,
+  dataMes = DATA_MES,
+  title = "Servicios Realizados",
 }) {
   const [rango, setRango] = useState("semana");
-
-  const resolvedSemana = dataSemana || defaultSemana;
-  const resolvedMes = dataMes || (data ? data.map(d => ({ label: d.mes || d.label, value: d.value })) : defaultMes);
-
-  const activeData = rango === "semana" ? resolvedSemana : resolvedMes;
+  const data = rango === "semana" ? dataSemana : dataMes;
 
   const { max, total, promedio } = useMemo(() => {
-    const values = (activeData || []).map((d) => d.value || 0);
+    const values = data.map((d) => d.value);
     const t = values.reduce((a, b) => a + b, 0);
     return {
       max: Math.max(...values, 1),
       total: t,
       promedio: Math.round(t / (values.length || 1)),
     };
-  }, [activeData]);
+  }, [data]);
 
   return (
     <Card sx={cardSx}>
@@ -49,20 +44,18 @@ export default function BarChart({
           }}
         >
           <Box>
-            <Typography sx={{ fontWeight: 800, fontSize: 20, color: COLORS.TEXT || "#1e293b" }}>
-              {title}
-            </Typography>
-            <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>
-              {rango === "semana" ? "Últimos 7 días" : "Últimos meses"} · {total} en total
+            <Typography sx={{ fontWeight: 800, fontSize: 20, color: TEXT }}>{title}</Typography>
+            <Typography sx={{ color: MUTED, fontSize: 13 }}>
+              {rango === "semana" ? "Últimos 7 días" : "Últimos 12 meses"} · {total} servicios
             </Typography>
           </Box>
 
           <Stack direction="row" spacing={1} alignItems="center" sx={{ flexWrap: "wrap" }}>
             <Chip
-              icon={<TrendingUpIcon sx={{ fontSize: 16, color: `${COLORS.GREEN} !important` }} />}
+              icon={<TrendingUpIcon sx={{ fontSize: 16, color: `${GREEN_DARK} !important` }} />}
               label={`Prom. ${promedio}`}
               size="small"
-              sx={{ bgcolor: COLORS.PANEL_BG || "#f8fafc", color: COLORS.TEXT, fontWeight: 700, border: `1px solid ${COLORS.BORDER || "#e2e8f0"}` }}
+              sx={{ bgcolor: PANEL_BG, color: TEXT, fontWeight: 700, border: `1px solid ${BORDER}` }}
             />
 
             <ToggleButtonGroup
@@ -77,11 +70,11 @@ export default function BarChart({
                   fontSize: 12,
                   px: 1.6,
                   py: 0.4,
-                  color: COLORS.MUTED,
-                  border: `1px solid ${COLORS.BORDER || "#e2e8f0"}`,
+                  color: MUTED,
+                  border: `1px solid ${BORDER}`,
                 },
                 "& .Mui-selected": {
-                  bgcolor: `${COLORS.TEXT || "#1e293b"} !important`,
+                  bgcolor: `${TEXT} !important`,
                   color: " #ffffff !important",
                 },
               }}
@@ -93,32 +86,30 @@ export default function BarChart({
         </Box>
 
         <Box sx={{ overflowX: "auto" }}>
-          <Box sx={{ minWidth: 320 }}>
-            {/* Contenedor de Barras (Flex centrado con gap controlado) */}
+          <Box sx={{ minWidth: rango === "semana" ? 280 : 420 }}>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "center",
+                display: "grid",
+                gridTemplateColumns: `repeat(${data.length}, 1fr)`,
                 alignItems: "end",
-                gap: { xs: 2, sm: 3, md: 4 },
+                gap: 1,
                 height: 200,
-                px: 1,
-                borderBottom: `1px solid ${COLORS.BORDER || "#e2e8f0"}`,
+                px: 0.5,
+                borderBottom: `1px solid ${BORDER}`,
               }}
             >
-              {activeData.map((d, index) => (
+              {data.map((d) => (
                 <Box
-                  key={index}
+                  key={d.label}
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     height: "100%",
-                    width: { xs: 32, sm: 40 },
                   }}
                 >
-                  <Typography sx={{ fontSize: 10, fontWeight: 700, color: COLORS.MUTED, mb: 0.5 }}>
+                  <Typography sx={{ fontSize: 10, fontWeight: 700, color: MUTED, mb: 0.5 }}>
                     {d.value}
                   </Typography>
                   <Box
@@ -127,7 +118,8 @@ export default function BarChart({
                       maxWidth: 34,
                       height: `${(d.value / max) * 100}%`,
                       minHeight: 4,
-                      bgcolor: "#569cf1f1",
+                      bgcolor: BLUE,
+                      border: `1px solid ${BORDER}`,
                       borderBottom: "none",
                       borderRadius: "6px 6px 0 0",
                       transition: "height .3s ease",
@@ -137,30 +129,22 @@ export default function BarChart({
               ))}
             </Box>
 
-            {/* Contenedor de Etiquetas (Mismo gap y ancho para alinear perfecto) */}
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "center",
-                gap: { xs: 2, sm: 3, md: 4 },
-                px: 1,
+                display: "grid",
+                gridTemplateColumns: `repeat(${data.length}, 1fr)`,
+                gap: 1,
+                px: 0.5,
                 mt: 1,
               }}
             >
-              {activeData.map((d, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    width: { xs: 32, sm: 40 },
-                    textAlign: "center",
-                  }}
+              {data.map((d) => (
+                <Typography
+                  key={d.label}
+                  sx={{ fontSize: 11, color: MUTED, textAlign: "center", fontWeight: 600 }}
                 >
-                  <Typography
-                    sx={{ fontSize: 11, color: COLORS.MUTED, fontWeight: 600 }}
-                  >
-                    {d.label}
-                  </Typography>
-                </Box>
+                  {d.label}
+                </Typography>
               ))}
             </Box>
           </Box>

@@ -6,6 +6,7 @@ export const BORDER = "#e5e7eb";
 export const TEXT = "#0f172a";
 export const MUTED = "#64748b";
 export const PANEL_BG = "#f8fafc";
+export const BLUE = "#0ea5e9";
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -49,7 +50,40 @@ export const trabajosData = [
   { v: "VW Amarok (DEF-456)", d: "09 Oct", desc: "Ajuste de correas y revisión general." },
 ];
 
+export const DATA_SEMANA = [
+  { label: "Lun", value: 4 },
+  { label: "Mar", value: 7 },
+  { label: "Mié", value: 5 },
+  { label: "Jue", value: 9 },
+  { label: "Vie", value: 6 },
+  { label: "Sáb", value: 3 },
+  { label: "Dom", value: 1 },
+];
+
+export const DATA_MES = [
+  { label: "Ene", value: 18 },
+  { label: "Feb", value: 24 },
+  { label: "Mar", value: 15 },
+  { label: "Abr", value: 31 },
+  { label: "May", value: 27 },
+  { label: "Jun", value: 36 },
+  { label: "Jul", value: 29 },
+  { label: "Ago", value: 41 },
+  { label: "Sep", value: 26 },
+  { label: "Oct", value: 34 },
+  { label: "Nov", value: 22 },
+  { label: "Dic", value: 17 },
+];
+
 // Datos Historial
+export const TIPOS_SERVICIO = [
+  "Todos",
+  "Preventivo",
+  "Correctivo",
+  "Checklist Técnico",
+  "Checklist Diario",
+];
+
 export const historialCompleto = [
   { id: 1, patente: "ABC-123", vehiculo: "Toyota Hilux", fecha: "12/10/2023", servicio: "Cambio de Aceite", mecanico: "Ricardo Gómez" },
   { id: 2, patente: "XYZ-789", vehiculo: "Ford Ranger", fecha: "11/10/2023", servicio: "Frenos Delanteros", mecanico: "Ricardo Gómez" },

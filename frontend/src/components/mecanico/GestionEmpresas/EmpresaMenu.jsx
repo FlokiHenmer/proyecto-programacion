@@ -2,6 +2,7 @@ import { Box, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { BORDER, GREEN_TEXT, YELLOW_TEXT, RED, RED_BG } from "../../../constants/EmpresasMecanico";
 
 export default function EmpresaMenu({ anchorEl, onClose, onChangeEstado, onBorrar }) {
@@ -21,7 +22,7 @@ export default function EmpresaMenu({ anchorEl, onClose, onChangeEstado, onBorra
       </MenuItem>
       <Box sx={{ my: 0.5, borderTop: `1px solid ${BORDER}` }} />
       <MenuItem onClick={onBorrar} sx={{ color: RED, "&:hover": { bgcolor: RED_BG } }}>
-        <ListItemIcon><BusinessIcon fontSize="small" sx={{ color: RED }} /></ListItemIcon>
+        <ListItemIcon><DeleteIcon fontSize="small" sx={{ color: RED }} /></ListItemIcon>
         <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Eliminar Empresa</ListItemText>
       </MenuItem>
     </Menu>

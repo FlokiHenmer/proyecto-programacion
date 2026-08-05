@@ -4,6 +4,7 @@ import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import SendIcon from "@mui/icons-material/Send";
 
 import Navbar from "../../components/layout/Navbar";
+import ScrollToTop from "../../components/layout/ScrollToTop";
 import ChecklistCard from "../../components/operario/ChecklistCard";
 import StatusSummary from "../../components/operario/BotonEstado";
 import { SECCIONES, VERDE, TEXT, MUTED, BG, BORDER, cardSx, colorHex } from "../../constants/Operario";
@@ -122,6 +123,10 @@ export default function PuestaEnMarcha() {
       <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}>
         <Alert severity="success" variant="filled" sx={{ width: "100%", bgcolor: "#0f172a", color: "#fff" }}>Puesta en marcha enviada exitosamente</Alert>
       </Snackbar>
+
+      {/* Botón flotante */}
+      <ScrollToTop />
+
     </Box>
   );
 }

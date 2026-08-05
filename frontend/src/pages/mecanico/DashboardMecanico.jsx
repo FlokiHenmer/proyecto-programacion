@@ -14,6 +14,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 // Componentes importados 
 import Navbar from "../../components/layout/Navbar";
+import ScrollToTop from "../../components/layout/ScrollToTop";
 import { GREEN, BORDER, TEXT, MUTED, cardSx, greenBtn, blackBtn, historialData, trabajosData } from "../../constants/Mecanico";
 import SidebarContent from "../../components/mecanico/Dashboard/SidebarContent";
 import InicioDashboard from "../../components/mecanico/Dashboard/InicioDashboard";
@@ -23,7 +24,6 @@ import Trabajos from "./Trabajos";
 import Alarmas from "./Alarmas";
 import Calendario from "./Calendario";
 import Historial from "./Historial";
-
 import { SIDEBAR_WIDTH } from "../../constants/Mecanico";
 
 const sidebarItems = [
@@ -35,8 +35,6 @@ const sidebarItems = [
   { label: "Calendario", path: "/calendario", icon: <CalendarMonthIcon /> },
   { label: "Historial", path: "/historial", icon: <HistoryIcon /> },
 ];
-
-
 
 export default function DashboardMecanico() {
   const navigate = useNavigate();
@@ -142,6 +140,10 @@ export default function DashboardMecanico() {
           </Box>
 
         </Box>
+
+        {/* Botón flotante */}
+        <ScrollToTop />
+
       </Box>
     </Box>
   );

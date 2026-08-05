@@ -50,3 +50,112 @@ export const empresasIniciales = [
     estado: "En Revisión",
   },
 ];
+
+export const gerentesIniciales = [
+  { 
+    id: 1, 
+    nombre: "Carlos Gómez", 
+    email: "carlos.gomez@delsur.com", 
+    telefono: "+54 9 11 4455-6677", 
+    empresa: "Transportes del Sur S.A.", 
+    estado: "Activo" 
+  },
+  { 
+    id: 2, 
+    nombre: "Mariana López", 
+    email: "m.lopez@nortelogistica.com", 
+    telefono: "+54 9 11 2233-4455", 
+    empresa: "Logística del Norte SRL", 
+    estado: "Activo" 
+  },
+  { 
+    id: 3, 
+    nombre: "Esteban Pérez", 
+    email: "eperez@flotaexpress.com.ar", 
+    telefono: "+54 9 11 9988-7766", 
+    empresa: "Flota Express Argentina", 
+    estado: "Activo" 
+  },
+  { 
+    id: 4, 
+    nombre: "Valeria Ruiz", 
+    email: "vruiz@patagonicos.com", 
+    telefono: "+54 9 11 1122-3344", 
+    empresa: "Transportes Patagónicos", 
+    estado: "Inactivo" 
+  },
+];
+
+export const operariosMecanico = [
+  { 
+    id: 1, 
+    nombre: "Juan Pérez", 
+    email: "juan.perez@pinzamotors.com", 
+    rol: "Mecánico Senior", 
+    empresa: "Transportes del Sur S.A.", 
+    estado: "Activo" 
+  },
+  { 
+    id: 2, 
+    nombre: "Lucas Díaz", 
+    email: "lucas.diaz@pinzamotors.com", 
+    rol: "Electromecánico", 
+    empresa: "Logística del Norte SRL", 
+    estado: "Activo" 
+  },
+  { 
+    id: 3, 
+    nombre: "Sofía Benítez", 
+    email: "sofia.benitez@pinzamotors.com", 
+    rol: "Asistente Técnico", 
+    empresa: "Flota Express Argentina", 
+    estado: "Activo" 
+  },
+  { 
+    id: 4, 
+    nombre: "Marcos Torres", 
+    email: "marcos.torres@pinzamotors.com", 
+    rol: "Mecánico General", 
+    empresa: "Transportes Patagónicos", 
+    estado: "Inactivo" 
+  },
+];
+
+export const vehiculosMecanico = [
+  { 
+    id: 1, 
+    modelo: "Scania R450", 
+    patente: "ABC-123", 
+    empresa: "Transportes del Sur S.A.", 
+    km: "145,200 km", 
+    revision: "12/10/2025", 
+    estado: "Activo" 
+  },
+  { 
+    id: 2, 
+    modelo: "Mercedes Actros", 
+    patente: "DEF-456", 
+    empresa: "Logística del Norte SRL", 
+    km: "98,400 km", 
+    revision: "10/10/2025", 
+    estado: "Activo" 
+  },
+  { 
+    id: 3, 
+    modelo: "Iveco Stralis", 
+    patente: "GHI-789", 
+    empresa: "Flota Express Argentina", 
+    km: "210,000 km", 
+    revision: "05/10/2025", 
+    estado: "En Taller" 
+  },
+  { 
+    id: 4, 
+    modelo: "VW Constellation", 
+    patente: "JKL-012", 
+    empresa: "Transportes Patagónicos", 
+    km: "75,300 km", 
+    revision: "01/10/2025", 
+    estado: "Activo" 
+  },
+];

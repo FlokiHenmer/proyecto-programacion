@@ -24,16 +24,12 @@ export default function VistaInicio() {
       </Box>
 
       {/* 2. Gráfico */}
-      <Card sx={{ ...cardSx, minWidth: 0 }}>
-        <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-          <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2 }}>Servicios por Mes</Typography>
-          <Box sx={{ width: "100%", overflowX: "auto", pb: 1, minWidth: 0 }}>
-              <Box sx={{ minWidth: 400 }}> 
-                <BarChart data={serviciosPorMes} />
-              </Box>
+      <Box sx={{ width: "100%", overflowX: "auto", pb: 1, minWidth: 0 }}>
+          <Box sx={{ minWidth: 400 }}> 
+            <BarChart data={serviciosPorMes} />
           </Box>
-        </CardContent>
-      </Card>
+      </Box>
+        
       
       {/* 3. Tabla */}
       <Card sx={{ ...cardSx, minWidth: 0 }}>
