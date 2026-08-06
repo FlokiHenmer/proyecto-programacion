@@ -1,13 +1,18 @@
-import { Card, CardContent, Stack, Box, Typography, Button, List, ListItem, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, IconButton, Chip, Menu, MenuItem } from "@mui/material";
+import { Card, CardContent, Stack, Box, Typography, Button, List, ListItem, ListItemIcon, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, IconButton, Chip, Menu, MenuItem, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import HistoryIcon from '@mui/icons-material/History';
+import PersonIcon from "@mui/icons-material/Person";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 import { COLORS, EXTRA_COLORS, cardSx, buttonStyles } from "../../../constants/Gerente";
 
-export default function OperariosList({ operarios, onAdd, anchorEl, onMenuOpen, onMenuClose, onStatusChange }) {
+export default function OperariosList({ operarios, onAdd, onEdit, onDelete, anchorEl, onMenuOpen, onMenuClose, onStatusChange, onVerHistorial }) {
   return (
     <Card sx={{ ...cardSx, mb: 4 }}>
       <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, width: "100%" }}>
           <Box>
             <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Lista de Operarios</Typography>
             <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Equipo registrado</Typography>
@@ -18,18 +23,18 @@ export default function OperariosList({ operarios, onAdd, anchorEl, onMenuOpen, 
             variant="contained"
             size="small"
             onClick={onAdd}
-            sx={buttonStyles.blueBtn}
+            sx={{ ...buttonStyles.blueBtn, px: 4, py: 1.5, alignSelf: "flex-start" }}
           >
             Agregar Operario
           </Button>
-        </Stack>
+        </Box>
 
         <List disablePadding>
           {operarios.map((o, index) => (
             <ListItem
               key={index}
               divider={index !== operarios.length - 1}
-              sx={{ py: 1.5, pr: 6, alignItems: 'flex-start' }} // alignItems flex-start ayuda a que si el contenido crece, no se corte
+              sx={{ py: 1.5, pr: 9, alignItems: 'flex-start' }} // Reducimos el padding derecho ya que el botón directo ya no está
             >
               <ListItemAvatar>
                 <Avatar sx={{ bgcolor: o.estado === "activo" ? COLORS.GREEN : EXTRA_COLORS.GRAY }}>
@@ -61,9 +66,23 @@ export default function OperariosList({ operarios, onAdd, anchorEl, onMenuOpen, 
               />
 
               <ListItemSecondaryAction>
-                <IconButton onClick={(e) => onMenuOpen(e, index)} edge="end">
-                  <EditIcon fontSize="small" />
-                </IconButton>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <Tooltip title="Ver historial de formularios">
+                    <IconButton onClick={() => onVerHistorial?.(o)} size="small">
+                      <HistoryIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Editar operario">
+                    <IconButton onClick={() => onEdit?.(o, index)} size="small">
+                      <EditOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <IconButton onClick={(e) => onMenuOpen(e, index)} size="small">
+                    <SettingsOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
               </ListItemSecondaryAction>
             </ListItem>
           ))}
@@ -74,8 +93,20 @@ export default function OperariosList({ operarios, onAdd, anchorEl, onMenuOpen, 
           open={Boolean(anchorEl)}
           onClose={onMenuClose}
         >
-          <MenuItem onClick={() => onStatusChange("activo")}>Activo</MenuItem>
-          <MenuItem onClick={() => onStatusChange("inactivo")}>Inactivo</MenuItem>
+          <MenuItem onClick={() => onStatusChange("activo")}>
+            <ListItemIcon><PersonIcon fontSize="small" sx={{ color: "#166534" }} /></ListItemIcon>
+            <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Marcar Activo</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={() => onStatusChange("inactivo")}>        
+            <ListItemIcon><PersonOffIcon fontSize="small" sx={{ color: COLORS.YELLOW_TEXT }} /></ListItemIcon>
+            <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600 } }}>Marcar Inactivo</ListItemText>
+          </MenuItem>
+          
+          {/* Opción de Eliminar en el menú de la tuerca */}
+          <MenuItem onClick={onDelete}>        
+            <ListItemIcon><DeleteIcon fontSize="small" sx={{ color: EXTRA_COLORS.RED || "#ef4444" }} /></ListItemIcon>
+            <ListItemText sx={{ "& .MuiTypography-root": { fontSize: 13, fontWeight: 600, color: EXTRA_COLORS.RED || "#ef4444" } }}>Eliminar Operario</ListItemText>
+          </MenuItem>
         </Menu>
         
       </CardContent>

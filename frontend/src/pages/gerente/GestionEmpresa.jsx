@@ -1,4 +1,4 @@
-import  { React , useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -6,28 +6,31 @@ import BuildIcon from "@mui/icons-material/Build";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 
 // Componentes propios
-import KpiCard from "../../components/gerente/KpiCard"; // Reutilizamos el que creamos antes
-import EstadoChip from "../../components/gerente/GestionEmpresa/EstadoChipVehiculos";
+import KpiCard from "../../components/gerente/KpiCard";
 import AddOperarioDialog from "../../components/gerente/GestionEmpresa/AddOperarioDialog";
 import OperariosList from "../../components/gerente/GestionEmpresa/OperariosList";
 import VehiculosTable from "../../components/gerente/GestionEmpresa/VehiculosTable";
-import { COLORS, EXTRA_COLORS, operariosIniciales, vehiculosIniciales } from "../../constants/Gerente";
+import { COLORS, EXTRA_COLORS, operariosIniciales, vehiculosIniciales, historialFormularios } from "../../constants/Gerente";
+import OperarioHistorialDetalle from "../../components/gerente/GestionEmpresa/OperarioHistorialDetalle";
+import VehiculoHistorialGerente from "../../components/gerente/GestionEmpresa/VehiculoHistorialGerente";
+import VistaToggleGestion from "../../components/gerente/GestionEmpresa/VistaToggleGestion";
 
 export default function GestionGerente() {
-  const [busqueda, setBusqueda] = useState("");
+  const [busqueda, setBusqueda] = useState("");  
+  const [vista, setVista] = useState("operarios");
 
-   const [operarios, setOperarios] = useState(operariosIniciales);
+  const [operarios, setOperarios] = useState(operariosIniciales);
 
-  const toggleEstado = (index) => {
-    const nuevosOperarios = [...operarios];
-    nuevosOperarios[index].estado = nuevosOperarios[index].estado === "activo" ? "inactivo" : "activo";
-    setOperarios(nuevosOperarios);
-  };
+  const [operarioSel, setOperarioSel] = useState(null);
+  const [vehiculoSel, setVehiculoSel] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [nuevoOperario, setNuevoOperario] = useState({ nombre: "", rol: "", email: "" });
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [operarioData, setOperarioData] = useState({ nombre: "", rol: "", email: "" });
 
   const handleMenuOpen = (event, index) => {
     setAnchorEl(event.currentTarget);
@@ -46,11 +49,41 @@ export default function GestionGerente() {
     handleMenuClose();
   };
 
-  // Función para guardar el nuevo operario
+  // Función para eliminar operario usando el índice seleccionado de la tuerca
+  const handleDeleteOperario = () => {
+    if (selectedIndex !== null) {
+      const nuevosOperarios = operarios.filter((_, i) => i !== selectedIndex);
+      setOperarios(nuevosOperarios);
+      handleMenuClose();
+    }
+  };
+
+  const handleOpenAdd = () => {
+    setIsEditing(false);
+    setEditingIndex(null);
+    setOperarioData({ nombre: "", rol: "", email: "" });
+    setOpenDialog(true);
+  };
+
+  const handleOpenEdit = (operario, index) => {
+    setIsEditing(true);
+    setEditingIndex(index);
+    setOperarioData({ ...operario });
+    setOpenDialog(true);
+  };
+
   const handleSaveOperario = () => {
-    setOperarios([...operarios, { ...nuevoOperario, estado: "activo" }]);
-    setNuevoOperario({ nombre: "", rol: "", email: "" }); // Limpiar formulario
-    setOpenDialog(false); // Cerrar dialog
+    if (isEditing && editingIndex !== null) {
+      const nuevosOperarios = [...operarios];
+      nuevosOperarios[editingIndex] = { ...nuevosOperarios[editingIndex], ...operarioData };
+      setOperarios(nuevosOperarios);
+    } else {
+      setOperarios([...operarios, { ...operarioData, estado: "activo" }]);
+    }
+    setOpenDialog(false);
+    setIsEditing(false);
+    setEditingIndex(null);
+    setOperarioData({ nombre: "", rol: "", email: "" });
   };
   
   const vehiculosFiltrados = vehiculosIniciales.filter(
@@ -58,6 +91,22 @@ export default function GestionGerente() {
       v.patente.toLowerCase().includes(busqueda.toLowerCase()) ||
       v.modelo.toLowerCase().includes(busqueda.toLowerCase())
   );
+
+  const registrosOperario = useMemo(
+    () => historialFormularios.filter((r) => r.operario === operarioSel?.nombre),
+    [operarioSel]
+  );
+
+  const registrosVehiculo = useMemo(
+    () => historialFormularios.filter((r) => r.patente === vehiculoSel?.patente),
+    [vehiculoSel]
+  );
+
+  const handleCambiarVista = (v) => {
+    setVista(v);
+    setOperarioSel(null);
+    setVehiculoSel(null);
+  };
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: COLORS.BG }}>
@@ -73,33 +122,54 @@ export default function GestionGerente() {
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, gap: 2, mb: 4 }}>
           <KpiCard title="Operarios Activos" value={operarios.filter(o => o.estado === "activo").length} unit="trabajando hoy" icon={<GroupIcon />} accent={EXTRA_COLORS.BLUE} />
           <KpiCard title="Operarios Inactivos" value={operarios.filter(o => o.estado === "inactivo").length} unit="en descanso" icon={<ErrorIcon />} accent={EXTRA_COLORS.RED} />
-          <KpiCard title="Vehículos Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={EXTRA_COLORS.YELLOW} />
+          <KpiCard title="Vehículos En Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={EXTRA_COLORS.YELLOW} />
           <KpiCard title="Próx. Mantenimiento" value="8" unit="esta semana" icon={<DirectionsCarIcon />} accent={COLORS.GREEN} />
         </Box>
 
-        {/* Lista de Operarios */}
-        <OperariosList
-          operarios={operarios}
-          onAdd={() => setOpenDialog(true)}
-          anchorEl={anchorEl}
-          onMenuOpen={handleMenuOpen}
-          onMenuClose={handleMenuClose}
-          onStatusChange={handleStatusChange}
-        />
+        <VistaToggleGestion vista={vista} setVista={handleCambiarVista} />
 
-        {/* Tabla de Vehículos */}
-        <VehiculosTable
-          vehiculos={vehiculosFiltrados}
-          busqueda={busqueda}
-          setBusqueda={setBusqueda}
-        />
+        {vista === "operarios" ? (
+          operarioSel ? (
+            <OperarioHistorialDetalle
+              operario={operarioSel}
+              registros={registrosOperario}
+              onVolver={() => setOperarioSel(null)}
+            />
+          ) : (
+            <OperariosList
+              operarios={operarios}
+              onAdd={handleOpenAdd}
+              onEdit={handleOpenEdit}
+              onDelete={handleDeleteOperario}
+              anchorEl={anchorEl}
+              onMenuOpen={handleMenuOpen}
+              onMenuClose={handleMenuClose}
+              onStatusChange={handleStatusChange}
+              onVerHistorial={(o) => setOperarioSel(o)}
+            />
+          )
+        ) : vehiculoSel ? (
+          <VehiculoHistorialGerente
+            vehiculo={vehiculoSel}
+            registros={registrosVehiculo}
+            onVolver={() => setVehiculoSel(null)}
+          />
+        ) : (
+          <VehiculosTable
+            vehiculos={vehiculosFiltrados}
+            busqueda={busqueda}
+            setBusqueda={setBusqueda}
+            onVerHistorial={(v) => setVehiculoSel(v)}
+          />
+        )}
 
         <AddOperarioDialog 
            open={openDialog} 
            onClose={() => setOpenDialog(false)} 
            onSave={handleSaveOperario}
-           nuevoOperario={nuevoOperario}
-           setNuevoOperario={setNuevoOperario}
+           operarioData={operarioData}
+           setOperarioData={setOperarioData}
+           isEditing={isEditing}
         />
       </Box>
     </Box>
