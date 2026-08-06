@@ -1,20 +1,21 @@
 import React from "react";
-import { Box, Typography, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Tooltip } from "@mui/material";
+import { Box, Typography, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Tooltip, Stack } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import HistoryIcon from "@mui/icons-material/History";
 import { cardSx, BORDER, TEXT, MUTED } from "../../../constants/HistorialGerente";
 import TipoChip from "./TipoChip";
 
-export default function HistorialTablaDesktop({ filtered, setSelected }) {
+export default function HistorialTablaDesktop({ filtered, setSelected, onVerHistorial }) {
   return (
     <Card sx={cardSx}>
       <CardContent sx={{ p: 0 }}>
         <Box sx={{ overflowX: "auto" }}>
-          <Table size="small" sx={{ minWidth: 760 }}>
+          <Table size="small" sx={{ minWidth: 820 }}>
             <TableHead sx={{ bgcolor: "#f8fafc" }}>
               <TableRow>
-                {["Fecha", "Vehículo", "Tipo", "Operario", "Resultado", "Acción"].map((h) => (
+                {["Fecha", "Vehículo", "Tipo", "Operario", "Acciones"].map((h) => (
                   <TableCell
                     key={h}
                     sx={{ fontWeight: 700, color: MUTED, fontSize: 12, textTransform: "uppercase", letterSpacing: 0.5 }}
@@ -32,34 +33,42 @@ export default function HistorialTablaDesktop({ filtered, setSelected }) {
                     <Typography sx={{ fontWeight: 500, color: TEXT, fontSize: 14 }}>
                       {r.vehiculo}
                     </Typography>
+                    <Typography sx={{ color: MUTED, fontSize: 12 }}>{r.patente}</Typography>
                   </TableCell>
                   <TableCell>
                     <TipoChip tipo={r.tipo} />
                   </TableCell>
                   <TableCell sx={{ color: TEXT, fontSize: 14 }}>{r.operario}</TableCell>
+                  
                   <TableCell>
-                    {r.resultado === "ok" ? (
-                      <Tooltip title="Completado sin incidencias">
-                        <CheckCircleIcon sx={{ color: "#16a34a" }} />
+                    <Stack direction="row" spacing={1}>
+                      <Tooltip title="Ver detalle del servicio">
+                        <IconButton
+                          size="small"
+                          onClick={() => setSelected(r)}
+                          sx={{
+                            border: `1px solid ${BORDER}`,
+                            borderRadius: 1.5,
+                            "&:hover": { bgcolor: "#f1f5f9" },
+                          }}
+                        >
+                          <VisibilityIcon sx={{ fontSize: 18, color: TEXT }} />
+                        </IconButton>
                       </Tooltip>
-                    ) : (
-                      <Tooltip title="Completado con advertencias">
-                        <WarningAmberIcon sx={{ color: "#f59e0b" }} />
+                      <Tooltip title="Ver historial del vehículo">
+                        <IconButton
+                          size="small"
+                          onClick={() => onVerHistorial?.(r)}
+                          sx={{
+                            border: `1px solid ${BORDER}`,
+                            borderRadius: 1.5,
+                            "&:hover": { bgcolor: "#f1f5f9" },
+                          }}
+                        >
+                          <HistoryIcon sx={{ fontSize: 18, color: TEXT }} />
+                        </IconButton>
                       </Tooltip>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => setSelected(r)}
-                      sx={{
-                        border: `1px solid ${BORDER}`,
-                        borderRadius: 1.5,
-                        "&:hover": { bgcolor: "#f1f5f9" },
-                      }}
-                    >
-                      <VisibilityIcon sx={{ fontSize: 18, color: TEXT }} />
-                    </IconButton>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}

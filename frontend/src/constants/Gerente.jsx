@@ -39,7 +39,7 @@ export const kpis = [
   { title: "Total Vehículos Activos", value: "128", unit: "unidades", icon: <DirectionsCarIcon />, accent: COLORS.GREEN },
   { title: "Costos Mantenimiento", value: "$ 1.2M", unit: "ARS / mes", icon: <AttachMoneyIcon />, accent: "#f59e0b" },
   { title: "Productividad Taller", value: "87%", unit: "eficiencia", icon: <SpeedIcon />, accent: "#22c55e" },
-  { title: "Alertas Críticas", value: "5", unit: "requieren acción", icon: <WarningAmberIcon sx={{ color: "#dc2626" }} />, accent: "#dc2626" },
+  { title: "Notificaciones Críticas", value: "5", unit: "requieren acción", icon: <WarningAmberIcon sx={{ color: "#dc2626" }} />, accent: "#dc2626" },
 ];
 
 export const serviciosPorMes = [
@@ -70,6 +70,30 @@ export const vehiculosIniciales = [
   { patente: "JK654HG", modelo: "Ford Cargo", revision: "20/06/2026", estado: "Operativo" },
   { patente: "QP987NM", modelo: "Renault Kerax", revision: "01/06/2026", estado: "Alerta" },
 ];
+
+export const historialFormularios = [
+  { id: "F-2051", fecha: "2026-07-28", operario: "Carlos Pérez", patente: "AB123CD", vehiculo: "Scania R450", km: "124.500", tipo: "Checklist Técnico", trabajo: "Inspección técnica completa", resultado: "Apto", observacion: "Sin novedades relevantes" },
+  { id: "F-2050", fecha: "2026-07-25", operario: "Carlos Pérez", patente: "XY789ZT", vehiculo: "Mercedes Actros", km: "288.100", tipo: "Correctivo", trabajo: "Cambio de pastillas de freno", resultado: "Con observaciones", observacion: "Ruido metálico en tren delantero" },
+  { id: "F-2049", fecha: "2026-07-22", operario: "Lucía Gómez", patente: "LM456OP", vehiculo: "Iveco Stralis", km: "176.940", tipo: "Preventivo", trabajo: "Service 170k", resultado: "Apto", observacion: "Mantenimiento programado" },
+  { id: "F-2048", fecha: "2026-07-19", operario: "Martín Suárez", patente: "RT321QW", vehiculo: "VW Constellation", km: "533.780", tipo: "Checklist Diario", trabajo: "Puesta en marcha diaria", resultado: "No apto", observacion: "Nivel de refrigerante bajo" },
+  { id: "F-2047", fecha: "2026-07-15", operario: "Diego Fernández", patente: "JK654HG", vehiculo: "Ford Cargo", km: "98.200", tipo: "Checklist Diario", trabajo: "Puesta en marcha diaria", resultado: "Apto", observacion: "Todo en orden" },
+  { id: "F-2046", fecha: "2026-07-12", operario: "Lucía Gómez", patente: "AB123CD", vehiculo: "Scania R450", km: "122.300", tipo: "Correctivo", trabajo: "Reparación sistema eléctrico", resultado: "Con observaciones", observacion: "Falla intermitente en luces traseras" },
+  { id: "F-2045", fecha: "2026-07-08", operario: "Sofía Ramírez", patente: "QP987NM", vehiculo: "Renault Kerax", km: "310.050", tipo: "Preventivo", trabajo: "Chapa y pintura", resultado: "Apto", observacion: "Retoque de puerta lateral" },
+  { id: "F-2044", fecha: "2026-07-04", operario: "Carlos Pérez", patente: "AB123CD", vehiculo: "Scania R450", km: "119.700", tipo: "Preventivo", trabajo: "Cambio de aceite y filtros", resultado: "Apto", observacion: "Service 120k" },
+];
+
+export const resultadoColor = (r) => {
+  switch (r) {
+    case "Apto":
+      return { bg: "#dcfce7", color: "#166534" };
+    case "Con observaciones":
+      return { bg: "#fef3c7", color: "#92400e" };
+    case "No apto":
+      return { bg: "#fee2e2", color: "#b91c1c" };
+    default:
+      return { bg: "#f1f5f9", color: "#475569" };
+  }
+};
 
 // Datos grafico
 export const defaultSemana = [

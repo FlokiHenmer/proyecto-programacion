@@ -16,7 +16,7 @@ export default function BarChart({
   data,
   dataSemana,
   dataMes,
-  title = "Servicios por Mes",
+  title = "Actividad General",
 }) {
   const [rango, setRango] = useState("semana");
 

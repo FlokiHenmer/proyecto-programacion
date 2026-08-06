@@ -1,15 +1,15 @@
-import { Card, CardContent, Stack, Box, Typography, TextField, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Card, CardContent, Stack, Box, Typography, TextField, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Tooltip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-
+import HistoryIcon from "@mui/icons-material/History";
 import EstadoChipVehiculos from "./EstadoChipVehiculos";
 import { COLORS, cardSx } from "../../../constants/Gerente";
 
-export default function VehiculosTable({ vehiculos, busqueda, setBusqueda }) {
+export default function VehiculosTable({ vehiculos, busqueda, setBusqueda, onVerHistorial }) {
   return (
     <Card sx={cardSx}>
       <CardContent>
-        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={2} sx={{ mb: 2 }}>
+        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={5} sx={{ mb: 2 }}>
           <Box>
             <Typography sx={{ fontWeight: 800, fontSize: 18, color: COLORS.TEXT }}>Gestión de Vehículos</Typography>
             <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Listado y estado actual de la flota</Typography>
@@ -23,7 +23,7 @@ export default function VehiculosTable({ vehiculos, busqueda, setBusqueda }) {
             InputProps={{
               startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: COLORS.MUTED, fontSize: 18 }} /></InputAdornment>),
             }}
-            sx={{ minWidth: { xs: "100%", sm: 240 } }}
+            sx={{ minWidth: { xs: "100%", sm: 400 } }}
           />
         </Stack>
 
@@ -31,9 +31,10 @@ export default function VehiculosTable({ vehiculos, busqueda, setBusqueda }) {
           <Table size="small" sx={{ minWidth: 500 }}>
             <TableHead>
               <TableRow>
-                {["VEHÍCULO", "ÚLTIMA REVISIÓN", "ESTADO"].map((h) => (
+                {["VEHÍCULO", "ÚLTIMA REVISIÓN", "ESTADO", "HISTORIAL"].map((h, index) => (
                   <TableCell
                     key={h}
+                    align={index === 0 ? "left" : "center"} // Vehículo a la izquierda, el resto centrado
                     sx={{
                       fontWeight: 700,
                       color: COLORS.MUTED,
@@ -51,10 +52,9 @@ export default function VehiculosTable({ vehiculos, busqueda, setBusqueda }) {
             <TableBody>
               {vehiculos.map((v) => (
                 <TableRow key={v.patente}>
-                  {/* Columna de Vehículo con padding ajustado */}  
+                  {/* Columna de Vehículo (Alineada a la izquierda por defecto) */}  
                   <TableCell sx={{ px: { xs: 1, md: 2 }, py: 1 }}>
                     <Stack direction="row" spacing={1} alignItems="center">
-                      {/* Icono (tamaño ligeramente reducido en móvil) */}  
                       <Box sx={{
                         width: { xs: 30, md: 36 },
                         height: { xs: 30, md: 36 },
@@ -79,13 +79,27 @@ export default function VehiculosTable({ vehiculos, busqueda, setBusqueda }) {
                     </Stack>
                   </TableCell>
 
-                  <TableCell sx={{ color: COLORS.TEXT, fontSize: { xs: 11, md: 13 }, px: { xs: 1, md: 2 } }}>
+                  {/* Última Revisión (Centrada) */}
+                  <TableCell align="center" sx={{ color: COLORS.TEXT, fontSize: { xs: 11, md: 13 }, px: { xs: 1, md: 2 } }}>
                     {v.revision}
                   </TableCell>
                   
-                  <TableCell sx={{ px: { xs: 1, md: 2 } }}>
-                    <EstadoChipVehiculos value={v.estado} />
+                  {/* Estado (Centrado) */}
+                  <TableCell align="center" sx={{ px: { xs: 1, md: 2 } }}>
+                    <Box sx={{ display: "inline-flex" }}>
+                      <EstadoChipVehiculos value={v.estado} />
+                    </Box>
                   </TableCell>
+
+                  {/* Historial (Centrado) */}
+                  <TableCell align="center" sx={{ px: { xs: 1, md: 2 } }}>
+                    <Tooltip title="Ver historial del vehículo">
+                      <IconButton size="small" onClick={() => onVerHistorial?.(v)}>
+                        <HistoryIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

@@ -47,7 +47,7 @@ export default function PuestaEnMarcha() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#f5f3ff" }}>
       <Navbar />
       <Box sx={{ maxWidth: 1280, mx: "auto", p: { xs: 2, md: 4 } }}>
         {/* Header */}

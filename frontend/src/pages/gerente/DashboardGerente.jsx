@@ -39,7 +39,7 @@ export default function DashboardGerente() {
   const currentItem = sidebarItems.find(item => location.pathname === item.path) || sidebarItems[0];
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: COLORS.BG, p: { xs: 1, md: 3 } }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#f5f3ff", p: { xs: 1, md: 3 } }}>
       <Box sx={{ maxWidth: 1280, mx: "auto" }}>
         <Navbar />
         <Box sx={{ display: "grid", gridTemplateColumns: { md: "240px 1fr" }, bgcolor: "#fff", borderRadius: 4, overflow: "hidden", border: `1px solid ${COLORS.BORDER}`, minHeight: 700 }}>
