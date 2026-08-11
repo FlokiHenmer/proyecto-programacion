@@ -12,15 +12,15 @@ export const MONTH_NAMES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
 ];
 
-// Eventos mapeados con la nueva estructura de almanaque
+// Eventos enriquecidos con más datos (Título, Vehículo, Hora, Nota/Tipo y Estado)
 export const eventsData = {
   "2026-6": {
-    1:  { title: "Ford F-150",      time: "09:00", note: "Revisión",   status: "pendiente" },
-    2:  { title: "Toyota Hilux",    time: "10:30", note: "Motor",      status: "confirmado" },
-    3:  { title: "Iveco Daily",     time: "08:00", note: "Frenos",     status: "urgente" },
-    9:  { title: "Renault Kangoo",  time: "11:00", note: "Aceite",     status: "confirmado" },
-    15: { title: "Scania",          time: "14:30", note: "Motor",      status: "urgente" },
-    21: { title: "VW Amarok",       time: "10:00", note: "Inspección", status: "pendiente" },
+    1:  { title: "Revisión periódica", vehiculo: "Ford F-150 Lariat (AE-456-BB)", hora: "09:00", note: "Revisión", status: "pendiente" },
+    2:  { title: "Cambio de correa",   vehiculo: "Toyota Hilux SRX (BC-789-CC)",   hora: "10:30", note: "Motor",      status: "confirmado" },
+    3:  { title: "Reparación urgente",  vehiculo: "Iveco Daily 55C17 (AF-123-ZZ)",  hora: "08:00", note: "Frenos",     status: "urgente" },
+    9:  { title: "Cambio de aceite",    vehiculo: "Renault Kangoo (AA-111-AA)",     hora: "11:00", note: "Mantenimiento", status: "confirmado" },
+    15: { title: "Alineación y balanceo",vehiculo: "Scania R450 (AC-999-XX)",      hora: "14:30", note: "Eje",        status: "urgente" },
+    21: { title: "Inspección técnica",  vehiculo: "VW Amarok (AB-123-CD)",        hora: "10:00", note: "Inspección", status: "pendiente" },
   }
 };
 

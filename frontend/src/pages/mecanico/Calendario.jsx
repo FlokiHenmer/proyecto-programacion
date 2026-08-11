@@ -3,18 +3,21 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import CalendarioMensual from "../../components/mecanico/Calendario/CalendarioMensual";
 import ProximosUrgentes from "../../components/mecanico/Calendario/ProximosUrgentes";
+import TurnosDelDia from "../../components/mecanico/Calendario/TurnosDelDia"; // <--- Nuevo componente importado
 import TurnosTable from "../../components/mecanico/Calendario/ListaTurnosCalendario";
-import { GREEN, RED, BORDER,MUTED, TEXT, eventsData, turnos, getDaysInMonthGrid } from "../../constants/CalendarioMecanico";
+import { GREEN, RED, BORDER, MUTED, TEXT, eventsData, turnos, getDaysInMonthGrid } from "../../constants/CalendarioMecanico";
 
 export default function Calendario() {
   const [query, setQuery] = useState("");
   
-  // Estados actualizados al año actual 2026
-  const [currentMonth, setCurrentMonth] = useState(6); // 
+  // Estados de fecha y del día seleccionado
+  const [currentMonth, setCurrentMonth] = useState(6); 
   const [currentYear, setCurrentYear] = useState(2026);
+  const [selectedDay, setSelectedDay] = useState(null); // <--- Estado para el día seleccionado
 
   // Manejadores de navegación de fechas
   const handlePrevMonth = () => {
+    setSelectedDay(null); // Limpiamos selección al cambiar de mes
     if (currentMonth === 0) {
       setCurrentMonth(11);
       setCurrentYear(prev => prev - 1);
@@ -24,6 +27,7 @@ export default function Calendario() {
   };
 
   const handleNextMonth = () => {
+    setSelectedDay(null); // Limpiamos selección al cambiar de mes
     if (currentMonth === 11) {
       setCurrentMonth(0);
       setCurrentYear(prev => prev + 1);
@@ -52,26 +56,37 @@ export default function Calendario() {
         <KpiCard label="URGENTES"    value="2"  borderColor={RED} />
       </Box>
 
-      {/* Grid principal: Calendario + Alertas */}
+      {/* Grid principal: Calendario + Columna Derecha (Urgentes + Turnos del Día) */}
       <Box sx={{
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" },
         gap: 2.5,
-        width: "100%", // Asegura que no se desborde del padre
-        minWidth: 0,   // Crucial: Permite que el grid se encoja si es necesario
+        width: "100%", 
+        minWidth: 0,   
       }}>
         
         {/* Sección Calendario */}
         <CalendarioMensual
           currentMonth={currentMonth}
+          currentYear={currentYear}
           handlePrevMonth={handlePrevMonth}
           handleNextMonth={handleNextMonth}
           daysGrid={daysGrid}
           currentEvents={currentEvents}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
         />
 
-        {/* Sección Urgentes - APLICADO minWidth: 0 para que no estire la columna */}
-        <ProximosUrgentes />
+        {/* Columna Derecha: Próximos Urgentes + Turnos del Día */}
+        <Box sx={{ minWidth: 0 }}>
+          <ProximosUrgentes />
+          <TurnosDelDia 
+            selectedDay={selectedDay} 
+            event={selectedDay ? currentEvents[selectedDay] : null} 
+            currentMonth={currentMonth}
+            currentYear={currentYear}
+          />
+        </Box>
         
       </Box>
 
