@@ -1,7 +1,7 @@
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import SpeedIcon from "@mui/icons-material/Speed";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import BadgeIcon from "@mui/icons-material/Badge";
 
 export const COLORS = {
   GREEN: "#44FF34",
@@ -36,9 +36,9 @@ export const buttonStyles = {
 
 // --- DATOS DEL GERENTE ---
 export const kpis = [
-  { title: "Total Vehículos Activos", value: "128", unit: "unidades", icon: <DirectionsCarIcon />, accent: COLORS.GREEN },
-  { title: "Costos Mantenimiento", value: "$ 1.2M", unit: "ARS / mes", icon: <AttachMoneyIcon />, accent: "#f59e0b" },
-  { title: "Productividad Taller", value: "87%", unit: "eficiencia", icon: <SpeedIcon />, accent: "#22c55e" },
+  { title: "Unidades Registradas", value: "68", unit: "vehículos totales", icon: <DirectionsCarIcon />, accent: COLORS.GREEN },
+  { title: "Vehículos Operativos", value: "40", unit: "en servicio óptimo", icon: <AssignmentTurnedInIcon />, accent: "#f59e0b" },
+  { title: "Operarios en sistema", value: "5", unit: "registrados", icon: <BadgeIcon />, accent: "#22c55e" },
   { title: "Notificaciones Críticas", value: "5", unit: "requieren acción", icon: <WarningAmberIcon sx={{ color: "#dc2626" }} />, accent: "#dc2626" },
 ];
 

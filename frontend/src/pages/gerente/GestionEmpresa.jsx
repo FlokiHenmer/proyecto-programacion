@@ -123,7 +123,7 @@ export default function GestionGerente() {
           <KpiCard title="Operarios Activos" value={operarios.filter(o => o.estado === "activo").length} unit="trabajando hoy" icon={<GroupIcon />} accent={EXTRA_COLORS.BLUE} />
           <KpiCard title="Operarios Inactivos" value={operarios.filter(o => o.estado === "inactivo").length} unit="en descanso" icon={<ErrorIcon />} accent={EXTRA_COLORS.RED} />
           <KpiCard title="Vehículos En Taller" value="5" unit="en reparación" icon={<BuildIcon />} accent={EXTRA_COLORS.YELLOW} />
-          <KpiCard title="Próx. Mantenimiento" value="8" unit="esta semana" icon={<DirectionsCarIcon />} accent={COLORS.GREEN} />
+          <KpiCard title="Próx. Mantenimientos" value="8" unit="esta semana" icon={<DirectionsCarIcon />} accent={COLORS.GREEN} />
         </Box>
 
         <VistaToggleGestion vista={vista} setVista={handleCambiarVista} />
