@@ -1,40 +1,53 @@
 import React, { useState, useMemo } from "react";
 import {
-  Box, Card, CardContent, Typography, Stack, Table, TableBody, TableCell, 
-  TableHead, TableRow, Chip, TextField, InputAdornment, Button
+  Box, Card, CardContent, Typography, Stack, TextField, InputAdornment,
+  ToggleButton, ToggleButtonGroup
 } from "@mui/material";
-import { EstadoColor, CriticidadChip } from "../../components/gerente/Alarma/CriticidadChip"; // Importamos el nuevo componente
-import { COLORS, EXTRA_COLORS, cardSx, buttonStyles } from "../../constants/Gerente";
+import { CriticidadChip } from "../../components/gerente/Alarma/CriticidadChip";
+import { COLORS, EXTRA_COLORS, cardSx } from "../../constants/Gerente";
+import { alarmasIniciales, alarmasActivas } from "../../constants/AlarmasGerente";
 import KpiCard from "../../components/gerente/KpiCard";
+import AlarmasTabla from "../../components/gerente/Alarma/AlarmasTabla";
+import DetalleAlarmaDialog from "../../components/gerente/Alarma/DetalleAlarmaDialog";
+import EditarAlarmaDialog from "../../components/gerente/Alarma/EditarAlarmaDialog";
 
 // Iconos
 import SearchIcon from "@mui/icons-material/Search"; 
 import BuildIcon from "@mui/icons-material/Build";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
-const alarmasIniciales = [
-  { id: "ALR-1042", vehiculo: "Scania R450", patente: "AB123CD", tipo: "Falla de Frenos", estado: "Activa" },
-  { id: "ALR-1041", vehiculo: "Mercedes Actros", patente: "XY789ZT", tipo: "Temperatura", estado: "En revisión" },
-  { id: "ALR-1040", vehiculo: "Iveco Stralis", patente: "LM456OP", tipo: "Aceite", estado: "Resuelta" },
-];
-
-const alarmasActivas = [
-  { vehiculo: "VW Constellation (RT321QW)", motivo: "Presión de aceite baja", criticidad: "Crítica" },
-  { vehiculo: "Renault Kerax (QP987NM)", motivo: "Temperatura motor alta", criticidad: "Crítica" },
-];
-
 export default function AlarmasGerente() {
   const [search, setSearch] = useState("");
+  const [filtroCriticidad, setFiltroCriticidad] = useState("todos");
+
+  // Estados para los Diálogos
+  const [openDetalle, setOpenDetalle] = useState(false);
+  const [openEditar, setOpenEditar] = useState(false);
+  const [alarmaSeleccionada, setAlarmaSeleccionada] = useState(null);
+
+  const handleVerDetalles = (alarma) => {
+    setAlarmaSeleccionada(alarma);
+    setOpenDetalle(true);
+  };
+
+  const handleEditarAlarma = (alarma) => {
+    setAlarmaSeleccionada({ ...alarma });
+    setOpenEditar(true);
+  };
 
   const alarmasFiltradas = useMemo(() => {
-    return alarmasIniciales.filter((a) => 
-      a.vehiculo.toLowerCase().includes(search.toLowerCase()) || 
-      a.id.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search]);
+    return alarmasIniciales.filter((a) => {
+      const cumpleBusqueda = a.vehiculo.toLowerCase().includes(search.toLowerCase()) || 
+                            a.id.toLowerCase().includes(search.toLowerCase()) ||
+                            a.tipo.toLowerCase().includes(search.toLowerCase());
+      
+      if (filtroCriticidad === "criticas") return cumpleBusqueda && a.criticidad === "Crítica";
+      if (filtroCriticidad === "no-criticas") return cumpleBusqueda && a.criticidad !== "Crítica";
+      return cumpleBusqueda;
+    });
+  }, [search, filtroCriticidad]);
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, minWidth: 0 }}>
@@ -54,20 +67,44 @@ export default function AlarmasGerente() {
       </Box>
       
       {/* Grid Principal */}
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" }, gap: 3 }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "3fr 1fr" }, gap: 2 }}>
         
         {/* Columna Izquierda: Historial */}
         <Card sx={cardSx}>
           <CardContent>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} sx={{ mb: 2 }} spacing={5}>
               <Box>
                 <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Historial de Alarmas</Typography>
                 <Typography sx={{ color: COLORS.MUTED, fontSize: 13 }}>Registro completo de incidencias</Typography>
               </Box>
+
+              {/* ToggleButtonGroup */}
+              <ToggleButtonGroup
+                value={filtroCriticidad}
+                exclusive
+                onChange={(e, nuevoFiltro) => { if (nuevoFiltro) setFiltroCriticidad(nuevoFiltro); }}
+                size="small"
+                sx={{
+                  "& .MuiToggleButton-root": {
+                    textTransform: "none",
+                    fontWeight: 700,
+                    color: COLORS.TEXT,
+                    border: `1px solid ${COLORS.BORDER}`,
+                    borderRadius: 2,
+                    px: 3,
+                  },
+                  "& .Mui-selected": { bgcolor: `${COLORS.GREEN} !important`, color: "#000 !important" },
+                }}
+              >
+                <ToggleButton value="todos">Todas</ToggleButton>
+                <ToggleButton value="criticas">Críticas</ToggleButton>
+                <ToggleButton value="no-criticas">No críticas</ToggleButton>
+              </ToggleButtonGroup>
             </Stack>
             
             <TextField 
-              fullWidth size="small" placeholder="Buscar por vehículo o ID..." 
+              fullWidth size="small" placeholder="Buscar por vehículo, ID o tipo..." 
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
                 startAdornment: (<InputAdornment position="start"><SearchIcon sx={{ color: COLORS.MUTED }} /></InputAdornment>),
@@ -75,54 +112,18 @@ export default function AlarmasGerente() {
               sx={{ mb: 2 }}
             />
             
-            <Box sx={{ 
-              overflowX: { xs: "auto", md: "visible" } 
-            }}>
-              <Table sx={{ 
-                minWidth: { xs: 600, md: "auto" },
-                width: "100%" 
-              }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>VEHÍCULO</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>TIPO</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>ESTADO</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {alarmasFiltradas.map((a) => {
-                    const estilo = EstadoColor(a.estado);
-                    return (
-                      <TableRow key={a.id}>
-                        <TableCell>{a.id}</TableCell>
-                        <TableCell>
-                          <DirectionsCarFilledIcon sx={{ fontSize: 16, mr: 1, verticalAlign: 'middle', color: COLORS.MUTED }}/> 
-                          {a.vehiculo}
-                        </TableCell>
-                        <TableCell>{a.tipo}</TableCell>
-                        <TableCell>
-                          <EstadoColor estado={a.estado} />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </Box>  
+            <AlarmasTabla 
+              alarmas={alarmasFiltradas} 
+              onVerDetalles={handleVerDetalles} 
+              onEditarAlarma={handleEditarAlarma} 
+            />
 
           </CardContent>
         </Card>
        
         {/* Columna Derecha: Alarmas Activas */}
         <Box>
-          {/* Esta caja ahora tiene la misma altura y alineación que el encabezado de la izquierda */}
-          <Box sx={{ 
-            display: "flex", 
-            alignItems: "center", 
-            height: "64px", // Ajusta esta altura para que coincida exactamente con el encabezado de la tabla
-            mb: 2 
-          }}>
+          <Box sx={{ display: "flex", alignItems: "center", height: "64px", mb: 2 }}>
             <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Alarmas Activas</Typography>
           </Box>
 
@@ -141,6 +142,20 @@ export default function AlarmasGerente() {
           </Stack>
         </Box>
       </Box>
+
+      {/* Diálogos Modulares */}
+      <DetalleAlarmaDialog 
+        open={openDetalle} 
+        onClose={() => setOpenDetalle(false)} 
+        alarma={alarmaSeleccionada} 
+      />
+
+      <EditarAlarmaDialog 
+        open={openEditar} 
+        onClose={() => setOpenEditar(false)} 
+        alarma={alarmaSeleccionada} 
+      />
+
     </Box>
   );
 }
