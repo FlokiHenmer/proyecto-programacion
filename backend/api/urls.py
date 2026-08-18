@@ -1,8 +1,6 @@
 from django.urls import path
-from . import views
 
+# Por ahora dejamos la lista de rutas vacía
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('hola/', views.hola),
+    
 ]
-

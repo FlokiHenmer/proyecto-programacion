@@ -1,0 +1,49 @@
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import Company, User
+
+# -------------------------------------------------------------------
+# 1. ADMIN DE EMPRESA
+# -------------------------------------------------------------------
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'cuit', 'phone', 'address')
+    search_fields = ('name', 'cuit')
+
+# -------------------------------------------------------------------
+# 2. ADMIN DE USUARIO (Personalizado)
+# -------------------------------------------------------------------    
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    # Definimos qué columnas ver en la lista
+    list_display = (
+        'username', 
+        'email', 
+        'first_name', 
+        'last_name', 
+        'role', 
+        'company', 
+        'is_staff'
+    )
+
+    # Filtros laterales en el panel admin
+    list_filter = ('role', 'company', 'is_staff', 'is_active')
+    
+    # Campos por los que se puede buscar
+    search_fields = ('username', 'first_name', 'last_name', 'email', 'company__name')
+
+    # Agregamos nuestros campos personalizados a los formularios de edición
+    fieldsets = UserAdmin.fieldsets + (
+        ('Información de Flota y Rol', {
+            'fields': ('role', 'company', 'phone')
+        }),
+    )
+
+    # Agregamos los campos al formulario de creación de usuario nuevo
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Información de Flota y Rol', {
+            'fields': ('role', 'company', 'phone')
+        }),
+    )
