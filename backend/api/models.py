@@ -55,3 +55,34 @@ class User(AbstractUser):
     def __str__(self):
         # Esto define cómo se muestra el usuario cuando lo imprimís en consola o panel admin
         return f"{self.username} - {self.get_role_display()}"
+
+# -------------------------------------------------------------------
+# 3. VEHÍCULO / UNIDAD DE FLOTA
+# -------------------------------------------------------------------
+class Vehicle(models.Model):
+    license_plate = models.CharField(
+        max_length=15, 
+        unique=True, 
+        verbose_name="Patente / Dominio"
+    )
+    brand = models.CharField(max_length=50, verbose_name="Marca")
+    model = models.CharField(max_length=50, verbose_name="Modelo")
+    year = models.PositiveIntegerField(verbose_name="Año")
+    chassis_number = models.CharField(
+        max_length=50, 
+        unique=True, 
+        blank=True, 
+        null=True, 
+        verbose_name="Número de Chasis"
+    )
+
+    # Relación $1:N$ con Empresa (un vehículo pertenece a una flota/empresa)
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name='vehicles',
+        verbose_name="Empresa"
+    )
+
+    def __str__(self):
+        return f"{self.license_plate} - {self.brand} {self.model}"

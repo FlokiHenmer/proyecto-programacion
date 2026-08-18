@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Company, User
+from .models import Company, User, Vehicle
 
 # -------------------------------------------------------------------
 # 1. ADMIN DE EMPRESA
@@ -47,3 +47,12 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('role', 'company', 'phone')
         }),
     )
+
+# -------------------------------------------------------------------
+# 3. ADMIN DE VEHÍCULO
+# -------------------------------------------------------------------
+@admin.register(Vehicle)
+class VehicleAdmin(admin.ModelAdmin):
+    list_display = ('id', 'license_plate', 'brand', 'model', 'year', 'company')
+    list_filter = ('company', 'brand', 'year')
+    search_fields = ('license_plate', 'chassis_number', 'brand', 'model', 'company__name')
