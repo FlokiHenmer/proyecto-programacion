@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Company, User, Vehicle, StartUpChecklist
+from .models import Company, User, Vehicle, StartUpChecklist, TechnicalInspection
 
 
 # -------------------------------------------------------------------
@@ -75,3 +75,85 @@ class StartUpChecklistAdmin(admin.ModelAdmin):
     list_filter = ('overall_status', 'control_type', 'vehicle__company', 'date')
     search_fields = ('vehicle__license_plate', 'operator__username', 'reported_to')
     readonly_fields = ('overall_status', 'date')  # Se calculan automáticamente
+
+# -------------------------------------------------------------------
+# 5. ADMIN DE INSPECCIÓN TÉCNICA
+# -------------------------------------------------------------------
+
+@admin.register(TechnicalInspection)
+class TechnicalInspectionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'vehicle', 'mechanic', 'date', 'kilometers', 'diagnosis')
+    list_filter = ('diagnosis', 'date', 'vehicle__company')
+    search_fields = ('vehicle__license_plate', 'mechanic__username', 'recommended_actions')
+    
+    # Organizamos el panel en pestañas colapsables idénticas al frontend
+    fieldsets = (
+        ('Datos Generales', {
+            'fields': ('vehicle', 'mechanic', 'date', 'kilometers')
+        }),
+        ('1. Motor', {
+            'classes': ('collapse',),
+            'fields': (
+                ('engine_oil_level', 'engine_oil_condition', 'engine_oil_leaks'),
+                ('engine_coolant_level', 'engine_coolant_condition', 'engine_coolant_obs'),
+                'engine_temp', 'engine_general_obs'
+            )
+        }),
+        ('2. Transmisión', {
+            'classes': ('collapse',),
+            'fields': (
+                ('trans_clutch', 'trans_gearbox'),
+                ('trans_leaks', 'trans_leaks_obs'),
+                'trans_general_obs'
+            )
+        }),
+        ('3. Sistema de Frenos', {
+            'classes': ('collapse',),
+            'fields': (
+                ('brakes_front_pads', 'brakes_front_pads_wear_pct'),
+                ('brakes_discs', 'brakes_discs_obs'),
+                ('brakes_fluid_level', 'brakes_fluid_state', 'brakes_fluid_obs'),
+                ('brakes_rear', 'brakes_rear_obs'),
+                'brakes_general_obs'
+            )
+        }),
+        ('4. Suspensión y Tren Delantero', {
+            'classes': ('collapse',),
+            'fields': (
+                ('susp_shock_absorbers', 'susp_shock_absorbers_obs'),
+                ('susp_ball_joints', 'susp_ball_joints_obs'),
+                ('susp_bushings', 'susp_bushings_obs'),
+                ('susp_tie_rod_ends', 'susp_tie_rod_ends_obs'),
+                ('susp_sway_bar', 'susp_sway_bar_obs'),
+                'susp_general_obs'
+            )
+        }),
+        ('5. Sistema Eléctrico', {
+            'classes': ('collapse',),
+            'fields': (
+                ('elec_battery', 'elec_battery_obs'),
+                ('elec_charging_system', 'elec_charging_system_obs'),
+                ('elec_lights', 'elec_lights_obs')
+            )
+        }),
+        ('6. Correas y Distribución', {
+            'classes': ('collapse',),
+            'fields': (
+                ('belts_auxiliary', 'belts_auxiliary_obs'),
+                'belts_distribution_obs',
+                'belts_water_pump_obs',
+                'belts_general_obs'
+            )
+        }),
+        ('7. Neumáticos', {
+            'classes': ('collapse',),
+            'fields': (
+                ('tires_tread_depth', 'tires_tread_depth_mm'),
+                ('tires_pressure', 'tires_pressure_psi'),
+                'tires_obs'
+            )
+        }),
+        ('Diagnóstico General', {
+            'fields': ('diagnosis', 'recommended_actions')
+        }),
+    )
