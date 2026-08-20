@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Company, User, Vehicle
+from .models import Company, User, Vehicle, StartUpChecklist
+
 
 # -------------------------------------------------------------------
 # 1. ADMIN DE EMPRESA
@@ -53,6 +54,24 @@ class CustomUserAdmin(UserAdmin):
 # -------------------------------------------------------------------
 @admin.register(Vehicle)
 class VehicleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'license_plate', 'brand', 'model', 'year', 'company')
+    list_display = ('id', 'license_plate', 'brand', 'model', 'year', 'company', 'kilometers')
     list_filter = ('company', 'brand', 'year')
     search_fields = ('license_plate', 'chassis_number', 'brand', 'model', 'company__name')
+
+# -------------------------------------------------------------------
+# 4. ADMIN DE PUESTA EN MARCHA
+# -------------------------------------------------------------------
+
+@admin.register(StartUpChecklist)
+class StartUpChecklistAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 
+        'vehicle', 
+        'operator', 
+        'date', 
+        'control_type', 
+        'overall_status'
+    )
+    list_filter = ('overall_status', 'control_type', 'vehicle__company', 'date')
+    search_fields = ('vehicle__license_plate', 'operator__username', 'reported_to')
+    readonly_fields = ('overall_status', 'date')  # Se calculan automáticamente
